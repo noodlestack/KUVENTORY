@@ -22,7 +22,7 @@ export function MobileDrawer() {
           <span className="sr-only">Open Menu</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="w-72 p-0 flex flex-col">
+      <SheetContent side="left" className="w-72 p-0 flex flex-col bg-card text-card-foreground border-r">
         <SheetHeader className="h-16 border-b flex items-center justify-center px-4">
           <SheetTitle className="flex items-center gap-2 m-0 mt-4 overflow-hidden">
             <img src={LogoIcon} alt="Logo" className="h-8 w-8 shrink-0" />
@@ -33,7 +33,7 @@ export function MobileDrawer() {
         <div className="flex-1 overflow-y-auto py-4">
           {navigationConfig.map((section, index) => (
             <div key={index} className="mb-6">
-              <h4 className="mb-2 px-6 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <h4 className="mb-2 px-6 text-xs font-semibold uppercase tracking-wider text-foreground/70">
                 {section.title}
               </h4>
               <nav className="space-y-1 px-3">
@@ -46,7 +46,7 @@ export function MobileDrawer() {
                           "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                           isActive
                             ? "bg-primary text-primary-foreground shadow-sm"
-                            : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                            : "text-foreground/80 hover:bg-secondary hover:text-foreground"
                         )
                       }
                     >

@@ -52,7 +52,7 @@ export function Sidebar({ isCollapsed }: SidebarProps) {
           {navigationConfig.map((section, index) => (
             <div key={index} className="mb-6">
               {!isCollapsed && (
-                <h4 className="mb-2 px-6 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <h4 className="mb-2 px-6 text-xs font-semibold uppercase tracking-wider text-foreground/70">
                   {section.title}
                 </h4>
               )}
@@ -66,7 +66,7 @@ export function Sidebar({ isCollapsed }: SidebarProps) {
                           "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                           (location.pathname === item.href || (item.href !== "/" && location.pathname.startsWith(item.href)))
                             ? "bg-primary text-primary-foreground shadow-sm"
-                            : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+                            : "text-foreground/80 hover:bg-secondary hover:text-foreground",
                           isCollapsed && "justify-center px-0 py-3"
                         )}
                       >
