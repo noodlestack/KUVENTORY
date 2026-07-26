@@ -35,13 +35,13 @@ export function Sidebar({ isCollapsed }: SidebarProps) {
       )}
     >
       {/* Brand Header */}
-      <div className="flex h-16 shrink-0 items-center justify-center border-b px-4">
+      <div className="flex h-16 shrink-0 items-center justify-center border-b px-4 overflow-hidden">
         {isCollapsed ? (
-          <img src={LogoIcon} alt="Logo" className="h-8 w-8" />
+          <img src={LogoIcon} alt="Logo" className="h-8 w-8 shrink-0" />
         ) : (
           <div className="flex items-center gap-2">
-            <img src={LogoIcon} alt="Logo" className="h-8 w-8" />
-            <span className="text-xl font-bold text-foreground tracking-tight">Kuventory</span>
+            <img src={LogoIcon} alt="Logo" className="h-8 w-8 shrink-0" />
+            <span className="text-xl font-bold text-foreground tracking-tight whitespace-nowrap">Kuventory</span>
           </div>
         )}
       </div>
@@ -70,8 +70,8 @@ export function Sidebar({ isCollapsed }: SidebarProps) {
                           isCollapsed && "justify-center px-0 py-3"
                         )}
                       >
-                        <item.icon className={cn("h-5 w-5", isCollapsed ? "h-6 w-6" : "")} />
-                        {!isCollapsed && <span>{item.title}</span>}
+                        <item.icon className={cn("h-5 w-5 shrink-0", isCollapsed ? "h-6 w-6" : "")} />
+                        {!isCollapsed && <span className="whitespace-nowrap">{item.title}</span>}
                       </NavLink>
                     </TooltipTrigger>
                     {isCollapsed && (
@@ -130,10 +130,10 @@ export function Sidebar({ isCollapsed }: SidebarProps) {
           <AlertDialogTrigger asChild>
             <Button 
               variant="ghost" 
-              className={cn("mt-4 w-full text-destructive hover:text-destructive hover:bg-destructive/10", isCollapsed ? "px-0" : "justify-start gap-2")}
+              className={cn("mt-4 w-full text-destructive hover:text-destructive hover:bg-destructive/10 overflow-hidden", isCollapsed ? "px-0" : "justify-start gap-2")}
             >
-              <LogOut className="h-5 w-5" />
-              {!isCollapsed && <span>Logout</span>}
+              <LogOut className="h-5 w-5 shrink-0" />
+              {!isCollapsed && <span className="whitespace-nowrap">Logout</span>}
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>

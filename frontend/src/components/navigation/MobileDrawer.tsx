@@ -24,9 +24,9 @@ export function MobileDrawer() {
       </SheetTrigger>
       <SheetContent side="left" className="w-72 p-0 flex flex-col">
         <SheetHeader className="h-16 border-b flex items-center justify-center px-4">
-          <SheetTitle className="flex items-center gap-2 m-0 mt-4">
-            <img src={LogoIcon} alt="Logo" className="h-8 w-8" />
-            <span className="text-xl font-bold">Kuventory</span>
+          <SheetTitle className="flex items-center gap-2 m-0 mt-4 overflow-hidden">
+            <img src={LogoIcon} alt="Logo" className="h-8 w-8 shrink-0" />
+            <span className="text-xl font-bold whitespace-nowrap">Kuventory</span>
           </SheetTitle>
         </SheetHeader>
         
@@ -50,8 +50,8 @@ export function MobileDrawer() {
                         )
                       }
                     >
-                      <item.icon className="h-5 w-5" />
-                      <span>{item.title}</span>
+                      <item.icon className="h-5 w-5 shrink-0" />
+                      <span className="whitespace-nowrap">{item.title}</span>
                     </NavLink>
                   </SheetTrigger>
                 ))}
@@ -72,10 +72,10 @@ export function MobileDrawer() {
           </div>
           <Button 
             variant="ghost" 
-            className="mt-4 w-full justify-start gap-2 text-destructive hover:text-destructive hover:bg-destructive/10"
+            className="mt-4 w-full justify-start gap-2 text-destructive hover:text-destructive hover:bg-destructive/10 overflow-hidden"
           >
-            <LogOut className="h-5 w-5" />
-            <span>Logout</span>
+            <LogOut className="h-5 w-5 shrink-0" />
+            <span className="whitespace-nowrap">Logout</span>
           </Button>
         </div>
       </SheetContent>
