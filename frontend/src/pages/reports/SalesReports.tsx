@@ -4,6 +4,7 @@ import { ChartCard } from "@/components/reports/ChartCard";
 import { ReportHeader } from "@/components/reports/ReportHeader";
 import { BarChart, Bar, CartesianGrid, XAxis, Tooltip, YAxis } from "recharts";
 import { Banknote, Calendar, BarChart3, ShoppingCart } from "lucide-react";
+import { formatCurrency } from "@/utils/currency";
 
 export function SalesReports() {
   const { data, isLoading } = useSalesReport();
@@ -11,7 +12,6 @@ export function SalesReports() {
   if (isLoading) return <div className="p-8 text-center text-muted-foreground">Loading sales data...</div>;
   if (!data) return null;
 
-  const formatCurrency = (val: number) => new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(val);
 
   return (
     <div className="space-y-6">
@@ -29,7 +29,7 @@ export function SalesReports() {
           <BarChart data={data.salesTrend}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-            <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value: any) => `₱${value/1000}k`} />
+            <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value: number) => `₱${value/1000}k`} />
             <Tooltip formatter={(value: number) => [formatCurrency(value), 'Revenue']} labelStyle={{ color: 'black' }} cursor={{fill: 'transparent'}} />
             <Bar dataKey="value" fill="currentColor" radius={[4, 4, 0, 0]} className="fill-primary" />
           </BarChart>

@@ -14,7 +14,7 @@ export function usePurchases() {
   }, []);
 
   useEffect(() => {
-    fetchPurchases();
+    queueMicrotask(fetchPurchases);
   }, [fetchPurchases]);
 
   const createPurchase = async (data: PurchaseFormData, supplierName: string) => {

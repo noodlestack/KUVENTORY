@@ -14,7 +14,7 @@ export function useStockMovements() {
   }, []);
 
   useEffect(() => {
-    fetchMovements();
+    queueMicrotask(fetchMovements);
   }, [fetchMovements]);
 
   return { movements, isLoading, refresh: fetchMovements };

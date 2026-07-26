@@ -20,12 +20,14 @@ export function useSearch() {
   // Debounced search
   useEffect(() => {
     if (!query) {
-      setResults([]);
-      setIsSearching(false);
+      queueMicrotask(() => {
+        setResults([]);
+        setIsSearching(false);
+      });
       return;
     }
 
-    setIsSearching(true);
+    queueMicrotask(() => setIsSearching(true));
     const handler = setTimeout(async () => {
       try {
         const data = await mockSearchService.search(query);
@@ -36,7 +38,7 @@ export function useSearch() {
       } finally {
         setIsSearching(false);
       }
-    }, 300); // 300ms debounce
+    }, 250); // 250ms debounce
 
     return () => clearTimeout(handler);
   }, [query]);

@@ -2,6 +2,7 @@ import { SalesSummaryData } from "@/types/sales";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DollarSign, TrendingUp, TrendingDown, Receipt } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { formatCurrency } from "@/utils/currency";
 
 interface SalesSummaryDashboardProps {
   summary: SalesSummaryData | null;
@@ -10,7 +11,6 @@ interface SalesSummaryDashboardProps {
 export function SalesSummaryDashboard({ summary }: SalesSummaryDashboardProps) {
   if (!summary) return null;
 
-  const formatCurrency = (amount: number) => new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(amount);
 
   return (
     <div className="space-y-6 mt-4">

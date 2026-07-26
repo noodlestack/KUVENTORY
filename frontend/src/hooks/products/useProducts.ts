@@ -8,20 +8,19 @@ export function useProducts() {
   const [error, setError] = useState<string | null>(null);
 
   const fetchProducts = useCallback(async () => {
-    setIsLoading(true);
     try {
       const data = await mockProductService.getProducts();
       setProducts(data);
       setError(null);
-    } catch (err: any) {
-      setError(err.message || "Failed to fetch products");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Failed to fetch products");
     } finally {
       setIsLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchProducts();
+    queueMicrotask(() => { fetchProducts(); });
   }, [fetchProducts]);
 
   const createProduct = async (data: ProductFormData, categoryName: string) => {
@@ -45,7 +44,10 @@ export function useProducts() {
     products,
     isLoading,
     error,
-    refresh: fetchProducts,
+    refresh: async () => {
+      setIsLoading(true);
+      await fetchProducts();
+    },
     createProduct,
     updateProduct,
     deleteProduct

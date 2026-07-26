@@ -14,7 +14,7 @@ export function useInventoryHistory() {
   }, []);
 
   useEffect(() => {
-    fetchHistory();
+    queueMicrotask(fetchHistory);
   }, [fetchHistory]);
 
   return { history, isLoading, refresh: fetchHistory };

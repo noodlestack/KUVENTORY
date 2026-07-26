@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "@/components/ui/sonner";
@@ -11,18 +11,20 @@ import { ProtectedRoute } from "@/routes/ProtectedRoute";
 import { PublicRoute } from "@/routes/PublicRoute";
 import { RoleProtectedRoute } from "@/routes/RoleProtectedRoute";
 
-import { EmptyState } from "@/components/common/EmptyState";
+import React, { Suspense } from "react";
+import { PageLoader } from "@/components/common/LoadingStates";
 import { Dashboard } from "@/pages/dashboard/Dashboard";
-import { Products } from "@/pages/products/Products";
-import { Categories } from "@/pages/categories/Categories";
-import { InventoryLayout } from "@/pages/inventory/InventoryLayout";
-import { Suppliers } from "@/pages/suppliers/Suppliers";
-import { PurchasesLayout } from "@/pages/purchases/PurchasesLayout";
-import { SalesLayout } from "@/pages/sales/SalesLayout";
-import { ExpensesLayout } from "@/pages/expenses/ExpensesLayout";
-import { ReportsLayout } from "@/pages/reports/ReportsLayout";
-import { ProfileLayout } from "@/pages/profile/ProfileLayout";
-import { SettingsLayout } from "@/pages/settings/SettingsLayout";
+
+const Products = React.lazy(() => import("@/pages/products/Products").then(m => ({ default: m.Products })));
+const Categories = React.lazy(() => import("@/pages/categories/Categories").then(m => ({ default: m.Categories })));
+const InventoryLayout = React.lazy(() => import("@/pages/inventory/InventoryLayout").then(m => ({ default: m.InventoryLayout })));
+const Suppliers = React.lazy(() => import("@/pages/suppliers/Suppliers").then(m => ({ default: m.Suppliers })));
+const PurchasesLayout = React.lazy(() => import("@/pages/purchases/PurchasesLayout").then(m => ({ default: m.PurchasesLayout })));
+const SalesLayout = React.lazy(() => import("@/pages/sales/SalesLayout").then(m => ({ default: m.SalesLayout })));
+const ExpensesLayout = React.lazy(() => import("@/pages/expenses/ExpensesLayout").then(m => ({ default: m.ExpensesLayout })));
+const ReportsLayout = React.lazy(() => import("@/pages/reports/ReportsLayout").then(m => ({ default: m.ReportsLayout })));
+const ProfileLayout = React.lazy(() => import("@/pages/profile/ProfileLayout").then(m => ({ default: m.ProfileLayout })));
+const SettingsLayout = React.lazy(() => import("@/pages/settings/SettingsLayout").then(m => ({ default: m.SettingsLayout })));
 
 import { Login } from "@/pages/auth/Login";
 import { ForgotPassword } from "@/pages/auth/ForgotPassword";
@@ -31,25 +33,12 @@ import { SessionExpired } from "@/pages/auth/SessionExpired";
 import { Unauthorized } from "@/pages/error/Unauthorized";
 import { NotFound } from "@/pages/error/NotFound";
 
-// Placeholder for future pages
-function PlaceholderPage({ title }: { title: string }) {
-  return (
-    <div className="p-4">
-      <EmptyState 
-        title={`${title} Page`} 
-        description={`This is the placeholder for the ${title} module. Components will be built in future phases.`}
-        actionLabel="Go Back"
-        onAction={() => window.history.back()}
-      />
-    </div>
-  );
-}
-
 function App() {
   return (
     <ThemeProvider defaultTheme="system" attribute="class">
       <AuthProvider>
-        <BrowserRouter>
+        <HashRouter>
+          <Suspense fallback={<PageLoader />}>
           <Routes>
             
             {/* Public Routes (Login, Reset Password) */}
@@ -79,11 +68,10 @@ function App() {
                 <Route path="/expenses" element={<ExpensesLayout />} />
                 <Route path="/reports" element={<ReportsLayout />} />
                 <Route path="/profile" element={<ProfileLayout />} />
-                <Route path="/settings" element={<SettingsLayout />} />
 
                 {/* Role Protected Routes */}
                 <Route element={<RoleProtectedRoute allowedRoles={["Admin", "Manager"]} />}>
-                  <Route path="/settings" element={<PlaceholderPage title="Settings" />} />
+                  <Route path="/settings" element={<SettingsLayout />} />
                 </Route>
               </Route>
             </Route>
@@ -95,7 +83,8 @@ function App() {
             </Route>
 
           </Routes>
-        </BrowserRouter>
+          </Suspense>
+        </HashRouter>
       </AuthProvider>
       <Toaster position="top-right" richColors closeButton />
     </ThemeProvider>

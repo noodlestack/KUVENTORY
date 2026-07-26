@@ -20,7 +20,7 @@ export function useProfile() {
     setIsLoading(false);
   }, []);
 
-  useEffect(() => { fetchProfile(); }, [fetchProfile]);
+  useEffect(() => { queueMicrotask(fetchProfile); }, [fetchProfile]);
 
   const updateProfile = async (data: Partial<UserProfile>) => {
     const updated = await mockSettingsService.updateProfile(data);
@@ -48,7 +48,7 @@ export function useRestaurantSettings() {
     setIsLoading(false);
   }, []);
 
-  useEffect(() => { fetchSettings(); }, [fetchSettings]);
+  useEffect(() => { queueMicrotask(fetchSettings); }, [fetchSettings]);
 
   const updateSettings = async (data: Partial<RestaurantSettings>) => {
     const updated = await mockSettingsService.updateRestaurantSettings(data);
@@ -70,7 +70,7 @@ export function useNotificationSettings() {
     setIsLoading(false);
   }, []);
 
-  useEffect(() => { fetchSettings(); }, [fetchSettings]);
+  useEffect(() => { queueMicrotask(fetchSettings); }, [fetchSettings]);
 
   const updateSettings = async (data: Partial<NotificationSettings>) => {
     const updated = await mockSettingsService.updateNotificationSettings(data);
@@ -92,9 +92,9 @@ export function useUsers() {
     setIsLoading(false);
   }, []);
 
-  useEffect(() => { fetchUsers(); }, [fetchUsers]);
+  useEffect(() => { queueMicrotask(fetchUsers); }, [fetchUsers]);
 
-  const createUser = async (data: any) => {
+  const createUser = async (data: Omit<UserAccount, 'id' | 'lastLogin' | 'createdAt'>) => {
     const newUser = await mockSettingsService.createUser(data);
     setUsers(prev => [...prev, newUser]);
     return newUser;
@@ -120,7 +120,7 @@ export function useActivityLogs() {
     setIsLoading(false);
   }, []);
 
-  useEffect(() => { fetchLogs(); }, [fetchLogs]);
+  useEffect(() => { queueMicrotask(fetchLogs); }, [fetchLogs]);
 
   return { logs, isLoading, refresh: fetchLogs };
 }

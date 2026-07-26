@@ -20,11 +20,12 @@ interface ExpenseCategoryFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   category?: ExpenseCategory | null;
-  onSubmit: (data: ExpenseCategoryFormData) => Promise<any>;
+  onSubmit: (data: ExpenseCategoryFormData) => Promise<void>;
 }
 
 export function ExpenseCategoryFormDialog({ open, onOpenChange, category, onSubmit }: ExpenseCategoryFormDialogProps) {
   const form = useForm<ExpenseCategoryFormData>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(categorySchema) as any,
     defaultValues: {
       name: "",

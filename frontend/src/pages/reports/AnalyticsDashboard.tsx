@@ -4,6 +4,7 @@ import { ChartCard } from "@/components/reports/ChartCard";
 import { ReportHeader } from "@/components/reports/ReportHeader";
 import { LineChart, Line, CartesianGrid, XAxis, Tooltip, YAxis, PieChart, Pie, Cell } from "recharts";
 import { Banknote, ShoppingCart, Package, TrendingUp, TrendingDown, Users, AlertCircle, ShoppingBag } from "lucide-react";
+import { formatCurrency } from "@/utils/currency";
 
 const COLORS = ['#10b981', '#f43f5e', '#f59e0b', '#3b82f6'];
 
@@ -13,7 +14,6 @@ export function AnalyticsDashboard() {
   if (isLoading) return <div className="p-8 text-center text-muted-foreground">Loading analytics...</div>;
   if (!data) return null;
 
-  const formatCurrency = (val: number) => new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(val);
 
   return (
     <div className="space-y-6">
@@ -36,7 +36,7 @@ export function AnalyticsDashboard() {
           <LineChart data={data.salesTrend.map((s, i) => ({ name: s.name, Sales: s.value, Expenses: data.expenseTrend[i]?.value || 0 }))}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-            <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value: any) => `₱${value/1000}k`} />
+            <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value: number) => `₱${value/1000}k`} />
             <Tooltip formatter={(value: number) => [formatCurrency(value)]} labelStyle={{ color: 'black' }} />
             <Line type="monotone" dataKey="Sales" stroke="#10b981" strokeWidth={2} activeDot={{ r: 8 }} />
             <Line type="monotone" dataKey="Expenses" stroke="#f43f5e" strokeWidth={2} />

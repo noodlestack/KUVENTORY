@@ -8,20 +8,19 @@ export function useCategories() {
   const [error, setError] = useState<string | null>(null);
 
   const fetchCategories = useCallback(async () => {
-    setIsLoading(true);
     try {
       const data = await mockCategoryService.getCategories();
       setCategories(data);
       setError(null);
-    } catch (err: any) {
-      setError(err.message || "Failed to fetch categories");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Failed to fetch categories");
     } finally {
       setIsLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchCategories();
+    queueMicrotask(() => { fetchCategories(); });
   }, [fetchCategories]);
 
   const createCategory = async (data: CategoryFormData) => {
@@ -45,7 +44,10 @@ export function useCategories() {
     categories,
     isLoading,
     error,
-    refresh: fetchCategories,
+    refresh: async () => {
+      setIsLoading(true);
+      await fetchCategories();
+    },
     createCategory,
     updateCategory,
     deleteCategory

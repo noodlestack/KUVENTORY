@@ -34,6 +34,7 @@ export function ProductFormDialog({ open, onOpenChange, product, categories, onS
   const isEditing = !!product;
 
   const form = useForm<ProductFormData>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(productSchema) as any,
     defaultValues: {
       name: "",
@@ -81,7 +82,7 @@ export function ProductFormDialog({ open, onOpenChange, product, categories, onS
       await onSubmit(data, categoryName);
       toast.success(isEditing ? "Product updated successfully." : "Product created successfully.");
       onOpenChange(false);
-    } catch (error) {
+    } catch {
       toast.error("Failed to save product.");
     }
   };

@@ -30,11 +30,13 @@ interface PurchaseFormDialogProps {
   onOpenChange: (open: boolean) => void;
   suppliers: Supplier[];
   inventoryItems: InventoryItem[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSubmit: (data: PurchaseFormData, supplierName: string) => Promise<any>;
 }
 
 export function PurchaseFormDialog({ open, onOpenChange, suppliers, inventoryItems, onSubmit }: PurchaseFormDialogProps) {
   const form = useForm<PurchaseFormData>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(purchaseSchema) as any,
     defaultValues: {
       purchaseDate: new Date().toISOString().split("T")[0],

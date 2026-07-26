@@ -3,7 +3,7 @@ import { Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useExpenses, useExpenseCategories } from "@/hooks/expenses/useExpenses";
-import { Expense } from "@/types/expenses";
+import { Expense, ExpenseFormData } from "@/types/expenses";
 import { ExpenseTable } from "@/components/expenses/ExpenseTable";
 import { ExpenseFormDialog } from "@/components/expenses/ExpenseFormDialog";
 import { ExpenseDetailsDrawer } from "@/components/expenses/ExpenseDetailsDrawer";
@@ -32,7 +32,7 @@ export function ExpenseRecords() {
     setIsDrawerOpen(true);
   };
 
-  const handleFormSubmit = async (data: any) => {
+  const handleFormSubmit = async (data: ExpenseFormData) => {
     if (selectedExpense) {
       await updateExpense(selectedExpense.id, data);
     } else {

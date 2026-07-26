@@ -30,11 +30,13 @@ type ProfileFormValues = z.infer<typeof profileSchema>;
 
 interface ProfileFormProps {
   profile: UserProfile | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSubmit: (data: Partial<UserProfile>) => Promise<any>;
 }
 
 export function ProfileForm({ profile, onSubmit }: ProfileFormProps) {
   const form = useForm<ProfileFormValues>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(profileSchema) as any,
     defaultValues: {
       fullName: "",

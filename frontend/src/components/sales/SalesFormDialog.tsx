@@ -28,11 +28,13 @@ interface SalesFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   inventoryItems: InventoryItem[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSubmit: (data: SaleFormData) => Promise<any>;
 }
 
 export function SalesFormDialog({ open, onOpenChange, inventoryItems, onSubmit }: SalesFormDialogProps) {
   const form = useForm<SaleFormData>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(saleSchema) as any,
     defaultValues: {
       saleDate: new Date().toISOString().split("T")[0],

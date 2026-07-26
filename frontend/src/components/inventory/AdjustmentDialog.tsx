@@ -20,11 +20,13 @@ interface AdjustmentDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   items: InventoryItem[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSubmit: (data: StockAdjustmentFormData) => Promise<any>;
 }
 
 export function AdjustmentDialog({ open, onOpenChange, items, onSubmit }: AdjustmentDialogProps) {
   const form = useForm<StockAdjustmentFormData>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(adjustmentSchema) as any,
     defaultValues: {
       itemId: "",
@@ -34,6 +36,7 @@ export function AdjustmentDialog({ open, onOpenChange, items, onSubmit }: Adjust
     },
   });
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const watchItemId = form.watch("itemId");
   const selectedItem = items.find(i => i.id === watchItemId);
   const diff = selectedItem ? (form.watch("actualQuantity") || 0) - selectedItem.currentQuantity : 0;

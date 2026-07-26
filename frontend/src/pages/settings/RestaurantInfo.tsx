@@ -24,7 +24,7 @@ export function RestaurantInfo() {
   const { settings, isLoading, updateSettings } = useRestaurantSettings();
 
   const form = useForm<RestaurantFormValues>({
-    resolver: zodResolver(restaurantSchema) as any,
+    resolver: zodResolver(restaurantSchema),
     defaultValues: {
       name: "",
       address: "",

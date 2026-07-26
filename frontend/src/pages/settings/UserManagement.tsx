@@ -33,7 +33,7 @@ export function UserManagement() {
     if (selectedUser) {
       await updateUser(selectedUser.id, data);
     } else {
-      await createUser(data as any);
+      await createUser(data as unknown as Omit<UserAccount, "id" | "lastLogin" | "createdAt">);
     }
   };
 

@@ -8,6 +8,7 @@ import { DashboardCharts } from "@/components/dashboard/DashboardCharts";
 import { ActivityTimeline } from "@/components/dashboard/ActivityTimeline";
 import { NotificationPanel } from "@/components/dashboard/NotificationPanel";
 import { StatCardSkeleton, QuickActionsSkeleton, ChartSkeleton, ListSkeleton } from "@/components/dashboard/DashboardSkeletons";
+import { formatCurrency } from "@/utils/currency";
 
 export function Dashboard() {
   const { user } = useAuth();
@@ -20,7 +21,6 @@ export function Dashboard() {
     year: 'numeric'
   }).format(new Date());
 
-  const formatCurrency = (val: number) => `$${val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
   return (
     <div className="space-y-6">

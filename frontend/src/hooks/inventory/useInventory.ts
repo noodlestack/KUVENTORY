@@ -14,7 +14,7 @@ export function useInventory() {
   }, []);
 
   useEffect(() => {
-    fetchItems();
+    queueMicrotask(fetchItems);
   }, [fetchItems]);
 
   const createItem = async (data: InventoryFormData, categoryName: string) => {

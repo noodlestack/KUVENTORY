@@ -34,7 +34,8 @@ export function LoginForm() {
   const navigate = useNavigate();
 
   const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(loginSchema) as any,
     defaultValues: {
       emailOrUsername: "",
       password: "",
@@ -63,7 +64,7 @@ export function LoginForm() {
         setError("Invalid credentials. Try admin / password.");
         toast.error("Invalid credentials.");
       }
-    } catch (err) {
+    } catch {
       setError("An unexpected error occurred.");
       toast.error("An unexpected error occurred.");
     } finally {

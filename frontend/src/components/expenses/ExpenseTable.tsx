@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Eye, Edit, MoreHorizontal } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Card, CardContent } from "@/components/ui/card";
+import { formatCurrency } from "@/utils/currency";
 
 interface ExpenseTableProps {
   expenses: Expense[];
@@ -23,7 +24,6 @@ export function ExpenseTable({ expenses, onView, onEdit }: ExpenseTableProps) {
   }
 
   const formatDate = (dateStr: string) => new Intl.DateTimeFormat('en-US', { dateStyle: 'short' }).format(new Date(dateStr));
-  const formatCurrency = (amount: number) => new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(amount);
 
   return (
     <div className="mt-4">

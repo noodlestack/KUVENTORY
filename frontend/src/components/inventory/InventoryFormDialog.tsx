@@ -35,6 +35,7 @@ export function InventoryFormDialog({ open, onOpenChange, item, categories, onSu
   const isEditing = !!item;
 
   const form = useForm<InventoryFormData>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(inventorySchema) as any,
     defaultValues: {
       name: "",

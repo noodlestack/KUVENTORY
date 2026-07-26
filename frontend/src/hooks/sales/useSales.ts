@@ -14,7 +14,7 @@ export function useSales() {
   }, []);
 
   useEffect(() => {
-    fetchSales();
+    queueMicrotask(fetchSales);
   }, [fetchSales]);
 
   const recordSale = async (data: SaleFormData) => {
@@ -38,7 +38,7 @@ export function useSalesSummary() {
   }, []);
 
   useEffect(() => {
-    fetchSummary();
+    queueMicrotask(fetchSummary);
   }, [fetchSummary]);
 
   return { summary, isLoading, refresh: fetchSummary };

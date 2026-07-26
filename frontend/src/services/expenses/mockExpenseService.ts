@@ -3,7 +3,7 @@ import { Expense, ExpenseCategory, ExpenseFormData, ExpenseCategoryFormData, Exp
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 const generateId = (prefix: string) => `${prefix}${Date.now()}`;
 
-let categories: ExpenseCategory[] = [
+const categories: ExpenseCategory[] = [
   { id: "cat1", name: "Utilities", description: "Electricity, Water, Internet", isActive: true },
   { id: "cat2", name: "Rent", description: "Monthly location lease", isActive: true },
   { id: "cat3", name: "Supplies", description: "Office and cleaning supplies", isActive: true },
@@ -14,7 +14,7 @@ let categories: ExpenseCategory[] = [
   { id: "cat8", name: "Miscellaneous", description: "Other expenses", isActive: true },
 ];
 
-let expenses: Expense[] = [
+const expenses: Expense[] = [
   {
     id: "exp1",
     expenseNo: "EXP-2026-001",

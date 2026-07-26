@@ -7,7 +7,6 @@ export function useNotifications() {
   const [isLoading, setIsLoading] = useState(true);
 
   const loadNotifications = useCallback(async () => {
-    setIsLoading(true);
     try {
       const data = await mockNotificationService.getNotifications();
       setNotifications(data);
@@ -19,7 +18,7 @@ export function useNotifications() {
   }, []);
 
   useEffect(() => {
-    loadNotifications();
+    queueMicrotask(() => { loadNotifications(); });
   }, [loadNotifications]);
 
   const unreadCount = notifications.filter(n => !n.isRead).length;
@@ -73,6 +72,9 @@ export function useNotifications() {
     markAllAsRead,
     deleteNotification,
     clearAll,
-    refresh: loadNotifications
+    refresh: async () => {
+      setIsLoading(true);
+      await loadNotifications();
+    }
   };
 }

@@ -4,6 +4,7 @@ import { ChartCard } from "@/components/reports/ChartCard";
 import { ReportHeader } from "@/components/reports/ReportHeader";
 import { BarChart, Bar, CartesianGrid, XAxis, Tooltip, YAxis, PieChart, Pie, Cell } from "recharts";
 import { Package, AlertCircle, AlertTriangle, Calculator } from "lucide-react";
+import { formatCurrency } from "@/utils/currency";
 
 const COLORS = ['#10b981', '#f59e0b', '#f43f5e'];
 
@@ -13,7 +14,6 @@ export function InventoryReports() {
   if (isLoading) return <div className="p-8 text-center text-muted-foreground">Loading inventory data...</div>;
   if (!data) return null;
 
-  const formatCurrency = (val: number) => new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(val);
 
   return (
     <div className="space-y-6">

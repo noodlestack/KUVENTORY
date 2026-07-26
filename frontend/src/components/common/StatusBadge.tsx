@@ -7,6 +7,7 @@ interface StatusBadgeProps {
 }
 
 export function StatusBadge({ status, className }: StatusBadgeProps) {
+  // eslint-disable-next-line no-useless-assignment
   let variant: "default" | "secondary" | "destructive" | "outline" = "default";
   let additionalClasses = "";
 

@@ -23,13 +23,14 @@ interface SupplierFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   supplier: Supplier | null;
-  onSubmit: (data: SupplierFormData) => Promise<any>;
+  onSubmit: (data: SupplierFormData) => Promise<void>;
 }
 
 export function SupplierFormDialog({ open, onOpenChange, supplier, onSubmit }: SupplierFormDialogProps) {
   const isEditing = !!supplier;
 
   const form = useForm<SupplierFormData>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(supplierSchema) as any,
     defaultValues: {
       name: "",

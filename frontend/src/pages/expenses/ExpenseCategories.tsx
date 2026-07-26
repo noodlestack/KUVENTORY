@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useExpenseCategories } from "@/hooks/expenses/useExpenses";
-import { ExpenseCategory } from "@/types/expenses";
+import { ExpenseCategory, ExpenseCategoryFormData } from "@/types/expenses";
 import { ExpenseCategoryTable } from "@/components/expenses/ExpenseCategoryTable";
 import { ExpenseCategoryFormDialog } from "@/components/expenses/ExpenseCategoryFormDialog";
 
@@ -22,7 +22,7 @@ export function ExpenseCategories() {
     setIsFormOpen(true);
   };
 
-  const handleFormSubmit = async (data: any) => {
+  const handleFormSubmit = async (data: ExpenseCategoryFormData) => {
     if (selectedCategory) {
       await editCategory(selectedCategory.id, data);
     } else {

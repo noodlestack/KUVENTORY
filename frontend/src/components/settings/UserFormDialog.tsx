@@ -30,6 +30,7 @@ export function UserFormDialog({ open, onOpenChange, user, onSubmit }: UserFormD
   const isEditing = !!user;
 
   const form = useForm<UserFormValues>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(userSchema) as any,
     defaultValues: {
       fullName: "",

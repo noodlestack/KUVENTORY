@@ -3,7 +3,7 @@ import { Purchase, PurchaseFormData } from "@/types/purchases";
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 const generateId = (prefix: string) => `${prefix}${Date.now()}`;
 
-let purchases: Purchase[] = [
+const purchases: Purchase[] = [
   {
     id: "pur1",
     purchaseNo: "PO-2026-001",

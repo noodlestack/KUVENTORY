@@ -14,7 +14,7 @@ export function useExpenses() {
   }, []);
 
   useEffect(() => {
-    fetchExpenses();
+    queueMicrotask(fetchExpenses);
   }, [fetchExpenses]);
 
   const recordExpense = async (data: ExpenseFormData) => {
@@ -44,7 +44,7 @@ export function useExpenseCategories() {
   }, []);
 
   useEffect(() => {
-    fetchCategories();
+    queueMicrotask(fetchCategories);
   }, [fetchCategories]);
 
   const addCategory = async (data: ExpenseCategoryFormData) => {
@@ -74,7 +74,7 @@ export function useExpenseSummary() {
   }, []);
 
   useEffect(() => {
-    fetchSummary();
+    queueMicrotask(fetchSummary);
   }, [fetchSummary]);
 
   return { summary, isLoading, refresh: fetchSummary };

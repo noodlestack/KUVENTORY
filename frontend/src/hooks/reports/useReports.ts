@@ -20,7 +20,7 @@ export function useAnalyticsSummary() {
     setIsLoading(false);
   }, []);
 
-  useEffect(() => { fetch(); }, [fetch]);
+  useEffect(() => { queueMicrotask(fetch); }, [fetch]);
   return { data, isLoading, refresh: fetch };
 }
 
@@ -35,7 +35,7 @@ export function useSalesReport() {
     setIsLoading(false);
   }, []);
 
-  useEffect(() => { fetch(); }, [fetch]);
+  useEffect(() => { queueMicrotask(fetch); }, [fetch]);
   return { data, isLoading, refresh: fetch };
 }
 
@@ -50,7 +50,7 @@ export function useInventoryReport() {
     setIsLoading(false);
   }, []);
 
-  useEffect(() => { fetch(); }, [fetch]);
+  useEffect(() => { queueMicrotask(fetch); }, [fetch]);
   return { data, isLoading, refresh: fetch };
 }
 
@@ -65,7 +65,7 @@ export function usePurchaseReport() {
     setIsLoading(false);
   }, []);
 
-  useEffect(() => { fetch(); }, [fetch]);
+  useEffect(() => { queueMicrotask(fetch); }, [fetch]);
   return { data, isLoading, refresh: fetch };
 }
 
@@ -80,7 +80,7 @@ export function useExpenseReport() {
     setIsLoading(false);
   }, []);
 
-  useEffect(() => { fetch(); }, [fetch]);
+  useEffect(() => { queueMicrotask(fetch); }, [fetch]);
   return { data, isLoading, refresh: fetch };
 }
 
@@ -95,6 +95,6 @@ export function useSupplierReport() {
     setIsLoading(false);
   }, []);
 
-  useEffect(() => { fetch(); }, [fetch]);
+  useEffect(() => { queueMicrotask(fetch); }, [fetch]);
   return { data, isLoading, refresh: fetch };
 }

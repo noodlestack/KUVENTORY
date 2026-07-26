@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   CommandDialog,
@@ -55,13 +55,15 @@ export function GlobalSearch({ open, onOpenChange }: GlobalSearchProps) {
   const { query, setQuery, results, recentSearches, isSearching } = useSearch();
 
   // Group results by category
-  const groupedResults = results.reduce((acc, result) => {
-    if (!acc[result.category]) {
-      acc[result.category] = [];
-    }
-    acc[result.category].push(result);
-    return acc;
-  }, {} as Record<string, SearchResult[]>);
+  const groupedResults = useMemo(() => {
+    return results.reduce((acc, result) => {
+      if (!acc[result.category]) {
+        acc[result.category] = [];
+      }
+      acc[result.category].push(result);
+      return acc;
+    }, {} as Record<string, SearchResult[]>);
+  }, [results]);
 
   const handleSelect = (href: string) => {
     onOpenChange(false);

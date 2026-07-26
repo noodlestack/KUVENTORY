@@ -1,6 +1,7 @@
 import { usePurchases } from "@/hooks/purchases/usePurchases";
 import { Card, CardContent } from "@/components/ui/card";
 import { Receipt } from "lucide-react";
+import { formatCurrency } from "@/utils/currency";
 
 export function PurchaseHistory() {
   const { purchases, isLoading } = usePurchases();
@@ -17,7 +18,6 @@ export function PurchaseHistory() {
   }
 
   const formatDate = (dateStr: string) => new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(dateStr));
-  const formatCurrency = (amount: number) => new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(amount);
 
   return (
     <div className="space-y-6 mt-4">

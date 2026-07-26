@@ -46,7 +46,7 @@ let notificationSettings: NotificationSettings = {
   expenseNotifications: true,
 };
 
-let usersList: UserAccount[] = [
+const usersList: UserAccount[] = [
   { ...currentUser },
   {
     id: "usr_2",
@@ -70,7 +70,7 @@ let usersList: UserAccount[] = [
   }
 ];
 
-let activityLogs: ActivityLog[] = [
+const activityLogs: ActivityLog[] = [
   {
     id: "log_1",
     date: new Date().toISOString(),

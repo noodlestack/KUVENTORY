@@ -24,14 +24,14 @@ let inventory: InventoryItem[] = [
   { id: "inv3", itemCode: "PKG-001", name: "Takeout Cups (12oz)", categoryId: "c3", categoryName: "Packaging", unit: "pcs", supplier: "Packit Supply", currentQuantity: 0, minStockLevel: 500, maxStockLevel: 5000, storageLocation: "Storage Room B", status: "Out of Stock", lastUpdated: "2026-06-15T11:00:00Z", createdAt: "2026-01-15T11:00:00Z" },
 ];
 
-let movements: StockMovement[] = [
+const movements: StockMovement[] = [
   { id: "mov1", referenceNo: "PO-2026-001", itemId: "inv1", itemName: "Arabica Coffee Beans", itemCode: "RAW-001", type: "Stock In", quantity: 50, performedBy: "John Doe", remarks: "Monthly delivery", date: "2026-06-01T10:00:00Z" },
   { id: "mov2", referenceNo: "USE-2026-001", itemId: "inv1", itemName: "Arabica Coffee Beans", itemCode: "RAW-001", type: "Stock Out", quantity: -35, performedBy: "Jane Smith", remarks: "Used for operations", date: "2026-06-10T08:00:00Z" },
 ];
 
-let adjustments: StockAdjustment[] = [];
+const adjustments: StockAdjustment[] = [];
 
-let history: InventoryHistoryEntry[] = [
+const history: InventoryHistoryEntry[] = [
   { id: "hist1", itemId: "inv1", itemName: "Arabica Coffee Beans", action: "Created", performedBy: "System Admin", details: "Initial setup", date: "2026-01-10T08:00:00Z" },
   { id: "hist2", itemId: "inv1", itemName: "Arabica Coffee Beans", action: "Restocked", performedBy: "John Doe", details: "Added 50 kg via PO-2026-001", date: "2026-06-01T10:00:00Z" },
 ];

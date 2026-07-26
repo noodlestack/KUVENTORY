@@ -1,6 +1,7 @@
 import { useExpenses } from "@/hooks/expenses/useExpenses";
 import { Card, CardContent } from "@/components/ui/card";
 import { Receipt } from "lucide-react";
+import { formatCurrency } from "@/utils/currency";
 
 export function ExpenseHistory() {
   const { expenses, isLoading } = useExpenses();
@@ -16,7 +17,6 @@ export function ExpenseHistory() {
   }
 
   const formatDate = (dateStr: string) => new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(dateStr));
-  const formatCurrency = (amount: number) => new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(amount);
 
   return (
     <div className="space-y-6 mt-4">

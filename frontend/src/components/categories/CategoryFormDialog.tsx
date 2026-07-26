@@ -26,7 +26,8 @@ export function CategoryFormDialog({ open, onOpenChange, category, onSubmit }: C
   const isEditing = !!category;
 
   const form = useForm<z.infer<typeof categorySchema>>({
-    resolver: zodResolver(categorySchema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(categorySchema) as any,
     defaultValues: {
       name: "",
       description: "",

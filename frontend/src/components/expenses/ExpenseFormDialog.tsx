@@ -24,11 +24,12 @@ interface ExpenseFormDialogProps {
   onOpenChange: (open: boolean) => void;
   categories: ExpenseCategory[];
   expense?: Expense | null;
-  onSubmit: (data: ExpenseFormData) => Promise<any>;
+  onSubmit: (data: ExpenseFormData) => Promise<void>;
 }
 
 export function ExpenseFormDialog({ open, onOpenChange, categories, expense, onSubmit }: ExpenseFormDialogProps) {
   const form = useForm<ExpenseFormData>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(expenseSchema) as any,
     defaultValues: {
       expenseDate: new Date().toISOString().split("T")[0],

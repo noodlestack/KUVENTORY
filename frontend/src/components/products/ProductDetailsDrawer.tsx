@@ -1,6 +1,7 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Product } from "@/types/products";
 import { StatusBadge } from "@/components/common/StatusBadge";
+import { formatCurrency } from "@/utils/currency";
 
 interface ProductDetailsDrawerProps {
   open: boolean;
@@ -11,7 +12,6 @@ interface ProductDetailsDrawerProps {
 export function ProductDetailsDrawer({ open, onOpenChange, product }: ProductDetailsDrawerProps) {
   if (!product) return null;
 
-  const formatCurrency = (val: number) => `$${val.toFixed(2)}`;
   const formatDate = (dateStr: string) => new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(dateStr));
 
   return (

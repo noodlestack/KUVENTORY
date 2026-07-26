@@ -2,6 +2,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "
 import { Purchase } from "@/types/purchases";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { formatCurrency } from "@/utils/currency";
 
 interface PurchaseDetailsDrawerProps {
   open: boolean;
@@ -13,7 +14,6 @@ export function PurchaseDetailsDrawer({ open, onOpenChange, purchase }: Purchase
   if (!purchase) return null;
 
   const formatDate = (dateStr: string) => new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(dateStr));
-  const formatCurrency = (amount: number) => new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(amount);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>

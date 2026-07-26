@@ -13,11 +13,11 @@ export function AppearanceSettings() {
 
   const handleThemeChange = (val: string) => {
     setTheme(val);
-    updatePreferences({ theme: val as any });
+    updatePreferences({ theme: val as "light" | "dark" | "system" });
   };
 
   const handleDensityChange = (val: string) => {
-    updatePreferences({ tableDensity: val as any });
+    updatePreferences({ tableDensity: val as "comfortable" | "compact" });
   };
 
   const handleAnimationsToggle = (val: boolean) => {

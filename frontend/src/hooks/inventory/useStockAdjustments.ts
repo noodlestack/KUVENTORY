@@ -14,7 +14,7 @@ export function useStockAdjustments() {
   }, []);
 
   useEffect(() => {
-    fetchAdjustments();
+    queueMicrotask(fetchAdjustments);
   }, [fetchAdjustments]);
 
   const adjustStock = async (data: StockAdjustmentFormData) => {

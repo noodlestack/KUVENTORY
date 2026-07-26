@@ -12,30 +12,30 @@ export function AboutKuventory() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4">
           <div>
-            <h4 className="text-sm font-medium text-muted-foreground">Application Name</h4>
-            <p className="font-semibold text-lg">Kuventory IMS</p>
+            <h4 className="text-sm font-medium text-muted-foreground">Application</h4>
+            <p className="font-semibold text-lg">Kuventory</p>
           </div>
           <div>
-            <h4 className="text-sm font-medium text-muted-foreground">Environment</h4>
-            <Badge variant="outline" className="mt-1">Production (Mock)</Badge>
+            <h4 className="text-sm font-medium text-muted-foreground">Status</h4>
+            <Badge variant="outline" className="mt-1 border-success text-success">Frontend Stable</Badge>
           </div>
           
           <div>
-            <h4 className="text-sm font-medium text-muted-foreground">Frontend Version</h4>
-            <p className="font-mono text-sm">v0.1.0-alpha</p>
+            <h4 className="text-sm font-medium text-muted-foreground">Version</h4>
+            <p className="font-mono text-sm">v1.3.0</p>
           </div>
           <div>
-            <h4 className="text-sm font-medium text-muted-foreground">Backend Version</h4>
-            <p className="font-mono text-sm">Waiting for Backend Dev 1 & 2 integration</p>
+            <h4 className="text-sm font-medium text-muted-foreground">Backend & Database</h4>
+            <p className="text-sm">Django REST Framework / PostgreSQL<br/><span className="text-xs text-muted-foreground">(Integration Pending)</span></p>
           </div>
           
           <div>
             <h4 className="text-sm font-medium text-muted-foreground">Core Technologies</h4>
-            <p className="text-sm mt-1">React 18, Vite, TailwindCSS, Shadcn/UI, Zod</p>
+            <p className="text-sm mt-1">React 19, TypeScript, Vite, Tailwind CSS</p>
           </div>
           <div>
-            <h4 className="text-sm font-medium text-muted-foreground">Build Date</h4>
-            <p className="text-sm mt-1">{new Date().toLocaleDateString('en-US', { dateStyle: 'long' })}</p>
+            <h4 className="text-sm font-medium text-muted-foreground">Target Platform</h4>
+            <p className="text-sm mt-1">Desktop, Tablet, Mobile</p>
           </div>
         </div>
 

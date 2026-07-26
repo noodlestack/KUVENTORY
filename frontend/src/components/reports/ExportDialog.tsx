@@ -11,7 +11,6 @@ interface ExportDialogProps {
 export function ExportDialog({ open, onOpenChange, reportName }: ExportDialogProps) {
   const handleExport = (type: string) => {
     // Mock export action
-    console.log(`Exporting ${reportName} to ${type}...`);
     alert(`Mock: Exporting ${reportName} to ${type}`);
     onOpenChange(false);
   };

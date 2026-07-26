@@ -14,7 +14,7 @@ export function useSuppliers() {
   }, []);
 
   useEffect(() => {
-    fetchSuppliers();
+    queueMicrotask(fetchSuppliers);
   }, [fetchSuppliers]);
 
   const createSupplier = async (data: SupplierFormData) => {

@@ -3,7 +3,7 @@ import { Sale, SaleFormData, SalesSummaryData } from "@/types/sales";
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 const generateId = (prefix: string) => `${prefix}${Date.now()}`;
 
-let sales: Sale[] = [
+const sales: Sale[] = [
   {
     id: "sale1",
     transactionNo: "TRX-2026-001",
