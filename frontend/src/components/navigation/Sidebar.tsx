@@ -1,5 +1,6 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { LogOut } from "lucide-react";
+import LogoIcon from "@/assets/branding/logo-icon.png";
 import { cn } from "@/utils/utils";
 import { navigationConfig } from "./config";
 import { Button } from "@/components/ui/button";
@@ -36,10 +37,10 @@ export function Sidebar({ isCollapsed }: SidebarProps) {
       {/* Brand Header */}
       <div className="flex h-16 shrink-0 items-center justify-center border-b px-4">
         {isCollapsed ? (
-          <img src="/src/assets/branding/logo-icon.png" alt="Logo" className="h-8 w-8" />
+          <img src={LogoIcon} alt="Logo" className="h-8 w-8" />
         ) : (
           <div className="flex items-center gap-2">
-            <img src="/src/assets/branding/logo-icon.png" alt="Logo" className="h-8 w-8" />
+            <img src={LogoIcon} alt="Logo" className="h-8 w-8" />
             <span className="text-xl font-bold text-foreground tracking-tight">Kuventory</span>
           </div>
         )}

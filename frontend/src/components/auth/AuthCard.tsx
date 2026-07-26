@@ -22,11 +22,13 @@ export function AuthCard({
   return (
     <div className="w-full max-w-md p-8 space-y-6 bg-card rounded-2xl shadow-xl border border-border">
       <div className="flex flex-col items-center space-y-4 text-center">
-        <img
-          src={LogoTransparent}
-          alt="Kape Uno Bistro Logo"
-          className="h-20 w-auto object-contain"
-        />
+        <div className="flex items-center justify-center p-3 rounded-full bg-zinc-900 border border-zinc-700 shadow-lg">
+          <img
+            src={LogoTransparent}
+            alt="Kuventory Logo"
+            className="h-16 w-16 object-contain"
+          />
+        </div>
         <div className="space-y-1">
           <h1 className="text-2xl font-bold tracking-tight text-foreground">{title}</h1>
           <p className="text-sm text-muted-foreground">{description}</p>

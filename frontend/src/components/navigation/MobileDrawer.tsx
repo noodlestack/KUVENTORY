@@ -1,5 +1,6 @@
 import { Menu, LogOut } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import LogoIcon from "@/assets/branding/logo-icon.png";
 import { cn } from "@/utils/utils";
 import { navigationConfig } from "./config";
 import { Button } from "@/components/ui/button";
@@ -24,7 +25,7 @@ export function MobileDrawer() {
       <SheetContent side="left" className="w-72 p-0 flex flex-col">
         <SheetHeader className="h-16 border-b flex items-center justify-center px-4">
           <SheetTitle className="flex items-center gap-2 m-0 mt-4">
-            <img src="/src/assets/branding/logo-icon.png" alt="Logo" className="h-8 w-8" />
+            <img src={LogoIcon} alt="Logo" className="h-8 w-8" />
             <span className="text-xl font-bold">Kuventory</span>
           </SheetTitle>
         </SheetHeader>

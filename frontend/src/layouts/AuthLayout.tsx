@@ -1,4 +1,5 @@
 import { Outlet } from "react-router-dom";
+import LogoTransparent from "@/assets/branding/logo-transparent.png";
 
 export function AuthLayout() {
   return (
@@ -6,7 +7,7 @@ export function AuthLayout() {
       <div className="w-full max-w-md animate-fade-in">
         <div className="mb-8 flex flex-col items-center justify-center text-center">
           <img 
-            src="/src/assets/branding/logo-transparent.png" 
+            src={LogoTransparent}
             alt="Kape Uno Bistro" 
             className="h-24 w-auto mb-4"
           />

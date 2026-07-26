@@ -1,5 +1,6 @@
 import { Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import LogoIcon from "@/assets/branding/logo-icon.png";
 
 export function Spinner({ size = "md" }: { size?: "sm" | "md" | "lg" | "xl" }) {
   const sizeMap = {
@@ -15,7 +16,7 @@ export function PageLoader() {
   return (
     <div className="flex h-[calc(100vh-4rem)] w-full items-center justify-center">
       <div className="flex flex-col items-center gap-4">
-        <img src="/src/assets/branding/logo-icon.png" alt="Loading..." className="h-16 w-16 animate-pulse" />
+        <img src={LogoIcon} alt="Loading..." className="h-16 w-16 animate-pulse" />
         <Spinner size="md" />
       </div>
     </div>
