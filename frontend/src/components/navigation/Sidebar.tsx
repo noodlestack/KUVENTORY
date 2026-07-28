@@ -23,7 +23,7 @@ export function Sidebar({ isCollapsed }: SidebarProps) {
 
   const handleLogout = () => {
     logout();
-    toast.success("Logged out successfully.");
+    toast.success("Successfully logged out.");
     navigate("/login");
   };
 
