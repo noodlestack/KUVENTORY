@@ -52,7 +52,7 @@ export function Sidebar({ isCollapsed }: SidebarProps) {
           {navigationConfig.map((section, index) => (
             <div key={index} className="mb-6">
               {!isCollapsed && (
-                <h4 className="mb-2 px-6 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <h4 className="mb-2 px-6 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300">
                   {section.title}
                 </h4>
               )}
@@ -66,7 +66,7 @@ export function Sidebar({ isCollapsed }: SidebarProps) {
                           "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                           (location.pathname === item.href || (item.href !== "/" && location.pathname.startsWith(item.href)))
                             ? "bg-primary text-primary-foreground shadow-sm"
-                            : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+                            : "text-gray-900 dark:text-gray-100 hover:bg-accent hover:text-gray-900 dark:hover:text-white",
                           isCollapsed && "justify-center px-0 py-3"
                         )}
                       >
@@ -97,8 +97,8 @@ export function Sidebar({ isCollapsed }: SidebarProps) {
               </div>
               {!isCollapsed && (
                 <div className="flex flex-col overflow-hidden text-left">
-                  <span className="truncate text-sm font-semibold text-foreground">{user?.username || "User"}</span>
-                  <span className="truncate text-xs text-muted-foreground">{user?.role || "Staff"}</span>
+                  <span className="truncate text-sm font-semibold text-gray-900 dark:text-gray-100">{user?.username || "User"}</span>
+                  <span className="truncate text-xs text-gray-600 dark:text-gray-300">{user?.role || "Staff"}</span>
                 </div>
               )}
             </div>
