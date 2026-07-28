@@ -28,9 +28,13 @@ export function ExpenseReports() {
         <ChartCard title="Expense Trend (4 Weeks)" className="col-span-1 lg:col-span-4">
           <LineChart data={data.expenseTrend}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-            <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value: number) => `₱${value/1000}k`} />
-            <Tooltip formatter={(value: number) => [formatCurrency(value), 'Expenses']} labelStyle={{ color: 'black' }} />
+            <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+            <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value: number) => formatCurrency(value)} />
+            <Tooltip 
+              formatter={(value: number) => [formatCurrency(value), 'Expenses']} 
+              contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' }}
+              labelStyle={{ color: 'hsl(var(--foreground))' }}
+            />
             <Line type="monotone" dataKey="value" stroke="#f43f5e" strokeWidth={2} activeDot={{ r: 8 }} />
           </LineChart>
         </ChartCard>
@@ -39,8 +43,13 @@ export function ExpenseReports() {
           <BarChart data={data.expenseCategories} layout="vertical" margin={{ left: 50 }}>
             <CartesianGrid strokeDasharray="3 3" horizontal={false} />
             <XAxis type="number" hide />
-            <YAxis dataKey="name" type="category" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-            <Tooltip formatter={(value: number) => [formatCurrency(value), 'Expenses']} labelStyle={{ color: 'black' }} cursor={{fill: 'transparent'}} />
+            <YAxis dataKey="name" type="category" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+            <Tooltip 
+              formatter={(value: number) => [formatCurrency(value), 'Expenses']} 
+              contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' }}
+              labelStyle={{ color: 'hsl(var(--foreground))' }}
+              cursor={{fill: 'var(--muted)'}} 
+            />
             <Bar dataKey="value" fill="#f59e0b" radius={[0, 4, 4, 0]} barSize={20} />
           </BarChart>
         </ChartCard>

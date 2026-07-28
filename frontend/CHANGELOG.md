@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.9.0] - 2026-07-28
+
+### Changed
+- **Maintenance Update**: Reorganized top navigation, fixed dark mode charts, resolved mobile drawer bugs.
+- **Theme**: Removed hardcoded colors in sidebar and replaced with theme tokens.
+- **Optimization**: Addressed layout, performance, and accessibility issues.
+
 ## [1.3.0] - 2026-07-26
 
 ### Changed

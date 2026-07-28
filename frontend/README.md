@@ -1,6 +1,6 @@
 # Kuventory
 
-**Version 1.3.0**
+**Version 1.9.0**
 ## Project Overview
 Kuventory is a robust, enterprise-grade, web-based Inventory Management System designed specifically for the operational needs of Kape Uno Bistro.
 

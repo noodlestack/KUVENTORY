@@ -52,7 +52,7 @@ export function Sidebar({ isCollapsed }: SidebarProps) {
           {navigationConfig.map((section, index) => (
             <div key={index} className="mb-6">
               {!isCollapsed && (
-                <h4 className="mb-2 px-6 text-xs font-semibold uppercase tracking-wider text-foreground/70">
+                <h4 className="mb-2 px-6 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   {section.title}
                 </h4>
               )}
@@ -66,7 +66,7 @@ export function Sidebar({ isCollapsed }: SidebarProps) {
                           "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                           (location.pathname === item.href || (item.href !== "/" && location.pathname.startsWith(item.href)))
                             ? "bg-primary text-primary-foreground shadow-sm"
-                            : "text-foreground/80 hover:bg-secondary hover:text-foreground",
+                            : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
                           isCollapsed && "justify-center px-0 py-3"
                         )}
                       >
@@ -119,7 +119,7 @@ export function Sidebar({ isCollapsed }: SidebarProps) {
               <HelpCircle className="mr-2 h-4 w-4" />
               <span>Help</span>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => toast.info("Kuventory v1.3.0")}>
+            <DropdownMenuItem onClick={() => toast.info("Kuventory v1.9.0")}>
               <Info className="mr-2 h-4 w-4" />
               <span>About Kuventory</span>
             </DropdownMenuItem>

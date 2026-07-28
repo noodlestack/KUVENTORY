@@ -6,6 +6,7 @@ import {
   ActivityLog, 
   UserPreferences 
 } from "@/types/settings";
+import { formatCurrency } from "@/utils/currency";
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 const generateId = (prefix: string) => `${prefix}${Date.now()}`;
@@ -85,7 +86,7 @@ const activityLogs: ActivityLog[] = [
     user: "Maria Clara",
     module: "Sales",
     action: "Recorded Sale",
-    description: "Recorded Sale #SAL-2026-005 for ₱1,250",
+    description: `Recorded Sale #SAL-2026-005 for ${formatCurrency(1250)}`,
   },
   {
     id: "log_3",

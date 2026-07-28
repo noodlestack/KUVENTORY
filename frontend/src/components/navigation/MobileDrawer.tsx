@@ -33,7 +33,7 @@ export function MobileDrawer() {
         <div className="flex-1 overflow-y-auto py-4">
           {navigationConfig.map((section, index) => (
             <div key={index} className="mb-6">
-              <h4 className="mb-2 px-6 text-xs font-semibold uppercase tracking-wider text-foreground/70">
+              <h4 className="mb-2 px-6 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 {section.title}
               </h4>
               <nav className="space-y-1 px-3">
@@ -46,7 +46,7 @@ export function MobileDrawer() {
                           "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                           isActive
                             ? "bg-primary text-primary-foreground shadow-sm"
-                            : "text-foreground/80 hover:bg-secondary hover:text-foreground"
+                            : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                         )
                       }
                     >

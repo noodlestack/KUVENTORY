@@ -35,9 +35,13 @@ export function AnalyticsDashboard() {
         <ChartCard title="Sales vs Expenses (6 Months)">
           <LineChart data={data.salesTrend.map((s, i) => ({ name: s.name, Sales: s.value, Expenses: data.expenseTrend[i]?.value || 0 }))}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-            <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value: number) => `₱${value/1000}k`} />
-            <Tooltip formatter={(value: number) => [formatCurrency(value)]} labelStyle={{ color: 'black' }} />
+            <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+            <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value: number) => formatCurrency(value)} />
+            <Tooltip 
+              formatter={(value: number) => [formatCurrency(value)]} 
+              contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' }}
+              labelStyle={{ color: 'hsl(var(--foreground))' }}
+            />
             <Line type="monotone" dataKey="Sales" stroke="#10b981" strokeWidth={2} activeDot={{ r: 8 }} />
             <Line type="monotone" dataKey="Expenses" stroke="#f43f5e" strokeWidth={2} />
           </LineChart>
@@ -58,7 +62,11 @@ export function AnalyticsDashboard() {
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>
-            <Tooltip formatter={(value: number) => [`${value} Items`]} />
+            <Tooltip 
+              formatter={(value: number) => [`${value} Items`]}
+              contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' }}
+              labelStyle={{ color: 'hsl(var(--foreground))' }}
+            />
           </PieChart>
         </ChartCard>
       </div>

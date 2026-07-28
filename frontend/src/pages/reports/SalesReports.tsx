@@ -28,9 +28,14 @@ export function SalesReports() {
         <ChartCard title="Weekly Sales Trend" className="col-span-1 lg:col-span-4">
           <BarChart data={data.salesTrend}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-            <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value: number) => `₱${value/1000}k`} />
-            <Tooltip formatter={(value: number) => [formatCurrency(value), 'Revenue']} labelStyle={{ color: 'black' }} cursor={{fill: 'transparent'}} />
+            <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+            <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value: number) => formatCurrency(value)} />
+            <Tooltip 
+              formatter={(value: number) => [formatCurrency(value), 'Revenue']} 
+              contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' }}
+              labelStyle={{ color: 'hsl(var(--foreground))' }}
+              cursor={{fill: 'var(--muted)'}} 
+            />
             <Bar dataKey="value" fill="currentColor" radius={[4, 4, 0, 0]} className="fill-primary" />
           </BarChart>
         </ChartCard>
@@ -39,8 +44,13 @@ export function SalesReports() {
           <BarChart data={data.topSellingProducts} layout="vertical" margin={{ left: 40 }}>
             <CartesianGrid strokeDasharray="3 3" horizontal={false} />
             <XAxis type="number" hide />
-            <YAxis dataKey="name" type="category" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-            <Tooltip formatter={(value: number) => [formatCurrency(value), 'Revenue']} labelStyle={{ color: 'black' }} cursor={{fill: 'transparent'}} />
+            <YAxis dataKey="name" type="category" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+            <Tooltip 
+              formatter={(value: number) => [formatCurrency(value), 'Revenue']} 
+              contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' }}
+              labelStyle={{ color: 'hsl(var(--foreground))' }}
+              cursor={{fill: 'var(--muted)'}} 
+            />
             <Bar dataKey="value" fill="#10b981" radius={[0, 4, 4, 0]} barSize={20} />
           </BarChart>
         </ChartCard>

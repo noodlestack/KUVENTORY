@@ -40,16 +40,25 @@ export function SupplierReports() {
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>
-            <Tooltip formatter={(value: number) => [`${value} Suppliers`]} />
+            <Tooltip 
+              formatter={(value: number) => [`${value} Suppliers`]}
+              contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' }}
+              labelStyle={{ color: 'hsl(var(--foreground))' }}
+            />
           </PieChart>
         </ChartCard>
 
         <ChartCard title="Spending by Supplier">
           <BarChart data={data.spendingBySupplier}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-            <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value: number) => `₱${value/1000}k`} />
-            <Tooltip formatter={(value: number) => [formatCurrency(value), 'Spent']} labelStyle={{ color: 'black' }} cursor={{fill: 'transparent'}} />
+            <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+            <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value: number) => formatCurrency(value)} />
+            <Tooltip 
+              formatter={(value: number) => [formatCurrency(value), 'Spent']} 
+              contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' }}
+              labelStyle={{ color: 'hsl(var(--foreground))' }}
+              cursor={{fill: 'var(--muted)'}} 
+            />
             <Bar dataKey="value" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ChartCard>

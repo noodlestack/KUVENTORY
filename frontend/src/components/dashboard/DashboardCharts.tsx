@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, PieChart, Pie, Cell } from "recharts";
 import { ChartDataPoint } from "@/types/dashboard";
+import { formatCurrency } from "@/utils/currency";
 
 interface DashboardChartsProps {
   salesData: ChartDataPoint[];
@@ -34,7 +35,7 @@ export function DashboardCharts({ salesData, categoryData }: DashboardChartsProp
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
-                  tickFormatter={(value) => `₱${value}`}
+                  tickFormatter={(value) => formatCurrency(value)}
                 />
                 <Tooltip 
                   contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' }}
