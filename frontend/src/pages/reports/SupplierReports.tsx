@@ -43,6 +43,7 @@ export function SupplierReports() {
             <Tooltip 
               formatter={(value: number) => [`${value} Suppliers`]}
               contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' }}
+              itemStyle={{ color: 'hsl(var(--foreground))' }}
               labelStyle={{ color: 'hsl(var(--foreground))' }}
             />
           </PieChart>
@@ -56,6 +57,7 @@ export function SupplierReports() {
             <Tooltip 
               formatter={(value: number) => [formatCurrency(value), 'Spent']} 
               contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' }}
+              itemStyle={{ color: 'hsl(var(--foreground))' }}
               labelStyle={{ color: 'hsl(var(--foreground))' }}
               cursor={{fill: 'var(--muted)'}} 
             />

@@ -40,6 +40,7 @@ export function AnalyticsDashboard() {
             <Tooltip 
               formatter={(value: number) => [formatCurrency(value)]} 
               contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' }}
+              itemStyle={{ color: 'hsl(var(--foreground))' }}
               labelStyle={{ color: 'hsl(var(--foreground))' }}
             />
             <Line type="monotone" dataKey="Sales" stroke="#10b981" strokeWidth={2} activeDot={{ r: 8 }} />
@@ -65,6 +66,7 @@ export function AnalyticsDashboard() {
             <Tooltip 
               formatter={(value: number) => [`${value} Items`]}
               contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' }}
+              itemStyle={{ color: 'hsl(var(--foreground))' }}
               labelStyle={{ color: 'hsl(var(--foreground))' }}
             />
           </PieChart>

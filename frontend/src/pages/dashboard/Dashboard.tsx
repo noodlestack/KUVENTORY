@@ -1,6 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useDashboard } from "@/hooks/dashboard/useDashboard";
-import { DollarSign, ShoppingCart, Package, AlertCircle, TrendingDown, Users } from "lucide-react";
+import { PhilippinePeso, ShoppingCart, Package, AlertCircle, TrendingDown, Users } from "lucide-react";
 
 import { StatCard } from "@/components/dashboard/StatCard";
 import { QuickActions } from "@/components/dashboard/QuickActions";
@@ -47,7 +47,7 @@ export function Dashboard() {
             <StatCard 
               title="Today's Sales" 
               value={formatCurrency(metrics.todaySales)} 
-              icon={<DollarSign className="h-4 w-4 text-muted-foreground" />}
+              icon={<PhilippinePeso className="h-4 w-4 text-muted-foreground" />}
               trend={metrics.salesTrend}
               trendLabel="from yesterday"
               href="/sales"
@@ -109,7 +109,7 @@ export function Dashboard() {
             <StatCard 
               title="Monthly Expenses" 
               value={formatCurrency(metrics.monthlyExpenses)} 
-              icon={<DollarSign className="h-4 w-4 text-muted-foreground" />}
+              icon={<PhilippinePeso className="h-4 w-4 text-muted-foreground" />}
               trend={metrics.expensesTrend}
               trendLabel="from last month"
               href="/expenses"

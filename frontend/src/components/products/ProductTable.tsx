@@ -1,4 +1,5 @@
 import { Product } from "@/types/products";
+import { formatCurrency } from "@/utils/currency";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { Edit, Trash2, MoreHorizontal, Eye, ArrowUpDown } from "lucide-react";
@@ -46,11 +47,7 @@ export function ProductTable({ products, onView, onEdit, onDelete }: ProductTabl
       header: () => <div className="text-right">Price</div>,
       cell: ({ row }) => {
         const amount = parseFloat(row.getValue("sellingPrice"));
-        const formatted = new Intl.NumberFormat("en-US", {
-          style: "currency",
-          currency: "USD",
-        }).format(amount);
-        return <div className="text-right font-medium">{formatted}</div>;
+        return <div className="text-right font-medium">{formatCurrency(amount)}</div>;
       },
     },
     {

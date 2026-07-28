@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Package, ShoppingCart, Users, Truck, DollarSign, BarChart3, Settings } from "lucide-react";
+import { Package, ShoppingCart, Users, Truck, PhilippinePeso, BarChart3, Settings } from "lucide-react";
 
 const actions = [
   { label: "Inventory", icon: Package, href: "/inventory" },
   { label: "Products", icon: ShoppingCart, href: "/products" },
-  { label: "Sales", icon: DollarSign, href: "/sales" },
+  { label: "Sales", icon: PhilippinePeso, href: "/sales" },
   { label: "Purchases", icon: Truck, href: "/purchases" },
   { label: "Suppliers", icon: Users, href: "/suppliers" },
   { label: "Reports", icon: BarChart3, href: "/reports" },

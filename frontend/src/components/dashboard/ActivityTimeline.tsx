@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Activity } from "@/types/dashboard";
-import { Package, Truck, DollarSign, Users, RefreshCw } from "lucide-react";
+import { Package, Truck, PhilippinePeso, Users, RefreshCw } from "lucide-react";
 
 interface ActivityTimelineProps {
   activities: Activity[];
@@ -11,7 +11,7 @@ const getActivityIcon = (type: Activity["type"]) => {
   switch (type) {
     case "Inventory": return <Package className="h-4 w-4 text-info" />;
     case "Purchase": return <Truck className="h-4 w-4 text-warning" />;
-    case "Sale": return <DollarSign className="h-4 w-4 text-success" />;
+    case "Sale": return <PhilippinePeso className="h-4 w-4 text-success" />;
     case "Supplier": return <Users className="h-4 w-4 text-primary" />;
     case "Expense": return <RefreshCw className="h-4 w-4 text-destructive" />;
   }

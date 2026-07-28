@@ -39,7 +39,8 @@ export function DashboardCharts({ salesData, categoryData }: DashboardChartsProp
                 />
                 <Tooltip 
                   contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' }}
-                  itemStyle={{ color: 'hsl(var(--primary))' }}
+                  itemStyle={{ color: 'hsl(var(--foreground))' }}
+                  labelStyle={{ color: 'hsl(var(--foreground))' }}
                 />
                 <Line 
                   type="monotone" 
@@ -79,6 +80,8 @@ export function DashboardCharts({ salesData, categoryData }: DashboardChartsProp
                 </Pie>
                 <Tooltip 
                   contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' }}
+                  itemStyle={{ color: 'hsl(var(--foreground))' }}
+                  labelStyle={{ color: 'hsl(var(--foreground))' }}
                 />
               </PieChart>
             </ResponsiveContainer>
