@@ -41,7 +41,7 @@ export function MobileDrawer() {
             .filter(section => section.items.length > 0)
             .map((section, index) => (
             <div key={index} className="mb-6">
-              <h4 className="mb-2 px-6 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300">
+              <h4 className="mb-2 px-6 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 {section.title}
               </h4>
               <nav className="space-y-2 px-4">
@@ -54,7 +54,7 @@ export function MobileDrawer() {
                           "flex items-center gap-4 rounded-lg px-4 py-3 text-base font-medium transition-colors",
                           isActive
                             ? "bg-primary text-primary-foreground shadow-sm"
-                            : "text-gray-900 dark:text-gray-100 hover:bg-accent hover:text-gray-900 dark:hover:text-white"
+                            : "text-foreground hover:bg-accent hover:text-accent-foreground"
                         )
                       }
                     >
@@ -74,8 +74,8 @@ export function MobileDrawer() {
               {user?.username ? user.username.charAt(0).toUpperCase() : "U"}
             </div>
             <div className="flex flex-col overflow-hidden">
-              <span className="truncate text-sm font-semibold text-gray-900 dark:text-gray-100">{user?.username || "User"}</span>
-              <span className="truncate text-xs text-gray-600 dark:text-gray-300">{user?.role || "Role"}</span>
+              <span className="truncate text-sm font-semibold text-foreground">{user?.username || "User"}</span>
+              <span className="truncate text-xs text-muted-foreground">{user?.role || "Role"}</span>
             </div>
           </div>
           <SheetTrigger asChild>
