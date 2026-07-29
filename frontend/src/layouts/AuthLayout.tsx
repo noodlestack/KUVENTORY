@@ -3,7 +3,7 @@ import LogoTransparent from "@/assets/branding/logo-transparent.png";
 
 export function AuthLayout() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4 sm:p-8">
+    <div className="flex h-full min-h-screen w-full items-center justify-center bg-background p-4 sm:p-8 overflow-y-auto">
       <div className="w-full max-w-md animate-fade-in">
         <div className="mb-8 flex flex-col items-center justify-center text-center">
           <img 
