@@ -6,6 +6,7 @@ export default defineConfig({
   base: "/KUVENTORY/",
   build: {
     sourcemap: false,
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
         manualChunks(id) {
