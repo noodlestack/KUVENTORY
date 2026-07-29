@@ -11,10 +11,12 @@ import {
 } from "lucide-react";
 import { Role } from "@/contexts/AuthContext";
 
+import React from "react";
+
 export interface NavItem {
   title: string;
   href: string;
-  icon: any;
+  icon: React.ElementType;
   allowedRoles?: Role[];
 }
 

@@ -1,3 +1,4 @@
+import React from "react";
 import { Menu, LogOut } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/utils/utils";
@@ -15,22 +16,29 @@ import { toast } from "sonner";
 export function MobileDrawer() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = React.useState(false);
 
   const handleLogout = () => {
+    setIsOpen(false);
     logout();
     toast.success("Successfully logged out.");
     navigate("/login");
   };
+  
   return (
-    <Sheet>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <Button variant="ghost" size="icon" className="lg:hidden">
           <Menu className="h-5 w-5" />
           <span className="sr-only">Open Menu</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="w-72 p-0 flex flex-col bg-background text-foreground border-r">
+      <SheetContent side="left" className="w-72 p-0 flex flex-col bg-card text-card-foreground border-r h-screen h-dvh">
         
+        {/* Logo / Header */}
+        <div className="flex h-16 shrink-0 items-center px-6 border-b border-border/50">
+          <span className="text-lg font-bold tracking-tight">Kuventory</span>
+        </div>
 
         <div className="flex-1 overflow-y-auto py-4 scrollbar-thin">
           {navigationConfig
@@ -46,29 +54,30 @@ export function MobileDrawer() {
               </h4>
               <nav className="space-y-2 px-4">
                 {section.items.map((item) => (
-                  <SheetTrigger asChild key={item.title}>
-                    <NavLink
-                      to={item.href}
-                      className={({ isActive }) =>
-                        cn(
-                          "flex items-center gap-4 rounded-lg px-4 py-3 text-base font-medium transition-colors",
-                          isActive
-                            ? "bg-primary text-primary-foreground shadow-sm"
-                            : "text-foreground hover:bg-accent hover:text-accent-foreground"
-                        )
-                      }
-                    >
-                      <item.icon className="h-6 w-6 shrink-0" />
-                      <span className="whitespace-nowrap">{item.title}</span>
-                    </NavLink>
-                  </SheetTrigger>
+                  <NavLink
+                    key={item.title}
+                    to={item.href}
+                    end={item.href === "/"}
+                    onClick={() => setIsOpen(false)}
+                    className={({ isActive }) =>
+                      cn(
+                        "flex items-center gap-4 rounded-lg px-4 py-3 text-base font-medium transition-colors",
+                        isActive
+                          ? "bg-primary text-primary-foreground shadow-sm"
+                          : "text-foreground hover:bg-accent hover:text-accent-foreground"
+                      )
+                    }
+                  >
+                    <item.icon className="h-6 w-6 shrink-0" />
+                    <span className="whitespace-nowrap">{item.title}</span>
+                  </NavLink>
                 ))}
               </nav>
             </div>
           ))}
         </div>
 
-        <div className="border-t p-4 bg-muted/20 shrink-0">
+        <div className="border-t p-4 bg-muted/20 shrink-0 pb-6 sm:pb-4">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold uppercase shrink-0 ring-1 ring-primary/30">
               {user?.username ? user.username.charAt(0).toUpperCase() : "U"}
@@ -78,16 +87,14 @@ export function MobileDrawer() {
               <span className="truncate text-xs text-muted-foreground">{user?.role || "Role"}</span>
             </div>
           </div>
-          <SheetTrigger asChild>
-            <Button 
-              variant="ghost" 
-              onClick={handleLogout}
-              className="mt-4 w-full justify-start gap-3 rounded-lg px-4 py-3 text-base font-medium text-destructive hover:text-destructive hover:bg-destructive/10 overflow-hidden"
-            >
-              <LogOut className="h-6 w-6 shrink-0" />
-              <span className="whitespace-nowrap">Logout</span>
-            </Button>
-          </SheetTrigger>
+          <Button 
+            variant="ghost" 
+            onClick={handleLogout}
+            className="mt-4 w-full justify-start gap-3 rounded-lg px-4 py-3 text-base font-medium text-destructive hover:text-destructive hover:bg-destructive/10 overflow-hidden"
+          >
+            <LogOut className="h-6 w-6 shrink-0" />
+            <span className="whitespace-nowrap">Logout</span>
+          </Button>
         </div>
       </SheetContent>
     </Sheet>

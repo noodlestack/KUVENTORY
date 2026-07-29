@@ -29,7 +29,7 @@ export function Sidebar({ isCollapsed }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "hidden lg:flex flex-col bg-card border-r transition-all duration-300 z-20 h-[100dvh] sticky top-0",
+        "hidden lg:flex flex-col bg-card border-r transition-all duration-300 z-20 h-screen h-dvh sticky top-0",
         isCollapsed ? "w-20" : "w-64"
       )}
     >

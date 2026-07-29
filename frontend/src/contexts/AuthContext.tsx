@@ -47,13 +47,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const login = useCallback((userData: User, accessToken: string, refreshToken?: string) => {
-    tokenStorage.setTokens(accessToken, refreshToken);
-    setUser(userData);
-    setIsAuthenticated(true);
-    resetIdleTimer();
-  }, []);
-
   const resetIdleTimer = useCallback(() => {
     if (idleTimerRef.current) {
       clearTimeout(idleTimerRef.current);
@@ -65,6 +58,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     }, IDLE_TIMEOUT_MS);
   }, [isAuthenticated, logout]);
+
+  const login = useCallback((userData: User, accessToken: string, refreshToken?: string) => {
+    tokenStorage.setTokens(accessToken, refreshToken);
+    setUser(userData);
+    setIsAuthenticated(true);
+    resetIdleTimer();
+  }, [resetIdleTimer]);
 
   // Initial load check
   useEffect(() => {
