@@ -1,14 +1,11 @@
 import { Menu, LogOut } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import LogoIcon from "@/assets/branding/logo-icon.png";
 import { cn } from "@/utils/utils";
 import { navigationConfig } from "./config";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
-  SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useAuth } from "@/contexts/AuthContext";
@@ -33,13 +30,8 @@ export function MobileDrawer() {
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="w-72 p-0 flex flex-col bg-background text-foreground border-r">
-        <SheetHeader className="h-16 border-b flex items-center justify-center px-4 shrink-0">
-          <SheetTitle className="flex items-center gap-2 m-0 mt-4 overflow-hidden">
-            <img src={LogoIcon} alt="Logo" className="h-8 w-8 shrink-0" />
-            <span className="text-xl font-bold whitespace-nowrap">Kuventory</span>
-          </SheetTitle>
-        </SheetHeader>
         
+
         <div className="flex-1 overflow-y-auto py-4 scrollbar-thin">
           {navigationConfig.map((section, index) => (
             <div key={index} className="mb-6">

@@ -6,6 +6,7 @@ import { MobileDrawer } from "./MobileDrawer";
 import { DynamicBreadcrumb } from "./DynamicBreadcrumb";
 import { GlobalSearch } from "@/components/search/GlobalSearch";
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
+import LogoIcon from "@/assets/branding/logo-icon.png";
 
 interface NavbarProps {
   toggleSidebar: () => void;
@@ -40,6 +41,12 @@ export function Navbar({ toggleSidebar }: NavbarProps) {
         <Menu className="h-5 w-5" />
         <span className="sr-only">Toggle sidebar</span>
       </Button>
+
+      {/* Branding */}
+      <div className="flex items-center gap-2">
+        <img src={LogoIcon} alt="Kuventory Logo" className="h-8 w-8 shrink-0" />
+        <span className="hidden sm:block text-xl font-bold text-foreground tracking-tight whitespace-nowrap">Kuventory</span>
+      </div>
 
       {/* Separator for desktop */}
       <div className="hidden lg:block h-6 w-px bg-border" aria-hidden="true" />

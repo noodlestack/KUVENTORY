@@ -1,6 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { LogOut } from "lucide-react";
-import LogoIcon from "@/assets/branding/logo-icon.png";
 import { cn } from "@/utils/utils";
 import { navigationConfig } from "./config";
 import { Button } from "@/components/ui/button";
@@ -34,18 +33,6 @@ export function Sidebar({ isCollapsed }: SidebarProps) {
         isCollapsed ? "w-20" : "w-64"
       )}
     >
-      {/* Brand Header */}
-      <div className="flex h-16 shrink-0 items-center justify-center border-b px-4 overflow-hidden">
-        {isCollapsed ? (
-          <img src={LogoIcon} alt="Logo" className="h-8 w-8 shrink-0" />
-        ) : (
-          <div className="flex items-center gap-2">
-            <img src={LogoIcon} alt="Logo" className="h-8 w-8 shrink-0" />
-            <span className="text-xl font-bold text-foreground tracking-tight whitespace-nowrap">Kuventory</span>
-          </div>
-        )}
-      </div>
-
       {/* Navigation */}
       <div className="flex-1 overflow-y-auto py-4 scrollbar-thin">
         <TooltipProvider delayDuration={0}>
