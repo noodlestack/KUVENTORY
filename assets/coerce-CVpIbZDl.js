@@ -1,0 +1,1 @@
+import{u as e,v as t}from"./index-BEacXMqn.js";function n(n){return t(e,n)}export{n as t};
