@@ -33,7 +33,13 @@ export function MobileDrawer() {
         
 
         <div className="flex-1 overflow-y-auto py-4 scrollbar-thin">
-          {navigationConfig.map((section, index) => (
+          {navigationConfig
+            .map(section => ({
+              ...section,
+              items: section.items.filter(item => !item.allowedRoles || (user && item.allowedRoles.includes(user.role)))
+            }))
+            .filter(section => section.items.length > 0)
+            .map((section, index) => (
             <div key={index} className="mb-6">
               <h4 className="mb-2 px-6 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300">
                 {section.title}

@@ -1,5 +1,6 @@
+import React, { Suspense } from "react";
 import { useExpenseSummary } from "@/hooks/expenses/useExpenses";
-import { ExpenseSummaryDashboard } from "@/components/expenses/ExpenseSummaryDashboard";
+const ExpenseSummaryDashboard = React.lazy(() => import("@/components/expenses/ExpenseSummaryDashboard").then(m => ({ default: m.ExpenseSummaryDashboard })));
 
 export function ExpenseSummary() {
   const { summary, isLoading } = useExpenseSummary();
@@ -9,7 +10,9 @@ export function ExpenseSummary() {
   return (
     <div className="space-y-4">
       <h2 className="text-xl font-semibold">Monthly Expense Summary</h2>
-      <ExpenseSummaryDashboard summary={summary} />
+      <Suspense fallback={<div className="h-64 bg-muted/20 animate-pulse rounded-md" />}>
+        <ExpenseSummaryDashboard summary={summary} />
+      </Suspense>
     </div>
   );
 }

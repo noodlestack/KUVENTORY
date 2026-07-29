@@ -5,6 +5,7 @@ export default defineConfig({
   plugins: [react()],
   base: "/KUVENTORY/",
   build: {
+    sourcemap: false,
     rollupOptions: {
       output: {
         manualChunks(id) {
@@ -22,6 +23,15 @@ export default defineConfig({
               return 'data-vendor';
             }
             return 'vendor';
+          }
+        }
+      }
+    },
+    rolldownOptions: {
+      output: {
+        minify: {
+          compress: {
+            dropConsole: true,
           }
         }
       }

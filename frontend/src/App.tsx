@@ -2,6 +2,7 @@ import { HashRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "@/components/ui/sonner";
+import { ErrorBoundary } from "@/components/error/ErrorBoundary";
 
 import { DashboardLayout } from "@/layouts/DashboardLayout";
 import { AuthLayout } from "@/layouts/AuthLayout";
@@ -36,56 +37,58 @@ import { NotFound } from "@/pages/error/NotFound";
 function App() {
   return (
     <ThemeProvider defaultTheme="system" attribute="class">
-      <AuthProvider>
-        <HashRouter>
-          <Suspense fallback={<PageLoader />}>
-          <Routes>
-            
-            {/* Public Routes (Login, Reset Password) */}
-            <Route element={<PublicRoute />}>
-              <Route element={<AuthLayout />}>
-                <Route path="/login" element={<Login />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/reset-password" element={<ResetPassword />} />
-              </Route>
-            </Route>
-
-            {/* Session Expired can be accessed without auth but clears token */}
-            <Route element={<AuthLayout />}>
-              <Route path="/session-expired" element={<SessionExpired />} />
-            </Route>
-
-            {/* Protected Routes (Main Application) */}
-            <Route element={<ProtectedRoute />}>
-              <Route element={<DashboardLayout />}>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/inventory" element={<InventoryLayout />} />
-                <Route path="/products" element={<Products />} />
-                <Route path="/categories" element={<Categories />} />
-                <Route path="/suppliers" element={<Suppliers />} />
-                <Route path="/purchases" element={<PurchasesLayout />} />
-                <Route path="/sales" element={<SalesLayout />} />
-                <Route path="/expenses" element={<ExpensesLayout />} />
-                <Route path="/reports" element={<ReportsLayout />} />
-                <Route path="/profile" element={<ProfileLayout />} />
-
-                {/* Role Protected Routes */}
-                <Route element={<RoleProtectedRoute allowedRoles={["Admin", "Manager"]} />}>
-                  <Route path="/settings" element={<SettingsLayout />} />
+      <ErrorBoundary>
+        <AuthProvider>
+          <HashRouter>
+            <Suspense fallback={<PageLoader />}>
+            <Routes>
+              
+              {/* Public Routes (Login, Reset Password) */}
+              <Route element={<PublicRoute />}>
+                <Route element={<AuthLayout />}>
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
+                  <Route path="/reset-password" element={<ResetPassword />} />
                 </Route>
               </Route>
-            </Route>
 
-            {/* Blank Routes (404, Unauthorized) */}
-            <Route element={<BlankLayout />}>
-              <Route path="/unauthorized" element={<Unauthorized />} />
-              <Route path="*" element={<NotFound />} />
-            </Route>
+              {/* Session Expired can be accessed without auth but clears token */}
+              <Route element={<AuthLayout />}>
+                <Route path="/session-expired" element={<SessionExpired />} />
+              </Route>
 
-          </Routes>
-          </Suspense>
-        </HashRouter>
-      </AuthProvider>
+              {/* Protected Routes (Main Application) */}
+              <Route element={<ProtectedRoute />}>
+                <Route element={<DashboardLayout />}>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/inventory" element={<InventoryLayout />} />
+                  <Route path="/products" element={<Products />} />
+                  <Route path="/categories" element={<Categories />} />
+                  <Route path="/suppliers" element={<Suppliers />} />
+                  <Route path="/purchases" element={<PurchasesLayout />} />
+                  <Route path="/sales" element={<SalesLayout />} />
+                  <Route path="/expenses" element={<ExpensesLayout />} />
+                  <Route path="/reports" element={<ReportsLayout />} />
+                  <Route path="/profile" element={<ProfileLayout />} />
+
+                  {/* Role Protected Routes */}
+                  <Route element={<RoleProtectedRoute allowedRoles={["Admin", "Manager"]} />}>
+                    <Route path="/settings" element={<SettingsLayout />} />
+                  </Route>
+                </Route>
+              </Route>
+
+              {/* Blank Routes (404, Unauthorized) */}
+              <Route element={<BlankLayout />}>
+                <Route path="/unauthorized" element={<Unauthorized />} />
+                <Route path="*" element={<NotFound />} />
+              </Route>
+
+            </Routes>
+            </Suspense>
+          </HashRouter>
+        </AuthProvider>
+      </ErrorBoundary>
       <Toaster position="top-right" richColors closeButton />
     </ThemeProvider>
   );

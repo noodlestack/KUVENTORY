@@ -9,8 +9,21 @@ import {
   Settings, 
   UserCircle 
 } from "lucide-react";
+import { Role } from "@/contexts/AuthContext";
 
-export const navigationConfig = [
+export interface NavItem {
+  title: string;
+  href: string;
+  icon: any;
+  allowedRoles?: Role[];
+}
+
+export interface NavSection {
+  title: string;
+  items: NavItem[];
+}
+
+export const navigationConfig: NavSection[] = [
   {
     title: "Main",
     items: [
@@ -42,7 +55,7 @@ export const navigationConfig = [
   {
     title: "System",
     items: [
-      { title: "Settings", href: "/settings", icon: Settings },
+      { title: "Settings", href: "/settings", icon: Settings, allowedRoles: ["Admin", "Manager"] },
       { title: "Profile", href: "/profile", icon: UserCircle },
     ]
   }

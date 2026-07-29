@@ -36,7 +36,13 @@ export function Sidebar({ isCollapsed }: SidebarProps) {
       {/* Navigation */}
       <div className="flex-1 overflow-y-auto py-4 scrollbar-thin">
         <TooltipProvider delayDuration={0}>
-          {navigationConfig.map((section, index) => (
+          {navigationConfig
+            .map(section => ({
+              ...section,
+              items: section.items.filter(item => !item.allowedRoles || (user && item.allowedRoles.includes(user.role)))
+            }))
+            .filter(section => section.items.length > 0)
+            .map((section, index) => (
             <div key={index} className="mb-6">
               {!isCollapsed && (
                 <h4 className="mb-2 px-6 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300">
@@ -106,7 +112,7 @@ export function Sidebar({ isCollapsed }: SidebarProps) {
               <HelpCircle className="mr-2 h-4 w-4" />
               <span>Help</span>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => toast.info("Kuventory v1.9.0")}>
+            <DropdownMenuItem onClick={() => toast.info("Kuventory v1.9.1")}>
               <Info className="mr-2 h-4 w-4" />
               <span>About Kuventory</span>
             </DropdownMenuItem>

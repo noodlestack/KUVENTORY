@@ -2,12 +2,14 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useDashboard } from "@/hooks/dashboard/useDashboard";
 import { PhilippinePeso, ShoppingCart, Package, AlertCircle, TrendingDown, Users } from "lucide-react";
 
+import React, { Suspense } from "react";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { QuickActions } from "@/components/dashboard/QuickActions";
-import { DashboardCharts } from "@/components/dashboard/DashboardCharts";
 import { ActivityTimeline } from "@/components/dashboard/ActivityTimeline";
 import { NotificationPanel } from "@/components/dashboard/NotificationPanel";
 import { StatCardSkeleton, QuickActionsSkeleton, ChartSkeleton, ListSkeleton } from "@/components/dashboard/DashboardSkeletons";
+
+const DashboardCharts = React.lazy(() => import("@/components/dashboard/DashboardCharts").then(m => ({ default: m.DashboardCharts })));
 import { formatCurrency } from "@/utils/currency";
 
 export function Dashboard() {
@@ -84,7 +86,14 @@ export function Dashboard() {
           <div><ChartSkeleton /></div>
         </div>
       ) : (
-        <DashboardCharts salesData={salesData} categoryData={categoryData} />
+        <Suspense fallback={
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2"><ChartSkeleton /></div>
+            <div><ChartSkeleton /></div>
+          </div>
+        }>
+          <DashboardCharts salesData={salesData} categoryData={categoryData} />
+        </Suspense>
       )}
 
       {/* Second Row Stat Cards */}
