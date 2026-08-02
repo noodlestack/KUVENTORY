@@ -1,3 +1,4 @@
+import React from "react";
 import { Sale } from "@/types/sales";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { StatusBadge } from "@/components/common/StatusBadge";
@@ -12,7 +13,7 @@ interface SalesTableProps {
   onView: (sale: Sale) => void;
 }
 
-export function SalesTable({ sales, onView }: SalesTableProps) {
+export const SalesTable = React.memo(function SalesTable({ sales, onView }: SalesTableProps) {
   if (sales.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center border rounded-md border-dashed bg-card mt-4">
@@ -110,4 +111,5 @@ export function SalesTable({ sales, onView }: SalesTableProps) {
       </div>
     </div>
   );
-}
+});
+

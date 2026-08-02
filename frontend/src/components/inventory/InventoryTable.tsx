@@ -1,3 +1,4 @@
+import React from "react";
 import { InventoryItem } from "@/types/inventory";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { Button } from "@/components/ui/button";
@@ -12,7 +13,7 @@ interface InventoryTableProps {
   onEdit: (item: InventoryItem) => void;
 }
 
-export function InventoryTable({ items, onView, onEdit }: InventoryTableProps) {
+export const InventoryTable = React.memo(function InventoryTable({ items, onView, onEdit }: InventoryTableProps) {
   
   const formatDate = (dateStr: string) => new Intl.DateTimeFormat('en-US', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(dateStr));
 
@@ -103,4 +104,4 @@ export function InventoryTable({ items, onView, onEdit }: InventoryTableProps) {
       />
     </div>
   );
-}
+});

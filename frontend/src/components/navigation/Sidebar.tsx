@@ -112,7 +112,7 @@ export function Sidebar({ isCollapsed }: SidebarProps) {
               <HelpCircle className="mr-2 h-4 w-4" />
               <span>Help</span>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => toast.info("Kuventory v1.9.5")}>
+            <DropdownMenuItem onClick={() => toast.info("Kuventory v2.0.0")}>
               <Info className="mr-2 h-4 w-4" />
               <span>About Kuventory</span>
             </DropdownMenuItem>

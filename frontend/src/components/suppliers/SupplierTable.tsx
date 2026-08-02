@@ -1,3 +1,4 @@
+import React from "react";
 import { Supplier } from "@/types/suppliers";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { Button } from "@/components/ui/button";
@@ -13,7 +14,7 @@ interface SupplierTableProps {
   onDelete: (supplier: Supplier) => void;
 }
 
-export function SupplierTable({ suppliers, onView, onEdit, onDelete }: SupplierTableProps) {
+export const SupplierTable = React.memo(function SupplierTable({ suppliers, onView, onEdit, onDelete }: SupplierTableProps) {
   
   const formatDate = (dateStr?: string) => dateStr ? new Intl.DateTimeFormat('en-US', { dateStyle: 'short' }).format(new Date(dateStr)) : "Never";
 
@@ -108,4 +109,5 @@ export function SupplierTable({ suppliers, onView, onEdit, onDelete }: SupplierT
       />
     </div>
   );
-}
+});
+

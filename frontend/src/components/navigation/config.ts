@@ -1,6 +1,5 @@
 import { 
   LayoutDashboard, 
-  Package, 
   Boxes, 
   Truck, 
   ShoppingCart, 
@@ -37,7 +36,6 @@ export const navigationConfig: NavSection[] = [
     title: "Inventory Management",
     items: [
       { title: "Inventory", href: "/inventory", icon: Boxes },
-      { title: "Products", href: "/products", icon: Package },
     ]
   },
   {

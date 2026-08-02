@@ -76,6 +76,7 @@ export function Navbar({ toggleSidebar }: NavbarProps) {
           size="icon" 
           onClick={() => setSearchOpen(true)}
           className="sm:hidden h-9 w-9 rounded-full hover:bg-secondary transition-colors"
+          aria-label="Open search"
         >
           <Search className="h-5 w-5" />
         </Button>

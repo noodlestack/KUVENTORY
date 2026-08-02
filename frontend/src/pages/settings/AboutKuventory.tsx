@@ -22,7 +22,7 @@ export function AboutKuventory() {
           
           <div>
             <h4 className="text-sm font-medium text-muted-foreground">Version</h4>
-            <p className="font-mono text-sm">v1.9.0</p>
+            <p className="font-mono text-sm">v2.0.0</p>
           </div>
           <div>
             <h4 className="text-sm font-medium text-muted-foreground">Backend & Database</h4>

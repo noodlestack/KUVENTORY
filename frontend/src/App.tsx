@@ -15,9 +15,6 @@ import { RoleProtectedRoute } from "@/routes/RoleProtectedRoute";
 import React, { Suspense } from "react";
 import { PageLoader } from "@/components/common/LoadingStates";
 import { Dashboard } from "@/pages/dashboard/Dashboard";
-
-const Products = React.lazy(() => import("@/pages/products/Products").then(m => ({ default: m.Products })));
-const Categories = React.lazy(() => import("@/pages/categories/Categories").then(m => ({ default: m.Categories })));
 const InventoryLayout = React.lazy(() => import("@/pages/inventory/InventoryLayout").then(m => ({ default: m.InventoryLayout })));
 const Suppliers = React.lazy(() => import("@/pages/suppliers/Suppliers").then(m => ({ default: m.Suppliers })));
 const PurchasesLayout = React.lazy(() => import("@/pages/purchases/PurchasesLayout").then(m => ({ default: m.PurchasesLayout })));
@@ -63,8 +60,6 @@ function App() {
                 <Route element={<DashboardLayout />}>
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/inventory" element={<InventoryLayout />} />
-                  <Route path="/products" element={<Products />} />
-                  <Route path="/categories" element={<Categories />} />
                   <Route path="/suppliers" element={<Suppliers />} />
                   <Route path="/purchases" element={<PurchasesLayout />} />
                   <Route path="/sales" element={<SalesLayout />} />

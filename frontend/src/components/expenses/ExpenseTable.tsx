@@ -1,3 +1,4 @@
+import React from "react";
 import { Expense } from "@/types/expenses";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { StatusBadge } from "@/components/common/StatusBadge";
@@ -13,7 +14,7 @@ interface ExpenseTableProps {
   onEdit: (expense: Expense) => void;
 }
 
-export function ExpenseTable({ expenses, onView, onEdit }: ExpenseTableProps) {
+export const ExpenseTable = React.memo(function ExpenseTable({ expenses, onView, onEdit }: ExpenseTableProps) {
   if (expenses.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center border rounded-md border-dashed bg-card mt-4">
@@ -125,4 +126,5 @@ export function ExpenseTable({ expenses, onView, onEdit }: ExpenseTableProps) {
       </div>
     </div>
   );
-}
+});
+
