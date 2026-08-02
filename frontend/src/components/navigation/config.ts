@@ -7,7 +7,8 @@ import {
   CreditCard, 
   PieChart, 
   Settings, 
-  UserCircle 
+  UserCircle,
+  Tag
 } from "lucide-react";
 import { Role } from "@/contexts/AuthContext";
 
@@ -50,6 +51,7 @@ export const navigationConfig: NavSection[] = [
     title: "Finance & Reports",
     items: [
       { title: "Sales", href: "/sales", icon: CreditCard },
+      { title: "Discounts", href: "/discounts", icon: Tag },
       { title: "Expenses", href: "/expenses", icon: CreditCard },
       { title: "Reports", href: "/reports", icon: PieChart },
     ]

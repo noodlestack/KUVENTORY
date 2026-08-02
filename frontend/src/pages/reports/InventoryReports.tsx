@@ -17,7 +17,15 @@ export function InventoryReports() {
 
   return (
     <div className="space-y-6">
-      <ReportHeader title="Inventory Reports" reportName="Inventory Report" />
+      <ReportHeader 
+        title="Inventory Reports" 
+        reportName="Inventory Report"
+        exportData={data.inventoryMovement}
+        exportColumns={[
+          { header: "Period", dataKey: "name" },
+          { header: "Items Moved", dataKey: "value" }
+        ]} 
+      />
       
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <KPICard title="Total Valuation" value={formatCurrency(data.totalValue)} icon={Calculator} />

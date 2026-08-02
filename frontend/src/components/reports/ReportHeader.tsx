@@ -7,9 +7,12 @@ import { ExportDialog } from "./ExportDialog";
 interface ReportHeaderProps {
   title: string;
   reportName: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  exportData?: any[];
+  exportColumns?: { header: string; dataKey: string }[];
 }
 
-export function ReportHeader({ title, reportName }: ReportHeaderProps) {
+export function ReportHeader({ title, reportName, exportData, exportColumns }: ReportHeaderProps) {
   const [exportOpen, setExportOpen] = useState(false);
 
   return (
@@ -40,6 +43,8 @@ export function ReportHeader({ title, reportName }: ReportHeaderProps) {
         open={exportOpen} 
         onOpenChange={setExportOpen} 
         reportName={reportName} 
+        exportData={exportData}
+        exportColumns={exportColumns}
       />
     </div>
   );

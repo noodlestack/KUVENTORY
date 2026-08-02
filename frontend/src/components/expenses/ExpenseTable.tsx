@@ -35,7 +35,9 @@ export function ExpenseTable({ expenses, onView, onEdit }: ExpenseTableProps) {
               <TableHead>Expense No.</TableHead>
               <TableHead>Date</TableHead>
               <TableHead>Category</TableHead>
+              <TableHead>Supplier</TableHead>
               <TableHead>Description</TableHead>
+              <TableHead>Payment Method</TableHead>
               <TableHead className="text-right">Amount</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="w-[80px]"></TableHead>
@@ -47,7 +49,9 @@ export function ExpenseTable({ expenses, onView, onEdit }: ExpenseTableProps) {
                 <TableCell className="font-mono text-sm font-medium">{exp.expenseNo}</TableCell>
                 <TableCell className="text-sm text-muted-foreground">{formatDate(exp.expenseDate)}</TableCell>
                 <TableCell>{exp.categoryName}</TableCell>
+                <TableCell>{exp.supplier || "-"}</TableCell>
                 <TableCell className="truncate max-w-[200px]">{exp.description}</TableCell>
+                <TableCell>{exp.paymentMethod}</TableCell>
                 <TableCell className="text-right font-medium">{formatCurrency(exp.amount)}</TableCell>
                 <TableCell>
                   <StatusBadge status={exp.status} />
@@ -105,6 +109,9 @@ export function ExpenseTable({ expenses, onView, onEdit }: ExpenseTableProps) {
                 </div>
               </div>
               <p className="text-sm line-clamp-1">{exp.description}</p>
+              <div className="text-xs text-muted-foreground mt-1">
+                {exp.paymentMethod} &bull; {exp.supplier || "No Supplier"}
+              </div>
               <div className="text-xs text-muted-foreground">
                 {formatDate(exp.expenseDate)} &bull; {exp.recordedBy}
               </div>

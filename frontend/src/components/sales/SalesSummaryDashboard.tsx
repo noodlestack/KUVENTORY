@@ -14,49 +14,48 @@ export function SalesSummaryDashboard({ summary }: SalesSummaryDashboardProps) {
 
   return (
     <div className="space-y-6 mt-4">
-      {/* KPI Metrics */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Today's Sales</CardTitle>
+            <CardTitle className="text-sm font-medium">Gross Income</CardTitle>
             <PhilippinePeso className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatCurrency(summary.todaySales)}</div>
-            <p className="text-xs text-muted-foreground mt-1">Across {summary.transactionsCount} transactions</p>
+            <div className="text-2xl font-bold">{formatCurrency(summary.grossIncome)}</div>
+            <p className="text-xs text-muted-foreground mt-1">Total sales before deductions</p>
           </CardContent>
         </Card>
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Average Sale</CardTitle>
-            <Receipt className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{formatCurrency(summary.averageSale)}</div>
-            <p className="text-xs text-muted-foreground mt-1">Per transaction today</p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Highest Sale</CardTitle>
+            <CardTitle className="text-sm font-medium text-emerald-600 dark:text-emerald-400">Net Income</CardTitle>
             <TrendingUp className="h-4 w-4 text-emerald-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatCurrency(summary.highestSale)}</div>
-            <p className="text-xs text-muted-foreground mt-1">Single transaction max</p>
+            <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{formatCurrency(summary.netIncome)}</div>
+            <p className="text-xs text-muted-foreground mt-1">Total sales after deductions</p>
           </CardContent>
         </Card>
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Lowest Sale</CardTitle>
-            <TrendingDown className="h-4 w-4 text-rose-500" />
+            <CardTitle className="text-sm font-medium text-destructive">Total Refunds</CardTitle>
+            <TrendingDown className="h-4 w-4 text-destructive" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatCurrency(summary.lowestSale)}</div>
-            <p className="text-xs text-muted-foreground mt-1">Single transaction min</p>
+            <div className="text-2xl font-bold text-destructive">{formatCurrency(summary.totalRefunds)}</div>
+            <p className="text-xs text-muted-foreground mt-1">Total refunded transactions</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-warning">Total Discounts</CardTitle>
+            <Receipt className="h-4 w-4 text-warning" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-warning">{formatCurrency(summary.totalDiscounts)}</div>
+            <p className="text-xs text-muted-foreground mt-1">Total discounts applied</p>
           </CardContent>
         </Card>
       </div>

@@ -4,6 +4,7 @@ import { StockMovement } from "./StockMovement";
 import { StockAdjustment } from "./StockAdjustment";
 import { LowStock } from "./LowStock";
 import { InventoryHistory } from "./InventoryHistory";
+import { DailyInventorySheet } from "./DailyInventorySheet";
 
 export function InventoryLayout() {
   return (
@@ -13,9 +14,10 @@ export function InventoryLayout() {
         <p className="text-muted-foreground">Manage raw materials, stock levels, and historical movements.</p>
       </div>
       
-      <Tabs defaultValue="list" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 h-auto md:h-10 gap-1 md:gap-0 bg-muted/50 p-1">
-          <TabsTrigger value="list" className="text-xs md:text-sm">Inventory List</TabsTrigger>
+      <Tabs defaultValue="daily-sheet" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-6 h-auto md:h-10 gap-1 md:gap-0 bg-muted/50 p-1">
+          <TabsTrigger value="daily-sheet" className="text-xs md:text-sm">Daily Sheet</TabsTrigger>
+          <TabsTrigger value="list" className="text-xs md:text-sm">Master List</TabsTrigger>
           <TabsTrigger value="movements" className="text-xs md:text-sm">Stock Movement</TabsTrigger>
           <TabsTrigger value="adjustments" className="text-xs md:text-sm">Adjustments</TabsTrigger>
           <TabsTrigger value="low-stock" className="text-xs md:text-sm">Low Stock</TabsTrigger>
@@ -23,6 +25,10 @@ export function InventoryLayout() {
         </TabsList>
         
         <div className="mt-6">
+          <TabsContent value="daily-sheet" className="mt-0">
+            <DailyInventorySheet />
+          </TabsContent>
+          
           <TabsContent value="list" className="mt-0">
             <InventoryList />
           </TabsContent>

@@ -41,7 +41,7 @@ export function ExpenseDetailsDrawer({ open, onOpenChange, expense, onEdit }: Ex
             <StatusBadge status={expense.status} />
           </div>
 
-          <div className="border-t pt-4 space-y-4">
+            <div className="border-t pt-4 space-y-4">
             <h3 className="font-semibold">General Information</h3>
             <div className="grid grid-cols-2 gap-y-4 gap-x-2 text-sm">
               <div>
@@ -51,6 +51,18 @@ export function ExpenseDetailsDrawer({ open, onOpenChange, expense, onEdit }: Ex
               <div>
                 <span className="text-muted-foreground block mb-1">Expense Date</span>
                 <span className="font-medium">{formatDate(expense.expenseDate)}</span>
+              </div>
+              <div>
+                <span className="text-muted-foreground block mb-1">Payment Method</span>
+                <span className="font-medium">{expense.paymentMethod}</span>
+              </div>
+              <div>
+                <span className="text-muted-foreground block mb-1">Reference No.</span>
+                <span className="font-medium">{expense.referenceNo || "None"}</span>
+              </div>
+              <div className="col-span-2">
+                <span className="text-muted-foreground block mb-1">Supplier / Payee</span>
+                <span className="font-medium">{expense.supplier || "Not specified"}</span>
               </div>
               <div className="col-span-2">
                 <span className="text-muted-foreground block mb-1">Description</span>

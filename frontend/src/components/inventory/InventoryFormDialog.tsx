@@ -16,7 +16,16 @@ const inventorySchema = z.object({
   categoryId: z.string().min(1, "Please select a category"),
   unit: z.string().min(1, "Unit is required"),
   supplier: z.string().min(2, "Supplier is required"),
-  currentQuantity: z.coerce.number().min(0, "Quantity cannot be negative"),
+  
+  beginningStock: z.coerce.number().min(0, "Cannot be negative"),
+  addedStock: z.coerce.number().min(0, "Cannot be negative"),
+  morningSales: z.coerce.number().min(0, "Cannot be negative"),
+  afternoonSales: z.coerce.number().min(0, "Cannot be negative"),
+  
+  cost: z.coerce.number().min(0, "Cannot be negative"),
+  sellingPrice: z.coerce.number().min(0, "Cannot be negative"),
+  expirationDate: z.string().optional(),
+
   minStockLevel: z.coerce.number().min(0, "Min stock cannot be negative"),
   storageLocation: z.string().min(2, "Storage location is required"),
   notes: z.string().max(300, "Notes cannot exceed 300 characters").optional(),
@@ -43,7 +52,13 @@ export function InventoryFormDialog({ open, onOpenChange, item, categories, onSu
       categoryId: "",
       unit: "",
       supplier: "",
-      currentQuantity: 0,
+      beginningStock: 0,
+      addedStock: 0,
+      morningSales: 0,
+      afternoonSales: 0,
+      cost: 0,
+      sellingPrice: 0,
+      expirationDate: "",
       minStockLevel: 0,
       storageLocation: "",
       notes: "",
@@ -60,7 +75,13 @@ export function InventoryFormDialog({ open, onOpenChange, item, categories, onSu
           categoryId: item.categoryId,
           unit: item.unit,
           supplier: item.supplier,
-          currentQuantity: item.currentQuantity,
+          beginningStock: item.beginningStock,
+          addedStock: item.addedStock,
+          morningSales: item.morningSales,
+          afternoonSales: item.afternoonSales,
+          cost: item.cost,
+          sellingPrice: item.sellingPrice,
+          expirationDate: item.expirationDate || "",
           minStockLevel: item.minStockLevel,
           storageLocation: item.storageLocation,
           notes: item.notes || "",
@@ -73,7 +94,13 @@ export function InventoryFormDialog({ open, onOpenChange, item, categories, onSu
           categoryId: "",
           unit: "",
           supplier: "",
-          currentQuantity: 0,
+          beginningStock: 0,
+          addedStock: 0,
+          morningSales: 0,
+          afternoonSales: 0,
+          cost: 0,
+          sellingPrice: 0,
+          expirationDate: "",
           minStockLevel: 0,
           storageLocation: "",
           notes: "",
@@ -220,20 +247,34 @@ export function InventoryFormDialog({ open, onOpenChange, item, categories, onSu
               />
             </div>
 
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <FormField control={form.control} name="beginningStock" render={({ field }) => (
+                <FormItem><FormLabel>Beginning Stock</FormLabel><FormControl><Input type="number" step="0.01" {...field} /></FormControl><FormMessage /></FormItem>
+              )} />
+              <FormField control={form.control} name="addedStock" render={({ field }) => (
+                <FormItem><FormLabel>Added Stock</FormLabel><FormControl><Input type="number" step="0.01" {...field} /></FormControl><FormMessage /></FormItem>
+              )} />
+              <FormField control={form.control} name="morningSales" render={({ field }) => (
+                <FormItem><FormLabel>Morning Sales</FormLabel><FormControl><Input type="number" step="0.01" {...field} /></FormControl><FormMessage /></FormItem>
+              )} />
+              <FormField control={form.control} name="afternoonSales" render={({ field }) => (
+                <FormItem><FormLabel>Afternoon Sales</FormLabel><FormControl><Input type="number" step="0.01" {...field} /></FormControl><FormMessage /></FormItem>
+              )} />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <FormField control={form.control} name="cost" render={({ field }) => (
+                <FormItem><FormLabel>Cost (₱)</FormLabel><FormControl><Input type="number" step="0.01" {...field} /></FormControl><FormMessage /></FormItem>
+              )} />
+              <FormField control={form.control} name="sellingPrice" render={({ field }) => (
+                <FormItem><FormLabel>Selling Price (₱)</FormLabel><FormControl><Input type="number" step="0.01" {...field} /></FormControl><FormMessage /></FormItem>
+              )} />
+              <FormField control={form.control} name="expirationDate" render={({ field }) => (
+                <FormItem><FormLabel>Expiration Date</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>
+              )} />
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="currentQuantity"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Current Quantity</FormLabel>
-                    <FormControl>
-                      <Input type="number" step="0.01" {...field} disabled={isEditing} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name="minStockLevel"

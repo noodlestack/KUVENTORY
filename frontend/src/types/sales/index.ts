@@ -14,7 +14,10 @@ export interface Sale {
   saleDate: string;
   customerName?: string;
   items: SaleItem[];
-  totalAmount: number;
+  totalAmount: number; // Gross amount
+  discountName?: string;
+  discountAmount?: number;
+  netAmount: number; // Total after discount
   status: SaleStatus;
   remarks?: string;
   recordedBy: string;
@@ -29,11 +32,17 @@ export interface SaleFormData {
     quantity: number;
     unitPrice: number;
   }[];
+  discountName?: string;
+  discountAmount?: number;
   remarks?: string;
   status: SaleStatus;
 }
 
 export interface SalesSummaryData {
+  grossIncome: number;
+  netIncome: number;
+  totalRefunds: number;
+  totalDiscounts: number;
   todaySales: number;
   transactionsCount: number;
   bestSellingProduct: string;

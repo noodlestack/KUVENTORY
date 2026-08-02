@@ -15,6 +15,9 @@ const expenseSchema = z.object({
   categoryId: z.string().min(1, "Category is required"),
   description: z.string().min(3, "Description must be at least 3 characters").max(200, "Description too long"),
   amount: z.coerce.number().min(0.01, "Amount must be greater than 0"),
+  paymentMethod: z.enum(["Cash", "GCash", "Bank Transfer", "Check"]),
+  referenceNo: z.string().optional(),
+  supplier: z.string().optional(),
   remarks: z.string().max(300, "Remarks cannot exceed 300 characters").optional(),
   status: z.enum(["Paid", "Pending", "Cancelled"]),
 });
@@ -36,6 +39,9 @@ export function ExpenseFormDialog({ open, onOpenChange, categories, expense, onS
       categoryId: "",
       description: "",
       amount: 0,
+      paymentMethod: "Cash",
+      referenceNo: "",
+      supplier: "",
       remarks: "",
       status: "Paid",
     },
@@ -49,6 +55,9 @@ export function ExpenseFormDialog({ open, onOpenChange, categories, expense, onS
           categoryId: expense.categoryId,
           description: expense.description,
           amount: expense.amount,
+          paymentMethod: expense.paymentMethod || "Cash",
+          referenceNo: expense.referenceNo || "",
+          supplier: expense.supplier || "",
           remarks: expense.remarks || "",
           status: expense.status,
         });
@@ -58,6 +67,9 @@ export function ExpenseFormDialog({ open, onOpenChange, categories, expense, onS
           categoryId: "",
           description: "",
           amount: 0,
+          paymentMethod: "Cash",
+          referenceNo: "",
+          supplier: "",
           remarks: "",
           status: "Paid",
         });
@@ -159,19 +171,74 @@ export function ExpenseFormDialog({ open, onOpenChange, categories, expense, onS
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="amount"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Amount</FormLabel>
-                  <FormControl>
-                    <Input type="number" step="0.01" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="supplier"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Supplier/Payee</FormLabel>
+                    <FormControl>
+                      <Input placeholder="E.g. Supplier Name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="amount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Amount</FormLabel>
+                    <FormControl>
+                      <Input type="number" step="0.01" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="paymentMethod"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Payment Method</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select method..." />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Cash">Cash</SelectItem>
+                        <SelectItem value="GCash">GCash</SelectItem>
+                        <SelectItem value="Bank Transfer">Bank Transfer</SelectItem>
+                        <SelectItem value="Check">Check</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="referenceNo"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Reference Number</FormLabel>
+                    <FormControl>
+                      <Input placeholder="E.g. REF-12345" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <FormField
               control={form.control}

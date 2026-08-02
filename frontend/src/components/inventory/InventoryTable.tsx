@@ -43,10 +43,10 @@ export function InventoryTable({ items, onView, onEdit }: InventoryTableProps) {
       header: "Category",
     },
     {
-      accessorKey: "currentQuantity",
+      accessorKey: "endingStock",
       header: () => <div className="text-right">Qty</div>,
       cell: ({ row }) => {
-        return <div className="text-right font-medium">{row.getValue("currentQuantity")}</div>;
+        return <div className="text-right font-medium">{row.getValue("endingStock")}</div>;
       },
     },
     {

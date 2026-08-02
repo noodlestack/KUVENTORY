@@ -17,7 +17,15 @@ export function SupplierReports() {
 
   return (
     <div className="space-y-6">
-      <ReportHeader title="Supplier Reports" reportName="Supplier Report" />
+      <ReportHeader 
+        title="Supplier Reports" 
+        reportName="Supplier Report"
+        exportData={data.spendingBySupplier}
+        exportColumns={[
+          { header: "Supplier", dataKey: "name" },
+          { header: "Total Spend (PHP)", dataKey: "value" }
+        ]}
+      />
       
       <div className="grid gap-4 md:grid-cols-2">
         <KPICard title="Total Suppliers" value={data.totalSuppliers} icon={Users} />

@@ -11,7 +11,7 @@ export function LowStock() {
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const lowStockItems = items.filter(i => i.currentQuantity <= i.minStockLevel);
+  const lowStockItems = items.filter(i => i.endingStock <= i.minStockLevel);
 
   const handleView = (item: InventoryItem) => {
     setSelectedItem(item);

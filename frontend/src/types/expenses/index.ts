@@ -1,4 +1,5 @@
 export type ExpenseStatus = "Paid" | "Pending" | "Cancelled";
+export type PaymentMethod = "Cash" | "GCash" | "Bank Transfer" | "Check";
 
 export interface ExpenseCategory {
   id: string;
@@ -15,6 +16,9 @@ export interface Expense {
   categoryName: string;
   description: string;
   amount: number;
+  paymentMethod: PaymentMethod;
+  referenceNo?: string;
+  supplier?: string;
   remarks?: string;
   status: ExpenseStatus;
   recordedBy: string;
@@ -27,6 +31,9 @@ export interface ExpenseFormData {
   categoryId: string;
   description: string;
   amount: number;
+  paymentMethod: PaymentMethod;
+  referenceNo?: string;
+  supplier?: string;
   remarks?: string;
   status: ExpenseStatus;
 }

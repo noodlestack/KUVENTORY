@@ -22,6 +22,7 @@ const InventoryLayout = React.lazy(() => import("@/pages/inventory/InventoryLayo
 const Suppliers = React.lazy(() => import("@/pages/suppliers/Suppliers").then(m => ({ default: m.Suppliers })));
 const PurchasesLayout = React.lazy(() => import("@/pages/purchases/PurchasesLayout").then(m => ({ default: m.PurchasesLayout })));
 const SalesLayout = React.lazy(() => import("@/pages/sales/SalesLayout").then(m => ({ default: m.SalesLayout })));
+const DiscountsLayout = React.lazy(() => import("@/pages/discounts/DiscountsLayout").then(m => ({ default: m.DiscountsLayout })));
 const ExpensesLayout = React.lazy(() => import("@/pages/expenses/ExpensesLayout").then(m => ({ default: m.ExpensesLayout })));
 const ReportsLayout = React.lazy(() => import("@/pages/reports/ReportsLayout").then(m => ({ default: m.ReportsLayout })));
 const ProfileLayout = React.lazy(() => import("@/pages/profile/ProfileLayout").then(m => ({ default: m.ProfileLayout })));
@@ -67,6 +68,7 @@ function App() {
                   <Route path="/suppliers" element={<Suppliers />} />
                   <Route path="/purchases" element={<PurchasesLayout />} />
                   <Route path="/sales" element={<SalesLayout />} />
+                  <Route path="/discounts" element={<DiscountsLayout />} />
                   <Route path="/expenses" element={<ExpensesLayout />} />
                   <Route path="/reports" element={<ReportsLayout />} />
                   <Route path="/profile" element={<ProfileLayout />} />

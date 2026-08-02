@@ -36,7 +36,7 @@ export function Navbar({ toggleSidebar }: NavbarProps) {
         variant="ghost" 
         size="icon" 
         onClick={toggleSidebar}
-        className="hidden lg:flex h-9 w-9 text-muted-foreground hover:text-foreground"
+        className="hidden md:flex h-9 w-9 text-muted-foreground hover:text-foreground"
       >
         <Menu className="h-5 w-5" />
         <span className="sr-only">Toggle sidebar</span>
@@ -49,7 +49,7 @@ export function Navbar({ toggleSidebar }: NavbarProps) {
       </div>
 
       {/* Separator for desktop */}
-      <div className="hidden lg:block h-6 w-px bg-border" aria-hidden="true" />
+      <div className="hidden md:block h-6 w-px bg-border" aria-hidden="true" />
 
       {/* Breadcrumbs */}
       <div className="flex flex-1">

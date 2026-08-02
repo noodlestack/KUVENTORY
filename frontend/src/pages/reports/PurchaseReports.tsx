@@ -15,7 +15,15 @@ export function PurchaseReports() {
 
   return (
     <div className="space-y-6">
-      <ReportHeader title="Purchase Reports" reportName="Purchases Report" />
+      <ReportHeader 
+        title="Purchase Reports" 
+        reportName="Purchases Report" 
+        exportData={data.purchaseTrend}
+        exportColumns={[
+          { header: "Period", dataKey: "name" },
+          { header: "Purchases (PHP)", dataKey: "value" }
+        ]}
+      />
       
       <div className="grid gap-4 md:grid-cols-2">
         <KPICard title="Monthly Purchases" value={formatCurrency(data.monthlyPurchases)} icon={ShoppingBag} />

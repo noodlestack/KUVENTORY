@@ -39,7 +39,7 @@ export function AdjustmentDialog({ open, onOpenChange, items, onSubmit }: Adjust
   // eslint-disable-next-line react-hooks/incompatible-library
   const watchItemId = form.watch("itemId");
   const selectedItem = items.find(i => i.id === watchItemId);
-  const diff = selectedItem ? (form.watch("actualQuantity") || 0) - selectedItem.currentQuantity : 0;
+  const diff = selectedItem ? (form.watch("actualQuantity") || 0) - selectedItem.endingStock : 0;
 
   useEffect(() => {
     if (!open) {
@@ -78,7 +78,7 @@ export function AdjustmentDialog({ open, onOpenChange, items, onSubmit }: Adjust
                     </FormControl>
                     <SelectContent>
                       {items.map((i) => (
-                        <SelectItem key={i.id} value={i.id}>{i.name} ({i.currentQuantity} {i.unit})</SelectItem>
+                        <SelectItem key={i.id} value={i.id}>{i.name} ({i.endingStock} {i.unit})</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -91,7 +91,7 @@ export function AdjustmentDialog({ open, onOpenChange, items, onSubmit }: Adjust
               <div className="grid grid-cols-2 gap-4 bg-muted/50 p-3 rounded-md border text-sm">
                 <div>
                   <p className="text-muted-foreground">Current System Quantity</p>
-                  <p className="font-semibold text-lg">{selectedItem.currentQuantity} {selectedItem.unit}</p>
+                  <p className="font-semibold text-lg">{selectedItem.endingStock} {selectedItem.unit}</p>
                 </div>
                 <div>
                   <p className="text-muted-foreground">Adjustment Difference</p>

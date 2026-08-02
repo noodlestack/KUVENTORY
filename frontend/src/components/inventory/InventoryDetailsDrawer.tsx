@@ -62,8 +62,8 @@ export function InventoryDetailsDrawer({ open, onOpenChange, item, onEdit }: Inv
             <h3 className="font-semibold mb-3">Stock Information</h3>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <span className="text-muted-foreground block mb-1">Current Quantity</span>
-                <span className="font-medium text-lg">{item.currentQuantity} <span className="text-sm font-normal text-muted-foreground">{item.unit}</span></span>
+                <span className="text-muted-foreground block mb-1">Ending Stock</span>
+                <span className="font-medium text-lg">{item.endingStock} <span className="text-sm font-normal text-muted-foreground">{item.unit}</span></span>
               </div>
               <div>
                 <span className="text-muted-foreground block mb-1">Min Stock Level</span>

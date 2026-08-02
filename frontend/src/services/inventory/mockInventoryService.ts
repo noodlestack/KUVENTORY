@@ -17,11 +17,15 @@ const determineStatus = (qty: number, min: number): InventoryStatus => {
   return "In Stock";
 };
 
+const calcEnding = (beg: number, add: number, morn: number, aft: number) => {
+  return beg + add - morn - aft;
+};
+
 // Initial Mock Data
 let inventory: InventoryItem[] = [
-  { id: "inv1", itemCode: "RAW-001", name: "Arabica Coffee Beans", categoryId: "c1", categoryName: "Raw Materials", unit: "kg", supplier: "Global Beans Inc.", currentQuantity: 15, minStockLevel: 20, maxStockLevel: 100, storageLocation: "Storage Room A", status: "Low Stock", notes: "Premium roast", lastUpdated: "2026-06-10T08:00:00Z", createdAt: "2026-01-10T08:00:00Z" },
-  { id: "inv2", itemCode: "RAW-002", name: "Whole Milk", categoryId: "c2", categoryName: "Dairy", unit: "L", supplier: "Local Farms Co.", currentQuantity: 50, minStockLevel: 30, maxStockLevel: 200, storageLocation: "Walk-in Fridge", status: "In Stock", notes: "Use before expiry", lastUpdated: "2026-06-12T09:00:00Z", createdAt: "2026-01-12T09:00:00Z" },
-  { id: "inv3", itemCode: "PKG-001", name: "Takeout Cups (12oz)", categoryId: "c3", categoryName: "Packaging", unit: "pcs", supplier: "Packit Supply", currentQuantity: 0, minStockLevel: 500, maxStockLevel: 5000, storageLocation: "Storage Room B", status: "Out of Stock", lastUpdated: "2026-06-15T11:00:00Z", createdAt: "2026-01-15T11:00:00Z" },
+  { id: "inv1", itemCode: "RAW-001", name: "Arabica Coffee Beans", categoryId: "c11", categoryName: "Coffee Beans", unit: "kg", supplier: "Global Beans Inc.", beginningStock: 10, addedStock: 5, totalStock: 15, morningSales: 2, afternoonSales: 3, endingStock: 10, cost: 800, sellingPrice: 1200, minStockLevel: 5, maxStockLevel: 50, storageLocation: "Storage Room A", status: "In Stock", notes: "Premium roast", lastUpdated: "2026-06-10T08:00:00Z", createdAt: "2026-01-10T08:00:00Z" },
+  { id: "inv2", itemCode: "RAW-002", name: "Whole Milk", categoryId: "c13", categoryName: "Milk", unit: "L", supplier: "Local Farms Co.", beginningStock: 20, addedStock: 0, totalStock: 20, morningSales: 15, afternoonSales: 4, endingStock: 1, cost: 90, sellingPrice: 150, expirationDate: "2026-06-20", minStockLevel: 10, maxStockLevel: 100, storageLocation: "Walk-in Fridge", status: "Low Stock", notes: "Use before expiry", lastUpdated: "2026-06-12T09:00:00Z", createdAt: "2026-01-12T09:00:00Z" },
+  { id: "inv3", itemCode: "PKG-001", name: "Takeout Cups (12oz)", categoryId: "c15", categoryName: "Supplies", unit: "pcs", supplier: "Packit Supply", beginningStock: 0, addedStock: 0, totalStock: 0, morningSales: 0, afternoonSales: 0, endingStock: 0, cost: 2, sellingPrice: 5, minStockLevel: 500, maxStockLevel: 5000, storageLocation: "Storage Room B", status: "Out of Stock", lastUpdated: "2026-06-15T11:00:00Z", createdAt: "2026-01-15T11:00:00Z" },
 ];
 
 const movements: StockMovement[] = [
@@ -53,10 +57,18 @@ export const mockInventoryService = {
       categoryName,
       unit: data.unit,
       supplier: data.supplier,
-      currentQuantity: data.currentQuantity,
+      beginningStock: data.beginningStock,
+      addedStock: data.addedStock,
+      totalStock: data.beginningStock + data.addedStock,
+      morningSales: data.morningSales,
+      afternoonSales: data.afternoonSales,
+      endingStock: calcEnding(data.beginningStock, data.addedStock, data.morningSales, data.afternoonSales),
+      cost: data.cost,
+      sellingPrice: data.sellingPrice,
+      expirationDate: data.expirationDate,
       minStockLevel: data.minStockLevel,
       storageLocation: data.storageLocation,
-      status: data.status !== "Inactive" ? determineStatus(data.currentQuantity, data.minStockLevel) : "Inactive",
+      status: data.status !== "Inactive" ? determineStatus(calcEnding(data.beginningStock, data.addedStock, data.morningSales, data.afternoonSales), data.minStockLevel) : "Inactive",
       notes: data.notes,
       lastUpdated: new Date().toISOString(),
       createdAt: new Date().toISOString(),
@@ -87,7 +99,9 @@ export const mockInventoryService = {
       ...existing,
       ...data,
       categoryName,
-      status: data.status !== "Inactive" ? determineStatus(data.currentQuantity, data.minStockLevel) : "Inactive",
+      totalStock: data.beginningStock + data.addedStock,
+      endingStock: calcEnding(data.beginningStock, data.addedStock, data.morningSales, data.afternoonSales),
+      status: data.status !== "Inactive" ? determineStatus(calcEnding(data.beginningStock, data.addedStock, data.morningSales, data.afternoonSales), data.minStockLevel) : "Inactive",
       lastUpdated: new Date().toISOString(),
     };
 
@@ -132,13 +146,13 @@ export const mockInventoryService = {
     if (itemIndex === -1) throw new Error("Item not found");
 
     const item = inventory[itemIndex];
-    const difference = data.actualQuantity - item.currentQuantity;
+    const difference = data.actualQuantity - item.endingStock;
 
     const adjustment: StockAdjustment = {
       id: generateId("adj"),
       itemId: item.id,
       itemName: item.name,
-      currentQuantity: item.currentQuantity,
+      currentQuantity: item.endingStock,
       actualQuantity: data.actualQuantity,
       difference,
       reason: data.reason,
@@ -163,10 +177,9 @@ export const mockInventoryService = {
     };
     movements.unshift(movement);
 
-    // Update Item
     const updatedItem = {
       ...item,
-      currentQuantity: data.actualQuantity,
+      endingStock: data.actualQuantity,
       status: item.status !== "Inactive" ? determineStatus(data.actualQuantity, item.minStockLevel) : item.status,
       lastUpdated: new Date().toISOString(),
     };
@@ -179,7 +192,7 @@ export const mockInventoryService = {
       itemName: item.name,
       action: "Adjusted",
       performedBy: "Current User",
-      details: `Stock adjusted from ${item.currentQuantity} to ${data.actualQuantity}`,
+      details: `Stock adjusted from ${item.endingStock} to ${data.actualQuantity}`,
       date: new Date().toISOString(),
     });
 

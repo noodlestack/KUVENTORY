@@ -2,12 +2,21 @@ import { Category, CategoryFormData } from "@/types/categories";
 
 // Initial mock data
 let categories: Category[] = [
-  { id: "c1", name: "Coffee", description: "Espresso based drinks", productCount: 15, status: "Active", createdAt: "2026-01-10T08:00:00Z", updatedAt: "2026-01-10T08:00:00Z" },
-  { id: "c2", name: "Non-Coffee", description: "Teas and other beverages", productCount: 8, status: "Active", createdAt: "2026-01-12T09:30:00Z", updatedAt: "2026-01-12T09:30:00Z" },
-  { id: "c3", name: "Rice Meals", description: "Silog and other rice bowls", productCount: 12, status: "Active", createdAt: "2026-01-15T11:20:00Z", updatedAt: "2026-01-15T11:20:00Z" },
-  { id: "c4", name: "Pasta", description: "Various pasta dishes", productCount: 5, status: "Active", createdAt: "2026-02-05T14:15:00Z", updatedAt: "2026-02-05T14:15:00Z" },
-  { id: "c5", name: "Snacks", description: "Fries, wings, and sides", productCount: 10, status: "Active", createdAt: "2026-02-10T10:45:00Z", updatedAt: "2026-02-10T10:45:00Z" },
-  { id: "c6", name: "Desserts", description: "Cakes and pastries", productCount: 6, status: "Inactive", createdAt: "2026-03-01T16:00:00Z", updatedAt: "2026-03-01T16:00:00Z" },
+  { id: "c1", name: "Grilled Stocks", description: "Grilled items", productCount: 0, status: "Active", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+  { id: "c2", name: "Portion Stocks", description: "Portioned ingredients", productCount: 0, status: "Active", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+  { id: "c3", name: "Coffee Ingredients", description: "General coffee prep items", productCount: 0, status: "Active", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+  { id: "c4", name: "Beverages", description: "Ready to drink", productCount: 0, status: "Active", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+  { id: "c5", name: "Rice Meals", description: "Rice supply and prep", productCount: 0, status: "Active", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+  { id: "c6", name: "Snacks", description: "Snack ingredients", productCount: 0, status: "Active", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+  { id: "c7", name: "Frozen Goods", description: "Freezer inventory", productCount: 0, status: "Active", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+  { id: "c8", name: "Bottled Drinks", description: "Bottled inventory", productCount: 0, status: "Active", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+  { id: "c9", name: "Canned Drinks", description: "Canned inventory", productCount: 0, status: "Active", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+  { id: "c10", name: "Ice Cream", description: "Ice cream tubs", productCount: 0, status: "Active", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+  { id: "c11", name: "Coffee Beans", description: "Whole bean coffee", productCount: 0, status: "Active", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+  { id: "c12", name: "Syrups", description: "Flavor syrups", productCount: 0, status: "Active", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+  { id: "c13", name: "Milk", description: "Dairy and non-dairy", productCount: 0, status: "Active", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+  { id: "c14", name: "Condiments", description: "Sauces and condiments", productCount: 0, status: "Active", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+  { id: "c15", name: "Supplies", description: "Packaging and cleaning", productCount: 0, status: "Active", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
 ];
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));

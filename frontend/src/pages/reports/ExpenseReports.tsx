@@ -15,7 +15,15 @@ export function ExpenseReports() {
 
   return (
     <div className="space-y-6">
-      <ReportHeader title="Expense Reports" reportName="Expenses Report" />
+      <ReportHeader 
+        title="Expense Reports" 
+        reportName="Expenses Report" 
+        exportData={data.expenseCategories}
+        exportColumns={[
+          { header: "Category", dataKey: "name" },
+          { header: "Amount (PHP)", dataKey: "value" }
+        ]}
+      />
       
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <KPICard title="Today's Expenses" value={formatCurrency(data.dailyExpenses)} icon={Receipt} />

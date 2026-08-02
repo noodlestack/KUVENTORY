@@ -14,6 +14,7 @@ const sales: Sale[] = [
       { itemId: "inv2", itemName: "Whole Milk", quantity: 1, unitPrice: 5, subtotal: 5 }
     ],
     totalAmount: 35,
+    netAmount: 35,
     status: "Completed",
     recordedBy: "John Doe",
   },
@@ -26,6 +27,9 @@ const sales: Sale[] = [
       { itemId: "inv4", itemName: "Oat Milk", quantity: 1, unitPrice: 6, subtotal: 6 }
     ],
     totalAmount: 6,
+    discountName: "Senior Citizen",
+    discountAmount: 1.2,
+    netAmount: 4.8,
     status: "Completed",
     recordedBy: "Jane Smith",
   }
@@ -54,6 +58,9 @@ export const mockSalesService = {
       customerName: data.customerName || "Walk-in Customer",
       items: processedItems,
       totalAmount,
+      discountName: data.discountName,
+      discountAmount: data.discountAmount,
+      netAmount: totalAmount - (data.discountAmount || 0),
       status: data.status,
       remarks: data.remarks,
       recordedBy: "Current User",
@@ -87,7 +94,16 @@ export const mockSalesService = {
       };
     });
 
+    const totalRefunds = sales.filter(s => s.status === "Refunded").reduce((sum, s) => sum + s.totalAmount, 0);
+    const totalDiscounts = sales.reduce((sum, s) => sum + (s.discountAmount || 0), 0);
+    const grossIncome = sales.filter(s => s.status === "Completed").reduce((sum, s) => sum + s.totalAmount, 0);
+    const netIncome = sales.filter(s => s.status === "Completed").reduce((sum, s) => sum + s.netAmount, 0);
+
     return {
+      grossIncome,
+      netIncome,
+      totalRefunds,
+      totalDiscounts,
       todaySales,
       transactionsCount,
       bestSellingProduct: "Arabica Coffee Beans",
