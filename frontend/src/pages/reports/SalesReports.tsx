@@ -5,7 +5,7 @@ import { ReportHeader } from "@/components/reports/ReportHeader";
 import { BarChart, Bar, CartesianGrid, XAxis, Tooltip, YAxis } from "recharts";
 import { Banknote, Calendar, BarChart3, ShoppingCart } from "lucide-react";
 import { formatCurrency } from "@/utils/currency";
-
+import { ChartTooltip } from "@/components/charts/ChartTooltip";
 export function SalesReports() {
   const { data, isLoading } = useSalesReport();
 
@@ -31,9 +31,7 @@ export function SalesReports() {
             <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
             <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value: number) => formatCurrency(value)} width={90} />
             <Tooltip 
-              formatter={(value: number) => [formatCurrency(value), 'Revenue']} 
-              contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' }}
-              labelStyle={{ color: 'hsl(var(--foreground))' }}
+              content={<ChartTooltip formatter={(value) => [formatCurrency(value as number), 'Revenue']} />}
               cursor={{fill: 'var(--muted)'}} 
             />
             <Bar dataKey="value" fill="currentColor" radius={[4, 4, 0, 0]} className="fill-primary" />
@@ -46,9 +44,7 @@ export function SalesReports() {
             <XAxis type="number" hide />
             <YAxis dataKey="name" type="category" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
             <Tooltip 
-              formatter={(value: number) => [formatCurrency(value), 'Revenue']} 
-              contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' }}
-              labelStyle={{ color: 'hsl(var(--foreground))' }}
+              content={<ChartTooltip formatter={(value) => [formatCurrency(value as number), 'Revenue']} />}
               cursor={{fill: 'var(--muted)'}} 
             />
             <Bar dataKey="value" fill="#10b981" radius={[0, 4, 4, 0]} barSize={20} />

@@ -5,7 +5,7 @@ import { ReportHeader } from "@/components/reports/ReportHeader";
 import { LineChart, Line, CartesianGrid, XAxis, Tooltip, YAxis, PieChart, Pie, Cell } from "recharts";
 import { Banknote, ShoppingCart, Package, TrendingUp, TrendingDown, Users, AlertCircle, ShoppingBag } from "lucide-react";
 import { formatCurrency } from "@/utils/currency";
-
+import { ChartTooltip } from "@/components/charts/ChartTooltip";
 const COLORS = ['#10b981', '#f43f5e', '#f59e0b', '#3b82f6'];
 
 export function AnalyticsDashboard() {
@@ -38,10 +38,7 @@ export function AnalyticsDashboard() {
             <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
             <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value: number) => formatCurrency(value)} width={90} />
             <Tooltip 
-              formatter={(value: number) => [formatCurrency(value)]} 
-              contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' }}
-              itemStyle={{ color: 'hsl(var(--foreground))' }}
-              labelStyle={{ color: 'hsl(var(--foreground))' }}
+              content={<ChartTooltip formatter={(value) => [formatCurrency(value as number)]} />}
             />
             <Line type="monotone" dataKey="Sales" stroke="#10b981" strokeWidth={2} activeDot={{ r: 8 }} />
             <Line type="monotone" dataKey="Expenses" stroke="#f43f5e" strokeWidth={2} />
@@ -64,10 +61,7 @@ export function AnalyticsDashboard() {
               ))}
             </Pie>
             <Tooltip 
-              formatter={(value: number) => [`${value} Items`]}
-              contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' }}
-              itemStyle={{ color: 'hsl(var(--foreground))' }}
-              labelStyle={{ color: 'hsl(var(--foreground))' }}
+              content={<ChartTooltip formatter={(value) => [`${value} Items`]} />}
             />
           </PieChart>
         </ChartCard>

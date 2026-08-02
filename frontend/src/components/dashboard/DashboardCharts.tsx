@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, PieChart, Pie, Cell } from "recharts";
 import { ChartDataPoint } from "@/types/dashboard";
 import { formatCurrency } from "@/utils/currency";
-
+import { ChartTooltip } from "@/components/charts/ChartTooltip";
 interface DashboardChartsProps {
   salesData: ChartDataPoint[];
   categoryData: ChartDataPoint[];
@@ -38,11 +38,7 @@ export function DashboardCharts({ salesData, categoryData }: DashboardChartsProp
                   tickFormatter={(value) => formatCurrency(value)}
                   width={90}
                 />
-                <Tooltip 
-                  contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' }}
-                  itemStyle={{ color: 'hsl(var(--foreground))' }}
-                  labelStyle={{ color: 'hsl(var(--foreground))' }}
-                />
+                <Tooltip content={<ChartTooltip formatter={(value) => [formatCurrency(value as number), "Sales"]} />} />
                 <Line 
                   type="monotone" 
                   dataKey="value" 
@@ -79,11 +75,7 @@ export function DashboardCharts({ salesData, categoryData }: DashboardChartsProp
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip 
-                  contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' }}
-                  itemStyle={{ color: 'hsl(var(--foreground))' }}
-                  labelStyle={{ color: 'hsl(var(--foreground))' }}
-                />
+                <Tooltip content={<ChartTooltip formatter={(value) => [formatCurrency(value as number), "Sales"]} />} />
               </PieChart>
             </ResponsiveContainer>
             <div className="flex justify-center gap-4 flex-wrap mt-2 text-sm text-muted-foreground">

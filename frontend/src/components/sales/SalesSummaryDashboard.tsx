@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PhilippinePeso, TrendingUp, TrendingDown, Receipt } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { formatCurrency } from "@/utils/currency";
-
+import { ChartTooltip } from "@/components/charts/ChartTooltip";
 interface SalesSummaryDashboardProps {
   summary: SalesSummaryData | null;
 }
@@ -80,8 +80,7 @@ export function SalesSummaryDashboard({ summary }: SalesSummaryDashboardProps) {
                     axisLine={false} 
                   />
                   <Tooltip 
-                    formatter={(value: number) => [formatCurrency(value), 'Sales']}
-                    labelStyle={{ color: 'black' }}
+                    content={<ChartTooltip formatter={(value) => [formatCurrency(value as number), 'Sales']} />}
                   />
                   <Bar dataKey="sales" fill="currentColor" radius={[4, 4, 0, 0]} className="fill-primary" />
                 </BarChart>

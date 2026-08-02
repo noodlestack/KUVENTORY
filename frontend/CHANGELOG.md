@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.9.5] - 2026-08-02
+
+### Fixed
+
+- Created global `ChartTooltip` for Recharts to ensure dark mode visibility.
+- Resolved tooltip color contrast conflicts across all Recharts charts.
+- Formatted all chart monetary values properly with Philippine Peso (₱).
+- Ensured tooltips are highly readable in both Light Mode and Dark Mode.
+- Updated to version v1.9.5 across all components.
+
 ## [1.9.4] - 2026-08-02
 
 ### Fixed

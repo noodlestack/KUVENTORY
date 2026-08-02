@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Receipt, Banknote, ArrowDownCircle, ArrowUpCircle } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { formatCurrency } from "@/utils/currency";
-
+import { ChartTooltip } from "@/components/charts/ChartTooltip";
 interface ExpenseSummaryDashboardProps {
   summary: ExpenseSummaryData | null;
 }
@@ -80,8 +80,7 @@ export function ExpenseSummaryDashboard({ summary }: ExpenseSummaryDashboardProp
                     axisLine={false} 
                   />
                   <Tooltip 
-                    formatter={(value: number) => [formatCurrency(value), 'Expenses']}
-                    labelStyle={{ color: 'black' }}
+                    content={<ChartTooltip formatter={(value) => [formatCurrency(value as number), 'Expenses']} />}
                   />
                   <Bar dataKey="value" fill="currentColor" radius={[4, 4, 0, 0]} className="fill-primary" />
                 </BarChart>

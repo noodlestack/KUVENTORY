@@ -5,7 +5,7 @@ import { ReportHeader } from "@/components/reports/ReportHeader";
 import { BarChart, Bar, CartesianGrid, XAxis, Tooltip, YAxis, LineChart, Line } from "recharts";
 import { Receipt, Calendar, ArrowUpCircle, ArrowDownCircle } from "lucide-react";
 import { formatCurrency } from "@/utils/currency";
-
+import { ChartTooltip } from "@/components/charts/ChartTooltip";
 export function ExpenseReports() {
   const { data, isLoading } = useExpenseReport();
 
@@ -31,9 +31,7 @@ export function ExpenseReports() {
             <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
             <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value: number) => formatCurrency(value)} width={90} />
             <Tooltip 
-              formatter={(value: number) => [formatCurrency(value), 'Expenses']} 
-              contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' }}
-              labelStyle={{ color: 'hsl(var(--foreground))' }}
+              content={<ChartTooltip formatter={(value) => [formatCurrency(value as number), 'Expenses']} />}
             />
             <Line type="monotone" dataKey="value" stroke="#f43f5e" strokeWidth={2} activeDot={{ r: 8 }} />
           </LineChart>
@@ -45,9 +43,7 @@ export function ExpenseReports() {
             <XAxis type="number" hide />
             <YAxis dataKey="name" type="category" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
             <Tooltip 
-              formatter={(value: number) => [formatCurrency(value), 'Expenses']} 
-              contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' }}
-              labelStyle={{ color: 'hsl(var(--foreground))' }}
+              content={<ChartTooltip formatter={(value) => [formatCurrency(value as number), 'Expenses']} />}
               cursor={{fill: 'var(--muted)'}} 
             />
             <Bar dataKey="value" fill="#f59e0b" radius={[0, 4, 4, 0]} barSize={20} />

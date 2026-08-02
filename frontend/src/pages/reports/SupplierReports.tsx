@@ -5,7 +5,7 @@ import { ReportHeader } from "@/components/reports/ReportHeader";
 import { BarChart, Bar, CartesianGrid, XAxis, Tooltip, YAxis, PieChart, Pie, Cell } from "recharts";
 import { Users, Truck } from "lucide-react";
 import { formatCurrency } from "@/utils/currency";
-
+import { ChartTooltip } from "@/components/charts/ChartTooltip";
 const COLORS = ['#10b981', '#9ca3af'];
 
 export function SupplierReports() {
@@ -41,10 +41,7 @@ export function SupplierReports() {
               ))}
             </Pie>
             <Tooltip 
-              formatter={(value: number) => [`${value} Suppliers`]}
-              contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' }}
-              itemStyle={{ color: 'hsl(var(--foreground))' }}
-              labelStyle={{ color: 'hsl(var(--foreground))' }}
+              content={<ChartTooltip formatter={(value) => [`${value} Suppliers`]} />}
             />
           </PieChart>
         </ChartCard>
@@ -55,10 +52,7 @@ export function SupplierReports() {
             <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
             <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value: number) => formatCurrency(value)} width={90} />
             <Tooltip 
-              formatter={(value: number) => [formatCurrency(value), 'Spent']} 
-              contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' }}
-              itemStyle={{ color: 'hsl(var(--foreground))' }}
-              labelStyle={{ color: 'hsl(var(--foreground))' }}
+              content={<ChartTooltip formatter={(value) => [formatCurrency(value as number), 'Spent']} />}
               cursor={{fill: 'var(--muted)'}} 
             />
             <Bar dataKey="value" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
