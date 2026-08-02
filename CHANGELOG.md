@@ -1,33 +1,41 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to the Kuventory project will be documented in this file.
 
-## v1.9.1 (Patch Release)
+## [v2.0.0] - 2026-08-03
 
-### Fixed
-- Fixed overlapping yellow focus outline on the Command Search input.
-- Removed duplicate border/ring rendering in the Command Palette.
-- Improved Command Search focus styling.
-- Fixed inconsistent input appearance across themes.
+### Added
+- **Workflow Alignment**: Introduced precise operational flow tracking with `Beginning`, `Added`, `AM Sales`, `PM Sales`, and `Ending` stock for inventory items.
+- **Reporting Enhancements**: Added robust PDF and Excel export capabilities for sales, expenses, and inventory reports.
+- **Deployment**: Integrated a GitHub Actions workflow to automatically deploy to GitHub Pages upon pushing to `main`.
+- **System Documentation**: Centralized and comprehensively expanded all documentation inside the `/docs` directory.
+
+### Changed
+- **Total Stock Calculation**: Total Stock is now strictly auto-calculated as `(Beginning + Added)`.
+- **Ending Stock Calculation**: Ending Stock is strictly auto-calculated as `(Total - (AM + PM))`.
+- **Global Theme & Layout**: Refined navigation layouts, breadcrumbs, and sidebar configurations to enhance mobile and tablet viewing experiences.
+- **Data Tables**: Enabled horizontal scrolling (`overflow-x-auto`) to prevent layout breaking on small screens.
+
+### Improved
+- **Code Maintainability**: Substantially cleaned the codebase by purging dead files, unused modules, and duplicate styling logic.
+- **State Optimization**: Utilized custom hooks and centralized mock services effectively.
 
 ### Optimized
-- Improved production bundle through lazy loading and code splitting.
-- Reduced initial JavaScript payload.
-- Removed unused imports and optimized module loading.
-- Improved overall frontend performance.
+- **React Rendering**: Wrapped heavily re-rendered components, such as `InventoryTable`, `SalesTable`, `PurchaseTable`, and `ExpenseTable`, in `React.memo` to enhance rendering performance and UI responsiveness.
 
-### Verified
-- Dashboard
-- Inventory
-- Products
-- Purchases
-- Suppliers
-- Sales
-- Expenses
-- Reports
-- Settings
-- Command Search
-- Notifications
-- Sidebar
-- Mobile Drawer
-- Desktop, Tablet, and Mobile responsiveness
+### Fixed
+- **Dark Mode Visibility**: Resolved a bug where chart tooltip text and backgrounds clashed in Recharts, ensuring high contrast in dark mode.
+- **Responsive Navigation**: Fixed an issue where the navigation drawer was un-clickable on narrow devices.
+
+### Removed
+- **Unused Modules**: Purged the generic `Products` module, `StockMovement`, and `StockAdjustment` tabs, focusing purely on Kape Uno Bistro's specific requirements.
+- **Manual Input Overrides**: Removed the ability to manually override calculated stock values to enforce data integrity.
+
+### Security Improvements
+- Defined distinct frontend roles mapping, preparing the foundation for JWT-based backend security.
+- Enhanced form validations using Zod to sanitize inputs locally before transmission.
+
+---
+
+## [v1.9.5] - 2026-07-28
+- Initial stable release of the frontend UI featuring dashboard, inventory, supply chain, and settings modules with mock data.
