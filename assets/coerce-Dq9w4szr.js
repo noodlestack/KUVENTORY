@@ -1,1 +1,0 @@
-import{u as e,v as t}from"./index-DTXp4l9o.js";function n(n){return t(e,n)}export{n as t};
