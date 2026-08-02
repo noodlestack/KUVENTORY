@@ -13,17 +13,18 @@ export function DashboardLayout() {
     <div className="flex h-screen h-dvh flex-col w-full bg-secondary/30 overflow-hidden">
       <Navbar toggleSidebar={toggleSidebar} />
       
-      <div className="flex flex-1 overflow-hidden transition-all duration-300">
+      <div className="flex flex-1 overflow-hidden min-h-0 transition-all duration-300">
         <Sidebar isCollapsed={isSidebarCollapsed} />
         
-        <div className="flex flex-1 flex-col overflow-hidden">
-          <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
-            <div className="mx-auto w-full max-w-7xl animate-fade-in">
-              <Outlet />
+        <div className="flex flex-1 flex-col overflow-hidden min-h-0">
+          <main className="flex-1 overflow-y-auto min-h-0 flex flex-col">
+            <div className="flex-1 p-4 sm:p-6 lg:p-8">
+              <div className="mx-auto w-full max-w-7xl animate-fade-in">
+                <Outlet />
+              </div>
             </div>
+            <Footer />
           </main>
-          
-          <Footer />
         </div>
       </div>
     </div>

@@ -2,9 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.9.4] - 2026-08-02
+
+### Fixed
+
+- Fixed Kape Uno Bistro login logo clipping on responsive viewports.
+- Fixed footer overlapping page content across application modules.
+- Fixed responsive page scrolling and content visibility.
+- Fixed Sales Overview chart Y-axis currency labels being clipped.
+- Fixed Philippine Peso (₱) symbol visibility on charts across mobile, tablet, laptop, and desktop.
+- Improved responsive Recharts margins and Y-axis formatting.
+- Standardized chart currency formatting using the global currency formatter.
+- Improved chart readability in Dark Mode and Light Mode.
+
 ## [1.9.0] - 2026-07-28
 
 ### Changed
+
 - **Maintenance Update**: Reorganized top navigation, fixed dark mode charts, resolved mobile drawer bugs.
 - **Theme**: Removed hardcoded colors in sidebar and replaced with theme tokens.
 - **Optimization**: Addressed layout, performance, and accessibility issues.
@@ -12,6 +26,7 @@ All notable changes to this project will be documented in this file.
 ## [1.3.0] - 2026-07-26
 
 ### Changed
+
 - **Currency Localization**: Localized the application for the Philippines. All currency values now use the Philippine Peso (₱) symbol and format.
 - **Improved Currency Formatting**: Implemented a global utility `formatCurrency` using `Intl.NumberFormat` with `en-PH` locale to ensure consistent thousands separators and standard `-₱` formatting for negative numbers.
 - **Updated Version Information**: Bumped version to v1.3.0 across the application interface, including Sidebar, Footer, and Settings sections.

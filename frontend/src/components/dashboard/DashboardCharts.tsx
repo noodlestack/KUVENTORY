@@ -36,6 +36,7 @@ export function DashboardCharts({ salesData, categoryData }: DashboardChartsProp
                   tickLine={false}
                   axisLine={false}
                   tickFormatter={(value) => formatCurrency(value)}
+                  width={90}
                 />
                 <Tooltip 
                   contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' }}
