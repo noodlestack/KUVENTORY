@@ -1,1 +1,0 @@
-import{u as e,v as t}from"./index-B2TxDySb.js";function n(n){return t(e,n)}export{n as t};
