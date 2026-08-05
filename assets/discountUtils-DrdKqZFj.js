@@ -1,1 +1,0 @@
-var e=(e,t,n,r)=>{if(!t||t===`None`)return{calculatedDiscount:0,finalAmount:e};let i=0;return n&&n>0?i=n/100*e:r&&r>0&&(i=r),i>e&&(i=e),i<0&&(i=0),{calculatedDiscount:i,finalAmount:e-i}};export{e as t};
