@@ -1,8 +1,19 @@
 import { HashRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "@/components/ui/sonner";
 import { ErrorBoundary } from "@/components/error/ErrorBoundary";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 30 * 1000, // 30 seconds
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 import { DashboardLayout } from "@/layouts/DashboardLayout";
 import { AuthLayout } from "@/layouts/AuthLayout";
@@ -37,9 +48,10 @@ function App() {
   return (
     <ThemeProvider defaultTheme="system" attribute="class">
       <ErrorBoundary>
-        <AuthProvider>
-          <HashRouter>
-            <Suspense fallback={<PageLoader />}>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <HashRouter>
+              <Suspense fallback={<PageLoader />}>
             <Routes>
               
               {/* Public Routes (Login, Reset Password) */}
@@ -101,9 +113,10 @@ function App() {
               </Route>
 
             </Routes>
-            </Suspense>
-          </HashRouter>
-        </AuthProvider>
+              </Suspense>
+            </HashRouter>
+          </AuthProvider>
+        </QueryClientProvider>
       </ErrorBoundary>
       <Toaster position="top-right" richColors closeButton />
     </ThemeProvider>

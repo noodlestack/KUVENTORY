@@ -1,11 +1,21 @@
-import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 import { Sidebar } from "@/components/navigation/Sidebar";
 import { Navbar } from "@/components/navigation/Navbar";
 import { Footer } from "@/components/navigation/Footer";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function DashboardLayout() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const { inactivityTimeout, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  // Redirect to session-expired page when inactivity timeout fires
+  useEffect(() => {
+    if (inactivityTimeout && !isAuthenticated) {
+      navigate("/session-expired", { replace: true });
+    }
+  }, [inactivityTimeout, isAuthenticated, navigate]);
 
   const toggleSidebar = () => setIsSidebarCollapsed(!isSidebarCollapsed);
 
