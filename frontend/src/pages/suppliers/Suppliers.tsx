@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSuppliers } from "@/hooks/suppliers/useSuppliers";
@@ -17,6 +17,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { exportToCSV } from "@/utils/exportUtils";
+import { toast } from "sonner";
 
 export function Suppliers() {
   const { suppliers, isLoading, createSupplier, updateSupplier, deleteSupplier } = useSuppliers();
@@ -55,6 +57,21 @@ export function Suppliers() {
     }
   };
 
+  const handleExport = () => {
+    const exportData = suppliers.map(s => ({
+      Name: s.name,
+      ContactPerson: s.contactPerson,
+      Phone: s.phoneNumber,
+      Email: s.email,
+      Address: s.address,
+      Status: s.status,
+      TotalPurchases: s.totalPurchases,
+      DateAdded: s.dateAdded ? new Date(s.dateAdded).toLocaleDateString() : ''
+    }));
+    exportToCSV(exportData, `Kuventory_Suppliers_${new Date().toISOString().split('T')[0]}`);
+    toast.success("Suppliers exported successfully");
+  };
+
   if (isLoading) return <div className="p-8 text-center text-muted-foreground">Loading suppliers...</div>;
 
   return (
@@ -70,6 +87,9 @@ export function Suppliers() {
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input placeholder="Search suppliers..." className="pl-8" />
           </div>
+          <Button variant="outline" onClick={handleExport} disabled={suppliers.length === 0}>
+            <Download className="mr-2 h-4 w-4" /> Export
+          </Button>
           <Button onClick={handleCreate}>
             <Plus className="mr-2 h-4 w-4" /> Add Supplier
           </Button>

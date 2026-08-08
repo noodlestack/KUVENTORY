@@ -62,6 +62,7 @@ export function PurchaseFormDialog({ open, onOpenChange, suppliers, inventoryIte
     name: "items",
   });
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const formValues = form.watch();
   
   const subtotal = formValues.items?.reduce((sum, item) => sum + (item.quantity * item.unitCost), 0) || 0;

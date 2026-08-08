@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { useState, useEffect, useCallback } from "react";
 import { InventoryItem, InventoryFormData } from "@/types/inventory";
 import { inventoryService } from "@/services/inventory/inventoryService";
@@ -18,16 +19,40 @@ export function useInventory() {
   }, [fetchItems]);
 
   const createItem = async (data: InventoryFormData, categoryName: string) => {
+    try {
     const newItem = await inventoryService.createItem(data, categoryName);
-    setItems(prev => [...prev, newItem]);
+    // Refetch from DB to ensure accurate stock state
+    await fetchItems();
     return newItem;
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.message || 'Action failed');
+      throw error;
+    }
   };
 
   const updateItem = async (id: string, data: InventoryFormData, categoryName: string) => {
+    try {
     const updated = await inventoryService.updateItem(id, data, categoryName);
     setItems(prev => prev.map(i => i.id === id ? updated : i));
     return updated;
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.message || 'Action failed');
+      throw error;
+    }
   };
 
-  return { items, isLoading, refresh: fetchItems, createItem, updateItem };
+  const archiveItem = async (id: string) => {
+    try {
+    await inventoryService.archiveItem(id);
+    setItems(prev => prev.filter(i => i.id !== id));
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.message || 'Action failed');
+      throw error;
+    }
+  };
+
+  return { items, isLoading, refresh: fetchItems, createItem, updateItem, archiveItem };
 }

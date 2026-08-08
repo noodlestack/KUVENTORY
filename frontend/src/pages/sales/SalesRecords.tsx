@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSales } from "@/hooks/sales/useSales";
@@ -8,6 +8,8 @@ import { Sale } from "@/types/sales";
 import { SalesTable } from "@/components/sales/SalesTable";
 import { SalesFormDialog } from "@/components/sales/SalesFormDialog";
 import { SalesDetailsDrawer } from "@/components/sales/SalesDetailsDrawer";
+import { exportToCSV } from "@/utils/exportUtils";
+import { toast } from "sonner";
 
 export function SalesRecords() {
   const { sales, isLoading, recordSale } = useSales();
@@ -26,6 +28,21 @@ export function SalesRecords() {
     setIsDrawerOpen(true);
   };
 
+  const handleExport = () => {
+    const exportData = sales.map(s => ({
+      TransactionNo: s.transactionNo,
+      Date: new Date(s.saleDate).toLocaleDateString(),
+      Status: s.status,
+      ItemsCount: s.items.length,
+      GrossAmount: s.totalAmount,
+      Discount: s.discountAmount || 0,
+      NetAmount: s.netAmount,
+      RecordedBy: s.recordedBy
+    }));
+    exportToCSV(exportData, `Kuventory_Sales_${new Date().toISOString().split('T')[0]}`);
+    toast.success("Sales exported successfully");
+  };
+
   if (isLoading || isLoadingInventory) {
     return <div className="p-8 text-center text-muted-foreground">Loading sales records...</div>;
   }
@@ -39,6 +56,9 @@ export function SalesRecords() {
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input placeholder="Search transactions..." className="pl-8" />
           </div>
+          <Button variant="outline" onClick={handleExport} disabled={sales.length === 0}>
+            <Download className="mr-2 h-4 w-4" /> Export
+          </Button>
           <Button onClick={handleCreate}>
             <Plus className="mr-2 h-4 w-4" /> Record Sale
           </Button>

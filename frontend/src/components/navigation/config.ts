@@ -10,14 +10,12 @@ import {
   Tag,
   Tags
 } from "lucide-react";
-import { RoleName } from "@/utils/rbac";
 import React from "react";
 
 export interface NavItem {
   title: string;
   href: string;
   icon: React.ElementType;
-  allowedRoles?: RoleName[];
 }
 
 export interface NavSection {
@@ -35,30 +33,30 @@ export const navigationConfig: NavSection[] = [
   {
     title: "Inventory Management",
     items: [
-      { title: "Inventory", href: "/inventory", icon: Boxes, allowedRoles: ["Administrator", "Manager", "Inventory Staff", "Kitchen Staff"] },
-      { title: "Categories", href: "/categories", icon: Tags, allowedRoles: ["Administrator", "Manager", "Inventory Staff", "Kitchen Staff"] },
-    ]
+      { title: "Inventory", href: "/inventory", icon: Boxes },
+      { title: "Categories", href: "/categories", icon: Tags },
+    ],
   },
   {
-    title: "Supply Chain",
+    title: "Purchasing",
     items: [
-      { title: "Suppliers", href: "/suppliers", icon: Truck, allowedRoles: ["Administrator", "Manager", "Inventory Staff"] },
-      { title: "Purchases", href: "/purchases", icon: ShoppingCart, allowedRoles: ["Administrator", "Manager", "Inventory Staff"] },
-    ]
+      { title: "Suppliers", href: "/suppliers", icon: Truck },
+      { title: "Purchases", href: "/purchases", icon: ShoppingCart },
+    ],
   },
   {
-    title: "Finance & Reports",
+    title: "Sales & Cashiering",
     items: [
-      { title: "Sales", href: "/sales", icon: CreditCard, allowedRoles: ["Administrator", "Manager", "Cashier"] },
-      { title: "Discounts", href: "/discounts", icon: Tag, allowedRoles: ["Administrator", "Manager", "Cashier"] },
-      { title: "Expenses", href: "/expenses", icon: CreditCard, allowedRoles: ["Administrator", "Manager"] },
-      { title: "Reports", href: "/reports", icon: PieChart, allowedRoles: ["Administrator", "Manager", "Viewer"] },
-    ]
+      { title: "Sales", href: "/sales", icon: CreditCard },
+      { title: "Discounts", href: "/discounts", icon: Tag },
+      { title: "Expenses", href: "/expenses", icon: CreditCard },
+      { title: "Reports", href: "/reports", icon: PieChart },
+    ],
   },
   {
     title: "System",
     items: [
-      { title: "Settings", href: "/settings", icon: Settings, allowedRoles: ["Administrator", "Manager"] },
+      { title: "Settings", href: "/settings", icon: Settings },
       { title: "Profile", href: "/profile", icon: UserCircle },
     ]
   }

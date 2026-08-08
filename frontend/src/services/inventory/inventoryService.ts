@@ -6,68 +6,41 @@ import {
   StockAdjustment,
   StockAdjustmentFormData,
   InventoryHistoryEntry,
-  InventoryStatus,
-  MovementType
+  InventoryStatus
 } from "@/types/inventory";
 
 export const inventoryService = {
   getInventory: async (): Promise<InventoryItem[]> => {
-    try {
-      const { data, error } = await supabase
-        .from('inventory_balances')
-        .select(`
-          id,
-          quantity,
-          location:inventory_locations (id, name),
-          item:stock_items (
-            id,
-            stock_code,
-            name,
-            category:categories (id, name),
-            unit:units_of_measure (code),
-            tracking_type,
-            minimum_stock_level,
-            cost_price,
-            selling_price,
-            created_at,
-            updated_at
-          )
-        `);
-        
-      if (error) throw error;
+    const { data, error } = await supabase
+      .from('stock_items')
+      .select('*, category:categories(id, name), unit:units_of_measure(code), balances:inventory_balances(current_quantity)')
+      .eq('is_active', true);
       
-      return (data || []).map((row: any) => {
-        const statusVal: InventoryStatus = 
-          row.quantity === 0 ? 'Out of Stock' :
-          row.quantity <= (row.item.minimum_stock_level || 0) ? 'Low Stock' : 'In Stock';
-
-        return {
-          id: row.item.id,
-          itemCode: row.item.stock_code,
-          name: row.item.name,
-          categoryId: row.item.category?.id || '',
-          categoryName: row.item.category?.name || 'Uncategorized',
-          unit: row.item.unit?.code || 'pcs',
-          supplier: 'Default Supplier', // Not directly tied to item in new schema
-          beginningStock: 0,
-          addedStock: 0,
-          totalStock: row.quantity,
-          morningSales: 0,
-          afternoonSales: 0,
-          endingStock: row.quantity,
-          cost: row.item.cost_price || 0,
-          sellingPrice: row.item.selling_price || 0,
-          minStockLevel: row.item.minimum_stock_level || 0,
-          storageLocation: row.location?.name || 'Main Warehouse',
-          status: statusVal,
-          lastUpdated: row.item.updated_at || new Date().toISOString(),
-          createdAt: row.item.created_at || new Date().toISOString()
-        };
-      });
-    } catch (error) {
-      console.error('Failed to fetch inventory:', error);
-      return [];
-    }
+    if (error) throw error;
+    
+    return (data || []).map(item => ({
+      id: item.id,
+      itemCode: item.stock_code,
+      name: item.name,
+      categoryId: item.category?.id || '',
+      categoryName: item.category?.name || 'Uncategorized',
+      unit: item.unit?.code || 'pcs',
+      supplier: '',
+      beginningStock: 0,
+      addedStock: 0,
+      totalStock: item.balances?.[0]?.current_quantity || 0,
+      morningSales: 0,
+      afternoonSales: 0,
+      endingStock: item.balances?.[0]?.current_quantity || 0,
+      cost: item.cost_price,
+      sellingPrice: item.selling_price,
+      minStockLevel: item.minimum_stock_level,
+      storageLocation: '',
+      status: (item.balances?.[0]?.current_quantity || 0) > 0 ? 'In Stock' as InventoryStatus : 'Out of Stock' as InventoryStatus,
+      notes: '',
+      lastUpdated: item.updated_at,
+      createdAt: item.created_at
+    }));
   },
 
   createItem: async (data: InventoryFormData, categoryName: string): Promise<InventoryItem> => {
@@ -155,109 +128,78 @@ export const inventoryService = {
   },
 
   getMovements: async (): Promise<StockMovement[]> => {
-    try {
-      const { data, error } = await supabase
-        .from('stock_movements')
-        .select(`
-          id,
-          movement_type,
-          quantity,
-          reference_id,
-          notes,
-          created_at,
-          item:stock_items (id, name, stock_code),
-          user:profiles (full_name)
-        `)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-
-      return (data || []).map((row: any) => ({
-        id: row.id,
-        referenceNo: row.reference_id || '-',
-        itemId: row.item?.id || '',
-        itemName: row.item?.name || 'Unknown',
-        itemCode: row.item?.stock_code || 'Unknown',
-        type: (row.movement_type === 'IN' ? 'Stock In' : 
-               row.movement_type === 'OUT' ? 'Stock Out' : 
-               row.movement_type === 'ADJUSTMENT' ? 'Adjustment' : 
-               row.movement_type === 'TRANSFER' ? 'Transfer' : 'Stock In') as MovementType,
-        quantity: row.quantity,
-        performedBy: row.user?.full_name || 'System',
-        remarks: row.notes || '',
-        date: row.created_at
-      }));
-    } catch (error) {
-      console.error('Failed to fetch movements:', error);
-      return [];
-    }
+    const { data, error } = await supabase
+      .from('stock_movements')
+      .select('*, item:stock_items(name, stock_code)')
+      .order('created_at', { ascending: false });
+      
+    if (error) throw error;
+    
+    return (data || []).map(m => ({
+      id: m.id,
+      referenceNo: m.reference_id || 'N/A',
+      itemId: m.stock_item_id,
+      itemName: m.item?.name || 'Unknown',
+      itemCode: m.item?.stock_code || 'Unknown',
+      type: m.movement_type as any,
+      quantity: m.quantity,
+      performedBy: 'System', // Could join profiles later
+      remarks: m.notes || m.reason || '',
+      date: m.created_at
+    }));
   },
 
   getAdjustments: async (): Promise<StockAdjustment[]> => {
-    try {
-      const { data, error } = await supabase
-        .from('stock_movements')
-        .select(`
-          id,
-          quantity,
-          notes,
-          created_at,
-          item:stock_items (id, name, stock_code),
-          user:profiles (full_name)
-        `)
-        .eq('movement_type', 'ADJUSTMENT')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-
-      return (data || []).map((row: any) => ({
-        id: row.id,
-        itemId: row.item?.id || '',
-        itemName: row.item?.name || 'Unknown',
-        currentQuantity: 0, // Would need to query historical balances to be accurate
-        actualQuantity: row.quantity, // Just a rough proxy for UI display
-        difference: row.quantity,
-        reason: row.notes || 'Adjustment',
-        adjustedBy: row.user?.full_name || 'System',
-        remarks: row.notes || '',
-        date: row.created_at
-      }));
-    } catch (error) {
-      console.error('Failed to fetch adjustments:', error);
-      return [];
-    }
+    const { data, error } = await supabase
+      .from('stock_movements')
+      .select('*, item:stock_items(name)')
+      .in('movement_type', ['ADJUSTMENT_IN', 'ADJUSTMENT_OUT'])
+      .order('created_at', { ascending: false });
+      
+    if (error) throw error;
+    
+    return (data || []).map(m => ({
+      id: m.id,
+      itemId: m.stock_item_id,
+      itemName: m.item?.name || 'Unknown',
+      currentQuantity: m.previous_quantity || 0,
+      actualQuantity: m.new_quantity || 0,
+      difference: m.quantity,
+      reason: m.reason || 'No reason provided',
+      adjustedBy: 'System',
+      remarks: m.notes || '',
+      date: m.created_at
+    }));
   },
 
   getHistory: async (): Promise<InventoryHistoryEntry[]> => {
-    try {
-      const { data, error } = await supabase
-        .from('stock_movements')
-        .select(`
-          id,
-          movement_type,
-          quantity,
-          notes,
-          created_at,
-          item:stock_items (id, name, stock_code),
-          user:profiles (full_name)
-        `)
-        .order('created_at', { ascending: false });
+    const { data, error } = await supabase
+      .from('audit_logs')
+      .select('*')
+      .eq('entity_type', 'stock_items')
+      .order('created_at', { ascending: false })
+      .limit(100);
+      
+    if (error) throw error;
+    
+    return (data || []).map(log => ({
+      id: log.id,
+      itemId: log.entity_id || '',
+      itemName: 'Item ' + log.entity_id, 
+      action: log.action as any,
+      performedBy: 'User',
+      details: JSON.stringify(log.new_values) || '',
+      date: log.created_at
+    }));
+  },
 
-      if (error) throw error;
-
-      return (data || []).map((row: any) => ({
-        id: row.id,
-        itemId: row.item?.id || '',
-        itemName: row.item?.name || 'Unknown',
-        action: row.movement_type === 'ADJUSTMENT' ? 'Adjusted' : 'Restocked',
-        performedBy: row.user?.full_name || 'System',
-        details: `${row.quantity > 0 ? '+' : ''}${row.quantity} - ${row.notes || ''}`,
-        date: row.created_at
-      }));
-    } catch (error) {
-      console.error('Failed to fetch history:', error);
-      return [];
-    }
+  archiveItem: async (id: string): Promise<void> => {
+    const { error } = await supabase
+      .from('stock_items')
+      .update({ is_active: false })
+      .eq('id', id);
+      
+    if (error) throw error;
   },
 
   adjustStock: async (data: StockAdjustmentFormData): Promise<StockAdjustment> => {
@@ -270,7 +212,7 @@ export const inventoryService = {
 
     const diff = data.actualQuantity; // UI usually passes the difference here based on mock service behavior
     
-    const { error } = await supabase.rpc('inventory_adjust', {
+    const { data: movementId, error } = await supabase.rpc('inventory_adjust', {
       p_stock_item_id: data.itemId,
       p_location_id: locData.id,
       p_adjustment_type: diff >= 0 ? 'IN' : 'OUT',
@@ -280,18 +222,25 @@ export const inventoryService = {
     });
 
     if (error) throw error;
+    
+    // Fetch the actual movement created to return correct data
+    const { data: movement } = await supabase
+      .from('stock_movements')
+      .select('*, item:stock_items(name)')
+      .eq('id', movementId)
+      .single();
 
     return {
-      id: Math.random().toString(36).substr(2, 9),
+      id: movementId || Math.random().toString(36).substr(2, 9),
       itemId: data.itemId,
-      itemName: 'Adjusted Item',
-      currentQuantity: 0,
-      actualQuantity: data.actualQuantity,
-      difference: diff,
+      itemName: movement?.item?.name || 'Adjusted Item',
+      currentQuantity: movement?.previous_quantity || 0,
+      actualQuantity: movement?.new_quantity || data.actualQuantity,
+      difference: movement?.quantity || diff,
       reason: data.reason,
       adjustedBy: 'Current User',
       remarks: data.remarks,
-      date: new Date().toISOString()
+      date: movement?.created_at || new Date().toISOString()
     };
   }
 };

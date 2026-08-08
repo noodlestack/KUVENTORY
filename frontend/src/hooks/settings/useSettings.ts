@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { mockSettingsService } from "@/services/settings/mockSettingsService";
+import { settingsService } from "@/services/settings/settingsService";
 import { 
   UserProfile, 
   RestaurantSettings, 
@@ -15,7 +15,7 @@ export function useProfile() {
 
   const fetchProfile = useCallback(async () => {
     setIsLoading(true);
-    const data = await mockSettingsService.getProfile();
+    const data = await settingsService.getProfile();
     setProfile(data);
     setIsLoading(false);
   }, []);
@@ -23,13 +23,13 @@ export function useProfile() {
   useEffect(() => { queueMicrotask(fetchProfile); }, [fetchProfile]);
 
   const updateProfile = async (data: Partial<UserProfile>) => {
-    const updated = await mockSettingsService.updateProfile(data);
+    const updated = await settingsService.updateProfile(data);
     setProfile(updated);
     return updated;
   };
 
   const updatePreferences = async (data: Partial<UserPreferences>) => {
-    const updated = await mockSettingsService.updatePreferences(data);
+    const updated = await settingsService.updatePreferences(data);
     setProfile(prev => prev ? { ...prev, preferences: updated } : null);
     return updated;
   };
@@ -43,7 +43,7 @@ export function useRestaurantSettings() {
 
   const fetchSettings = useCallback(async () => {
     setIsLoading(true);
-    const data = await mockSettingsService.getRestaurantSettings();
+    const data = await settingsService.getRestaurantSettings();
     setSettings(data);
     setIsLoading(false);
   }, []);
@@ -51,7 +51,7 @@ export function useRestaurantSettings() {
   useEffect(() => { queueMicrotask(fetchSettings); }, [fetchSettings]);
 
   const updateSettings = async (data: Partial<RestaurantSettings>) => {
-    const updated = await mockSettingsService.updateRestaurantSettings(data);
+    const updated = await settingsService.updateRestaurantSettings(data);
     setSettings(updated);
     return updated;
   };
@@ -65,7 +65,7 @@ export function useNotificationSettings() {
 
   const fetchSettings = useCallback(async () => {
     setIsLoading(true);
-    const data = await mockSettingsService.getNotificationSettings();
+    const data = await settingsService.getNotificationSettings();
     setSettings(data);
     setIsLoading(false);
   }, []);
@@ -73,7 +73,7 @@ export function useNotificationSettings() {
   useEffect(() => { queueMicrotask(fetchSettings); }, [fetchSettings]);
 
   const updateSettings = async (data: Partial<NotificationSettings>) => {
-    const updated = await mockSettingsService.updateNotificationSettings(data);
+    const updated = await settingsService.updateNotificationSettings(data);
     setSettings(updated);
     return updated;
   };
@@ -87,7 +87,7 @@ export function useUsers() {
 
   const fetchUsers = useCallback(async () => {
     setIsLoading(true);
-    const data = await mockSettingsService.getUsers();
+    const data = await settingsService.getUsers();
     setUsers(data);
     setIsLoading(false);
   }, []);
@@ -95,13 +95,13 @@ export function useUsers() {
   useEffect(() => { queueMicrotask(fetchUsers); }, [fetchUsers]);
 
   const createUser = async (data: Omit<UserAccount, 'id' | 'lastLogin' | 'createdAt'>) => {
-    const newUser = await mockSettingsService.createUser(data);
+    const newUser = await settingsService.createUser(data);
     setUsers(prev => [...prev, newUser]);
     return newUser;
   };
 
   const updateUser = async (id: string, data: Partial<UserAccount>) => {
-    const updated = await mockSettingsService.updateUser(id, data);
+    const updated = await settingsService.updateUser(id, data);
     setUsers(prev => prev.map(u => u.id === id ? updated : u));
     return updated;
   };
@@ -115,7 +115,7 @@ export function useActivityLogs() {
 
   const fetchLogs = useCallback(async () => {
     setIsLoading(true);
-    const data = await mockSettingsService.getActivityLogs();
+    const data = await settingsService.getActivityLogs();
     setLogs(data);
     setIsLoading(false);
   }, []);

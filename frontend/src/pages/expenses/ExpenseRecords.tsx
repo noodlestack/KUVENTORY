@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useExpenses, useExpenseCategories } from "@/hooks/expenses/useExpenses";
@@ -7,6 +7,8 @@ import { Expense, ExpenseFormData } from "@/types/expenses";
 import { ExpenseTable } from "@/components/expenses/ExpenseTable";
 import { ExpenseFormDialog } from "@/components/expenses/ExpenseFormDialog";
 import { ExpenseDetailsDrawer } from "@/components/expenses/ExpenseDetailsDrawer";
+import { exportToCSV } from "@/utils/exportUtils";
+import { toast } from "sonner";
 
 export function ExpenseRecords() {
   const { expenses, isLoading, recordExpense, updateExpense } = useExpenses();
@@ -40,6 +42,24 @@ export function ExpenseRecords() {
     }
   };
 
+  const handleExport = () => {
+    const exportData = expenses.map(e => ({
+      ExpenseNo: e.expenseNo,
+      Date: new Date(e.expenseDate).toLocaleDateString(),
+      Category: e.categoryName,
+      Description: e.description,
+      PaymentMethod: e.paymentMethod,
+      Supplier: e.supplier || '',
+      Status: e.status,
+      OriginalAmount: e.originalAmount,
+      Discount: e.discountAmount || 0,
+      FinalAmount: e.finalAmount,
+      RecordedBy: e.recordedBy
+    }));
+    exportToCSV(exportData, `Kuventory_Expenses_${new Date().toISOString().split('T')[0]}`);
+    toast.success("Expenses exported successfully");
+  };
+
   if (isLoading || isLoadingCategories) {
     return <div className="p-8 text-center text-muted-foreground">Loading expenses...</div>;
   }
@@ -53,6 +73,9 @@ export function ExpenseRecords() {
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input placeholder="Search expenses..." className="pl-8" />
           </div>
+          <Button variant="outline" onClick={handleExport} disabled={expenses.length === 0}>
+            <Download className="mr-2 h-4 w-4" /> Export
+          </Button>
           <Button onClick={handleCreate}>
             <Plus className="mr-2 h-4 w-4" /> Record Expense
           </Button>

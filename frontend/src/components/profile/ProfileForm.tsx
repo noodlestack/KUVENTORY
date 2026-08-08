@@ -1,4 +1,6 @@
 import { useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -70,12 +72,17 @@ export function ProfileForm({ profile, onSubmit }: ProfileFormProps) {
       email: data.email,
       phone: data.phone,
     });
-    // In a real app, we'd handle password change separately via a different API endpoint
     if (data.newPassword) {
-      alert("Mock: Password would be updated here.");
-      form.setValue("currentPassword", "");
-      form.setValue("newPassword", "");
-      form.setValue("confirmPassword", "");
+      try {
+        const { error } = await supabase.auth.updateUser({ password: data.newPassword });
+        if (error) throw error;
+        toast.success("Password updated successfully");
+        form.setValue("currentPassword", "");
+        form.setValue("newPassword", "");
+        form.setValue("confirmPassword", "");
+      } catch (error: any) {
+        toast.error(error.message || "Failed to update password");
+      }
     }
   };
 

@@ -3,40 +3,24 @@ import { Supplier, SupplierFormData, SupplierStatus } from "@/types/suppliers";
 
 export const supplierService = {
   getSuppliers: async (): Promise<Supplier[]> => {
-    try {
-      const { data, error } = await supabase
-        .from('suppliers')
-        .select(`
-          id,
-          name,
-          contact_person,
-          email,
-          phone,
-          address,
-          is_active,
-          created_at
-        `)
-        .order('name');
-        
-      if (error) throw error;
-      
-      return (data || []).map(row => ({
-        id: row.id,
-        name: row.name,
-        contactPerson: row.contact_person || '',
-        phoneNumber: row.phone || '',
-        email: row.email || '',
-        address: row.address || '',
-        status: (row.is_active ? 'Active' : 'Inactive') as SupplierStatus,
-        dateAdded: row.created_at,
-        totalPurchases: 0,
-        hasDefaultDiscount: false, // We'd need to query supplier_discount_policies to get this
-        defaultDiscountId: undefined
-      }));
-    } catch (error) {
-      console.error('Failed to fetch suppliers:', error);
-      return [];
-    }
+    const { data, error } = await supabase
+      .from('suppliers')
+      .select('*')
+      .eq('is_active', true);
+    if (error) throw error;
+    
+    return (data || []).map(s => ({
+      id: s.id,
+      name: s.name,
+      contactPerson: s.contact_person || '',
+      phoneNumber: s.phone || '',
+      email: s.email || '',
+      address: s.address || '',
+      status: (s.is_active ? 'Active' : 'Inactive') as SupplierStatus,
+      dateAdded: s.created_at,
+      totalPurchases: 0,
+      hasDefaultDiscount: false
+    }));
   },
 
   createSupplier: async (formData: SupplierFormData): Promise<Supplier> => {

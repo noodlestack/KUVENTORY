@@ -62,7 +62,6 @@ export function UserFormDialog({ open, onOpenChange, user, onSubmit }: UserFormD
   }, [user, open, form]);
 
   const handleSubmit = async (data: UserFormValues) => {
-    // If creating new user, we require a password initially, but we are using mock data so it's fine.
     await onSubmit({
       fullName: data.fullName,
       username: data.username,

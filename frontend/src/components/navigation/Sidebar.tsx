@@ -10,7 +10,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { User, Settings, HelpCircle, Info } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { hasAnyRole } from "@/utils/rbac";
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -19,7 +18,7 @@ interface SidebarProps {
 export function Sidebar({ isCollapsed }: SidebarProps) {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, profile, roles, primaryRole, logout } = useAuth();
+  const { user, profile, logout } = useAuth();
 
   const handleLogout = async () => {
     await logout();
@@ -28,7 +27,8 @@ export function Sidebar({ isCollapsed }: SidebarProps) {
   };
 
   const displayName = profile?.full_name || user?.email?.split('@')[0] || "User";
-  const displayRole = primaryRole || "Staff";
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const displayRole = (profile as any)?.user_roles?.[0]?.roles?.name || "Staff";
 
   return (
     <aside
@@ -43,7 +43,7 @@ export function Sidebar({ isCollapsed }: SidebarProps) {
           {navigationConfig
             .map(section => ({
               ...section,
-              items: section.items.filter(item => !item.allowedRoles || hasAnyRole(roles, item.allowedRoles))
+              items: section.items
             }))
             .filter(section => section.items.length > 0)
             .map((section, index) => (
@@ -116,7 +116,7 @@ export function Sidebar({ isCollapsed }: SidebarProps) {
               <HelpCircle className="mr-2 h-4 w-4" />
               <span>Help</span>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => toast.info("Kuventory v2.0.0")}>
+            <DropdownMenuItem onClick={() => toast.info("Kuventory v4.0.0")}>
               <Info className="mr-2 h-4 w-4" />
               <span>About Kuventory</span>
             </DropdownMenuItem>

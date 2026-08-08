@@ -2,7 +2,7 @@ import React from "react";
 import { InventoryItem } from "@/types/inventory";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { Button } from "@/components/ui/button";
-import { Edit, MoreHorizontal, Eye, ArrowUpDown } from "lucide-react";
+import { Edit, MoreHorizontal, Eye, ArrowUpDown, Archive } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
@@ -11,9 +11,10 @@ interface InventoryTableProps {
   items: InventoryItem[];
   onView: (item: InventoryItem) => void;
   onEdit: (item: InventoryItem) => void;
+  onArchive?: (item: InventoryItem) => void;
 }
 
-export const InventoryTable = React.memo(function InventoryTable({ items, onView, onEdit }: InventoryTableProps) {
+export const InventoryTable = React.memo(function InventoryTable({ items, onView, onEdit, onArchive }: InventoryTableProps) {
   
   const formatDate = (dateStr: string) => new Intl.DateTimeFormat('en-US', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(dateStr));
 
@@ -86,6 +87,11 @@ export const InventoryTable = React.memo(function InventoryTable({ items, onView
                 <DropdownMenuItem onClick={() => onEdit(item)}>
                   <Edit className="mr-2 h-4 w-4" /> Edit
                 </DropdownMenuItem>
+                {onArchive && (
+                  <DropdownMenuItem onClick={() => onArchive(item)} className="text-destructive">
+                    <Archive className="mr-2 h-4 w-4" /> Archive Item
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

@@ -55,6 +55,7 @@ export function SalesFormDialog({ open, onOpenChange, inventoryItems, onSubmit }
     },
   });
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const formValues = form.watch();
   
   const subtotal = formValues.items?.reduce((sum, item) => sum + (item.quantity * item.unitPrice), 0) || 0;

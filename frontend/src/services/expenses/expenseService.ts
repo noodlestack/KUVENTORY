@@ -1,28 +1,20 @@
 import { supabase } from '@/integrations/supabase/client';
-import { CONFIGURED_DISCOUNTS } from '../discounts/discountService';
 import { Expense, ExpenseCategory, ExpenseFormData, ExpenseCategoryFormData, ExpenseSummaryData, ExpenseStatus } from "@/types/expenses";
 
 export const expenseService = {
   // Expense Categories
   getCategories: async (): Promise<ExpenseCategory[]> => {
-    try {
-      const { data, error } = await supabase
-        .from('expense_categories')
-        .select('id, name, description, is_active')
-        .order('name');
-        
-      if (error) throw error;
-      
-      return (data || []).map(row => ({
-        id: row.id,
-        name: row.name,
-        description: row.description || '',
-        isActive: row.is_active
-      }));
-    } catch (error) {
-      console.error('Failed to fetch expense categories:', error);
-      return [];
-    }
+    const { data, error } = await supabase
+      .from('expense_categories')
+      .select('*');
+    if (error) throw error;
+    
+    return (data || []).map(c => ({
+      id: c.id,
+      name: c.name,
+      description: c.description || '',
+      isActive: c.is_active
+    }));
   },
 
   createCategory: async (formData: ExpenseCategoryFormData): Promise<ExpenseCategory> => {
@@ -70,56 +62,30 @@ export const expenseService = {
 
   // Expenses
   getExpenses: async (): Promise<Expense[]> => {
-    try {
-      const { data, error } = await supabase
-        .from('expenses')
-        .select(`
-          id,
-          expense_number,
-          expense_date,
-          status,
-          original_amount,
-          discount_amount,
-          final_amount,
-          payment_method,
-          supplier_or_payee,
-          description,
-          notes,
-          created_at,
-          updated_at,
-          category:expense_categories(id, name),
-          user:profiles(full_name)
-        `)
-        .order('created_at', { ascending: false });
-        
-      if (error) throw error;
-      
-      return (data || []).map((row: any) => ({
-        id: row.id,
-        expenseNo: row.expense_number,
-        expenseDate: row.expense_date,
-        categoryId: row.category?.id || '',
-        categoryName: row.category?.name || 'Uncategorized',
-        description: row.description || '',
-        originalAmount: row.original_amount,
-        discountAmount: row.discount_amount,
-        finalAmount: row.final_amount,
-        amount: row.final_amount,
-        paymentMethod: row.payment_method || 'Cash',
-        referenceNo: '', // DB doesn't have referenceNo in expenses table directly
-        supplier: row.supplier_or_payee || '',
-        remarks: row.notes || '',
-        status: (row.status === 'APPROVED' ? 'Paid' : 
-                 row.status === 'VOIDED' ? 'Cancelled' : 
-                 row.status === 'PENDING' ? 'Pending' : 'Pending') as ExpenseStatus,
-        recordedBy: row.user?.full_name || 'System',
-        createdAt: row.created_at,
-        updatedAt: row.updated_at
-      }));
-    } catch (error) {
-      console.error('Failed to fetch expenses:', error);
-      return [];
-    }
+    const { data, error } = await supabase
+      .from('expenses')
+      .select('*, category:expense_categories(name)');
+    if (error) throw error;
+    
+    return (data || []).map(e => ({
+      id: e.id,
+      expenseNo: e.expense_number,
+      expenseDate: e.expense_date,
+      categoryId: e.category_id,
+      categoryName: e.category?.name || 'Unknown',
+      description: e.description,
+      originalAmount: e.original_amount,
+      discountAmount: e.discount_amount,
+      finalAmount: e.final_amount,
+      amount: e.final_amount,
+      paymentMethod: e.payment_method as any,
+      supplier: e.supplier_or_payee || undefined,
+      remarks: e.notes || undefined,
+      status: e.status as ExpenseStatus,
+      recordedBy: 'User',
+      createdAt: e.created_at,
+      updatedAt: e.updated_at
+    }));
   },
 
   createExpense: async (formData: ExpenseFormData): Promise<Expense> => {
@@ -127,9 +93,16 @@ export const expenseService = {
     
     let discountAmount = 0;
     if (formData.hasDiscount && formData.discountId) {
-      const discount = CONFIGURED_DISCOUNTS.find(d => d.id === formData.discountId);
-      if (discount && discount.percentage) {
-        discountAmount = formData.originalAmount * (discount.percentage / 100);
+      const { data: discount } = await supabase
+        .from('discount_configs')
+        .select('*')
+        .eq('id', formData.discountId)
+        .single();
+        
+      if (discount && discount.discount_percentage) {
+        discountAmount = formData.originalAmount * (discount.discount_percentage / 100);
+      } else if (discount && discount.fixed_discount_amount) {
+        discountAmount = discount.fixed_discount_amount;
       }
     }
 
@@ -222,29 +195,6 @@ export const expenseService = {
 
   // Summary
   getSummary: async (): Promise<ExpenseSummaryData | null> => {
-    try {
-      const { data, error } = await supabase
-        .from('expenses')
-        .select('final_amount, status, category:expense_categories(name)');
-        
-      if (error) throw error;
-      
-      const expenses = data || [];
-      const approved = expenses.filter(e => e.status !== 'VOIDED');
-      const total = approved.reduce((acc, e) => acc + e.final_amount, 0);
-      
-      return {
-        totalExpenses: total,
-        highestExpense: Math.max(0, ...approved.map(e => e.final_amount)),
-        lowestExpense: approved.length > 0 ? Math.min(...approved.map(e => e.final_amount)) : 0,
-        averageExpense: approved.length > 0 ? total / approved.length : 0,
-        expenseCount: approved.length,
-        monthlyTrend: [], // Need grouping
-        categoryBreakdown: [] // Need grouping
-      };
-    } catch (error) {
-      console.error('Failed to fetch expense summary:', error);
-      return null;
-    }
+    return null;
   }
 };

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { SearchResult } from "@/types/search";
-import { mockSearchService } from "@/services/search/mockSearchService";
+import { searchService } from "@/services/search/searchService";
 
 export function useSearch() {
   const [query, setQuery] = useState("");
@@ -11,7 +11,7 @@ export function useSearch() {
   // Load recent searches on mount
   useEffect(() => {
     const loadRecent = async () => {
-      const recent = await mockSearchService.getRecentSearches();
+      const recent = await searchService.getRecentSearches();
       setRecentSearches(recent);
     };
     loadRecent();
@@ -30,7 +30,7 @@ export function useSearch() {
     queueMicrotask(() => setIsSearching(true));
     const handler = setTimeout(async () => {
       try {
-        const data = await mockSearchService.search(query);
+        const data = await searchService.search(query);
         setResults(data);
       } catch (error) {
         console.error("Search failed", error);

@@ -3,7 +3,7 @@ import { Purchase } from "@/types/purchases";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { Button } from "@/components/ui/button";
-import { Eye, MoreHorizontal } from "lucide-react";
+import { Eye, MoreHorizontal, CheckCheck, XCircle } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatCurrency } from "@/utils/currency";
@@ -11,9 +11,11 @@ import { formatCurrency } from "@/utils/currency";
 interface PurchaseTableProps {
   purchases: Purchase[];
   onView: (purchase: Purchase) => void;
+  onReceive?: (purchaseId: string) => void;
+  onCancel?: (purchaseId: string) => void;
 }
 
-export const PurchaseTable = React.memo(function PurchaseTable({ purchases, onView }: PurchaseTableProps) {
+export const PurchaseTable = React.memo(function PurchaseTable({ purchases, onView, onReceive, onCancel }: PurchaseTableProps) {
   if (purchases.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center border rounded-md border-dashed bg-card mt-4">
@@ -64,6 +66,16 @@ export const PurchaseTable = React.memo(function PurchaseTable({ purchases, onVi
                       <DropdownMenuItem onClick={() => onView(purchase)}>
                         <Eye className="mr-2 h-4 w-4" /> View Details
                       </DropdownMenuItem>
+                      {purchase.status === 'Pending' && onReceive && (
+                        <DropdownMenuItem onClick={() => onReceive(purchase.id)} className="text-green-600">
+                          <CheckCheck className="mr-2 h-4 w-4" /> Mark as Received (Stock In)
+                        </DropdownMenuItem>
+                      )}
+                      {purchase.status === 'Pending' && onCancel && (
+                        <DropdownMenuItem onClick={() => onCancel(purchase.id)} className="text-destructive">
+                          <XCircle className="mr-2 h-4 w-4" /> Cancel Purchase
+                        </DropdownMenuItem>
+                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
@@ -94,6 +106,16 @@ export const PurchaseTable = React.memo(function PurchaseTable({ purchases, onVi
                       <DropdownMenuItem onClick={() => onView(purchase)}>
                         <Eye className="mr-2 h-4 w-4" /> View
                       </DropdownMenuItem>
+                      {purchase.status === 'Pending' && onReceive && (
+                        <DropdownMenuItem onClick={() => onReceive(purchase.id)} className="text-green-600">
+                          <CheckCheck className="mr-2 h-4 w-4" /> Receive
+                        </DropdownMenuItem>
+                      )}
+                      {purchase.status === 'Pending' && onCancel && (
+                        <DropdownMenuItem onClick={() => onCancel(purchase.id)} className="text-destructive">
+                          <XCircle className="mr-2 h-4 w-4" /> Cancel
+                        </DropdownMenuItem>
+                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>

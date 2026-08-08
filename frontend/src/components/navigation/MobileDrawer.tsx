@@ -12,10 +12,9 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { hasAnyRole } from "@/utils/rbac";
 
 export function MobileDrawer() {
-  const { user, profile, roles, primaryRole, logout } = useAuth();
+  const { user, profile, primaryRole, logout } = useAuth();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -48,7 +47,7 @@ export function MobileDrawer() {
           {navigationConfig
             .map(section => ({
               ...section,
-              items: section.items.filter(item => !item.allowedRoles || hasAnyRole(roles, item.allowedRoles))
+              items: section.items
             }))
             .filter(section => section.items.length > 0)
             .map((section, index) => (

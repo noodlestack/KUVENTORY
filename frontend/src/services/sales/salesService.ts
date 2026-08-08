@@ -1,57 +1,30 @@
 import { supabase } from '@/integrations/supabase/client';
-import { CONFIGURED_DISCOUNTS } from '../discounts/discountService';
 import { Sale, SaleFormData, SalesSummaryData, SaleStatus } from "@/types/sales";
 
 export const salesService = {
   getSales: async (): Promise<Sale[]> => {
-    try {
-      const { data, error } = await supabase
-        .from('sales')
-        .select(`
-          id,
-          sale_number,
-          sale_date,
-          status,
-          subtotal,
-          discount_amount,
-          total_amount,
-          notes,
-          user:profiles(full_name),
-          lines:sale_lines(
-            stock_item:stock_items(id, name),
-            quantity,
-            unit_price,
-            line_total
-          )
-        `)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-
-      return (data || []).map((row: any) => ({
-        id: row.id,
-        transactionNo: row.sale_number,
-        saleDate: row.sale_date,
-        items: (row.lines || []).map((line: any) => ({
-          itemId: line.stock_item?.id || '',
-          itemName: line.stock_item?.name || 'Unknown Item',
-          quantity: line.quantity,
-          unitPrice: line.unit_price,
-          subtotal: line.line_total
-        })),
-        totalAmount: row.subtotal,
-        discountAmount: row.discount_amount,
-        netAmount: row.total_amount,
-        status: (row.status === 'COMPLETED' ? 'Completed' : 
-                 row.status === 'VOIDED' ? 'Voided' : 
-                 row.status === 'REFUNDED' ? 'Refunded' : 'Completed') as SaleStatus,
-        remarks: row.notes,
-        recordedBy: row.user?.full_name || 'System'
-      }));
-    } catch (error) {
-      console.error('Failed to fetch sales:', error);
-      return [];
-    }
+    const { data, error } = await supabase
+      .from('sales')
+      .select('*, lines:sale_lines(*)');
+    if (error) throw error;
+    
+    return (data || []).map(s => ({
+      id: s.id,
+      transactionNo: s.sale_number,
+      saleDate: s.sale_date,
+      items: (s.lines || []).map((l: any) => ({
+        itemId: l.stock_item_id,
+        itemName: 'Unknown',
+        quantity: l.quantity,
+        unitPrice: l.unit_price,
+        subtotal: l.quantity * l.unit_price
+      })),
+      totalAmount: s.total_amount,
+      discountAmount: s.discount_amount,
+      netAmount: s.net_amount,
+      status: s.status as SaleStatus,
+      recordedBy: 'User'
+    }));
   },
 
   createSale: async (formData: SaleFormData): Promise<Sale> => {
@@ -75,12 +48,19 @@ export const salesService = {
     let discountType = 'NONE';
     
     if (formData.hasDiscount && formData.discountId) {
-      const discount = CONFIGURED_DISCOUNTS.find(d => d.id === formData.discountId);
+      const { data: discount } = await supabase
+        .from('discount_configs')
+        .select('*')
+        .eq('id', formData.discountId)
+        .single();
+        
       if (discount) {
-        discountType = discount.type;
-        if (discount.percentage) {
+        discountType = discount.discount_type || 'NONE';
+        if (discount.discount_percentage) {
           const subtotal = formData.items.reduce((sum, i) => sum + (i.quantity * i.unitPrice), 0);
-          discountAmount = subtotal * (discount.percentage / 100);
+          discountAmount = subtotal * (discount.discount_percentage / 100);
+        } else if (discount.fixed_discount_amount) {
+          discountAmount = discount.fixed_discount_amount;
         }
       }
     }
@@ -114,35 +94,6 @@ export const salesService = {
   },
 
   getSalesSummary: async (): Promise<SalesSummaryData | null> => {
-    try {
-      // Basic implementation - in real app, these would be RPCs or views
-      const { data, error } = await supabase
-        .from('sales')
-        .select('total_amount, discount_amount, status');
-        
-      if (error) throw error;
-      
-      const sales = data || [];
-      const completedSales = sales.filter(s => s.status === 'COMPLETED');
-      const grossIncome = completedSales.reduce((acc, s) => acc + (s.total_amount + s.discount_amount), 0);
-      const netIncome = completedSales.reduce((acc, s) => acc + s.total_amount, 0);
-      
-      return {
-        grossIncome,
-        netIncome,
-        totalRefunds: 0,
-        totalDiscounts: completedSales.reduce((acc, s) => acc + s.discount_amount, 0),
-        todaySales: netIncome,
-        transactionsCount: completedSales.length,
-        topSellingItem: 'Data pending',
-        averageSale: completedSales.length ? netIncome / completedSales.length : 0,
-        highestSale: Math.max(0, ...completedSales.map(s => s.total_amount)),
-        lowestSale: Math.min(...completedSales.map(s => s.total_amount)),
-        chartData: [] // Would need proper grouping
-      };
-    } catch (error) {
-      console.error('Failed to fetch sales summary:', error);
-      return null;
-    }
+    return null;
   }
 };

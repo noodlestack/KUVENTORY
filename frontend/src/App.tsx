@@ -21,7 +21,6 @@ import { BlankLayout } from "@/layouts/BlankLayout";
 
 import { ProtectedRoute } from "@/routes/ProtectedRoute";
 import { PublicRoute } from "@/routes/PublicRoute";
-import { RoleProtectedRoute } from "@/routes/RoleProtectedRoute";
 
 import React, { Suspense } from "react";
 import { PageLoader } from "@/components/common/LoadingStates";
@@ -75,34 +74,24 @@ function App() {
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/profile" element={<ProfileLayout />} />
 
-                  {/* Inventory & Purchasing - Admin, Manager, Inventory Staff */}
-                  <Route element={<RoleProtectedRoute allowedRoles={["Administrator", "Manager", "Inventory Staff", "Kitchen Staff"]} />}>
-                    <Route path="/inventory" element={<InventoryLayout />} />
-                    <Route path="/categories" element={<CategoryManagement />} />
-                    <Route path="/suppliers" element={<Suppliers />} />
-                    <Route path="/purchases" element={<PurchasesLayout />} />
-                  </Route>
+                  {/* Inventory & Purchasing */}
+                  <Route path="/inventory" element={<InventoryLayout />} />
+                  <Route path="/categories" element={<CategoryManagement />} />
+                  <Route path="/suppliers" element={<Suppliers />} />
+                  <Route path="/purchases" element={<PurchasesLayout />} />
 
-                  {/* Sales - Admin, Manager, Cashier */}
-                  <Route element={<RoleProtectedRoute allowedRoles={["Administrator", "Manager", "Cashier"]} />}>
-                    <Route path="/sales" element={<SalesLayout />} />
-                    <Route path="/discounts" element={<DiscountsLayout />} />
-                  </Route>
+                  {/* Sales */}
+                  <Route path="/sales" element={<SalesLayout />} />
+                  <Route path="/discounts" element={<DiscountsLayout />} />
 
-                  {/* Expenses - Admin, Manager */}
-                  <Route element={<RoleProtectedRoute allowedRoles={["Administrator", "Manager"]} />}>
-                    <Route path="/expenses" element={<ExpensesLayout />} />
-                  </Route>
+                  {/* Expenses */}
+                  <Route path="/expenses" element={<ExpensesLayout />} />
 
-                  {/* Reports - Admin, Manager, Viewer */}
-                  <Route element={<RoleProtectedRoute allowedRoles={["Administrator", "Manager", "Viewer"]} />}>
-                    <Route path="/reports" element={<ReportsLayout />} />
-                  </Route>
+                  {/* Reports */}
+                  <Route path="/reports" element={<ReportsLayout />} />
 
-                  {/* Settings / System - Admin, Manager */}
-                  <Route element={<RoleProtectedRoute allowedRoles={["Administrator", "Manager"]} />}>
-                    <Route path="/settings" element={<SettingsLayout />} />
-                  </Route>
+                  {/* Settings / System */}
+                  <Route path="/settings" element={<SettingsLayout />} />
                 </Route>
               </Route>
 

@@ -57,6 +57,7 @@ export function ExpenseFormDialog({ open, onOpenChange, categories, expense, onS
     },
   });
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const formValues = form.watch();
   
   const selectedDiscount = formValues.hasDiscount ? discounts.find(d => d.id === formValues.discountId) : undefined;

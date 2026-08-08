@@ -1,4 +1,4 @@
-﻿import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 export function AboutKuventory() {
@@ -17,21 +17,21 @@ export function AboutKuventory() {
           </div>
           <div>
             <h4 className="text-sm font-medium text-muted-foreground">Status</h4>
-            <Badge variant="outline" className="mt-1 border-success text-success">Frontend Stable</Badge>
+            <Badge variant="outline" className="mt-1 border-success text-success">Production</Badge>
           </div>
           
           <div>
             <h4 className="text-sm font-medium text-muted-foreground">Version</h4>
-            <p className="font-mono text-sm">v2.0.0</p>
+            <p className="font-mono text-sm">v4.0.0</p>
           </div>
           <div>
             <h4 className="text-sm font-medium text-muted-foreground">Backend & Database</h4>
-            <p className="text-sm">Django REST Framework (Previous backend architecture discarded. New backend architecture pending.) / PostgreSQL (Previous backend architecture discarded. New backend architecture pending.)<br/><span className="text-xs text-muted-foreground">(Integration Pending)</span></p>
+            <p className="text-sm">Supabase (PostgreSQL) — Connected &amp; Active</p>
           </div>
           
           <div>
             <h4 className="text-sm font-medium text-muted-foreground">Core Technologies</h4>
-            <p className="text-sm mt-1">React 19, TypeScript, Vite, Tailwind CSS</p>
+            <p className="text-sm mt-1">React 19, TypeScript, Vite, Tailwind CSS, Supabase</p>
           </div>
           <div>
             <h4 className="text-sm font-medium text-muted-foreground">Target Platform</h4>

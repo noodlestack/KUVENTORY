@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { useState, useEffect, useCallback } from "react";
 import { Sale, SaleFormData, SalesSummaryData } from "@/types/sales";
 import { salesService } from "@/services/sales/salesService";
@@ -18,9 +19,15 @@ export function useSales() {
   }, [fetchSales]);
 
   const recordSale = async (data: SaleFormData) => {
+    try {
     const newSale = await salesService.createSale(data);
     setSales(prev => [newSale, ...prev]);
     return newSale;
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.message || 'Action failed');
+      throw error;
+    }
   };
 
   return { sales, isLoading, refresh: fetchSales, recordSale };

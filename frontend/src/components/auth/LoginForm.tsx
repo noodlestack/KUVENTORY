@@ -46,6 +46,13 @@ export function LoginForm() {
     setError(null);
     
     try {
+      // Set the remember me flag so the custom storage adapter knows where to persist the session
+      if (data.rememberMe) {
+        window.localStorage.setItem("kuventory-remember-me", "true");
+      } else {
+        window.localStorage.setItem("kuventory-remember-me", "false");
+      }
+
       await authService.signIn({
         email: data.email,
         password: data.password,

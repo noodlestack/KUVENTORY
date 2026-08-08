@@ -77,7 +77,6 @@ export function DailyInventorySheet() {
       for (const item of changedItems) {
         // Find category name
         const categoryName = categories.find(c => c.id === item.categoryId)?.name || item.categoryName;
-        // The mock updateItem expects InventoryFormData, so we map InventoryItem back to it
         await updateItem(
           item.id,
           {

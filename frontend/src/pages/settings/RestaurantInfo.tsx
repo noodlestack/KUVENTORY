@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -42,8 +43,12 @@ export function RestaurantInfo() {
   }, [settings, form]);
 
   const handleSubmit = async (data: RestaurantFormValues) => {
-    await updateSettings(data);
-    alert("Mock: Restaurant info updated successfully");
+    try {
+      await updateSettings(data);
+      toast.success("Restaurant info updated successfully");
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update restaurant info");
+    }
   };
 
   if (isLoading) return <div className="p-4 text-muted-foreground">Loading settings...</div>;

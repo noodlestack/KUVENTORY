@@ -227,6 +227,7 @@ export function SupplierFormDialog({ open, onOpenChange, supplier, onSubmit }: S
                   )}
                 />
 
+                {/* eslint-disable-next-line react-hooks/incompatible-library */}
                 {form.watch("hasDefaultDiscount") && (
                   <div className="space-y-4 pt-2">
                     <FormField

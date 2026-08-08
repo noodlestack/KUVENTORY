@@ -78,6 +78,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Clear all cached query data to prevent data leaking between users
     queryClient.clear();
     localStorage.removeItem(LAST_ACTIVITY_KEY);
+    localStorage.removeItem("kuventory-remember-me");
   }, [queryClient]);
 
   // ============================================================
@@ -272,8 +273,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setUser(newSession.user);
         }
 
-        // Always update loading state after first auth event
-        if (mounted) {
+        // Only update loading state if it's not INITIAL_SESSION to avoid race condition with initializeAuth
+        if (mounted && event !== "INITIAL_SESSION") {
           setIsLoading(false);
         }
       }
