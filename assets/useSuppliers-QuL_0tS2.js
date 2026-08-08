@@ -1,4 +1,4 @@
-import{r as e}from"./rolldown-runtime-QTnfLwEv.js";import{i as t}from"./utils-2Y7OFES2.js";import{Bt as n}from"./index-BEEX-R1J.js";var r=e(t(),1),i={getSuppliers:async()=>{try{let{data:e,error:t}=await n.from(`suppliers`).select(`
+import{r as e}from"./rolldown-runtime-QTnfLwEv.js";import{i as t}from"./utils-2Y7OFES2.js";import{Bt as n}from"./index-U27M7oeR.js";var r=e(t(),1),i={getSuppliers:async()=>{try{let{data:e,error:t}=await n.from(`suppliers`).select(`
           id,
           name,
           contact_person,

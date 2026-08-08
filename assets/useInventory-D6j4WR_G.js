@@ -1,4 +1,4 @@
-import{r as e}from"./rolldown-runtime-QTnfLwEv.js";import{i as t}from"./utils-2Y7OFES2.js";import{Bt as n}from"./index-BEEX-R1J.js";var r=e(t(),1),i={getInventory:async()=>{try{let{data:e,error:t}=await n.from(`inventory_balances`).select(`
+import{r as e}from"./rolldown-runtime-QTnfLwEv.js";import{i as t}from"./utils-2Y7OFES2.js";import{Bt as n}from"./index-U27M7oeR.js";var r=e(t(),1),i={getInventory:async()=>{try{let{data:e,error:t}=await n.from(`inventory_balances`).select(`
           id,
           quantity,
           location:inventory_locations (id, name),
