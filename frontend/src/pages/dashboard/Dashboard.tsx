@@ -13,7 +13,7 @@ const DashboardCharts = React.lazy(() => import("@/components/dashboard/Dashboar
 import { formatCurrency } from "@/utils/currency";
 
 export function Dashboard() {
-  const { user } = useAuth();
+  const { user, profile, primaryRole } = useAuth();
   const { metrics, activities, notifications, salesData, categoryData, isLoading } = useDashboard();
 
   const currentDate = new Intl.DateTimeFormat('en-US', {
@@ -30,10 +30,10 @@ export function Dashboard() {
       {/* Welcome Section */}
       <div>
         <h1 className="text-3xl font-bold tracking-tight">
-          Good Morning, {user?.username || "User"}
+          Good Morning, {profile?.full_name || user?.email?.split('@')[0] || "User"}
         </h1>
         <p className="text-muted-foreground mt-1">
-          {user?.role || "Staff"} &bull; {currentDate}
+          {primaryRole || "Staff"} &bull; {currentDate}
         </p>
       </div>
 
@@ -69,10 +69,10 @@ export function Dashboard() {
               href="/inventory"
             />
             <StatCard 
-              title="Low Stock Products" 
-              value={metrics.lowStockProducts} 
+              title="Low Stock Items" 
+              value={metrics.lowStockItems} 
               icon={<AlertCircle className="h-4 w-4 text-warning" />}
-              className={metrics.lowStockProducts > 10 ? "border-warning/50 bg-warning/5" : ""}
+              className={metrics.lowStockItems > 10 ? "border-warning/50 bg-warning/5" : ""}
               href="/inventory"
             />
           </>
@@ -103,16 +103,16 @@ export function Dashboard() {
         ) : (
           <>
             <StatCard 
-              title="Current Products" 
-              value={metrics.currentProducts} 
+              title="Current Supplies" 
+              value={metrics.currentSupplies} 
               icon={<Package className="h-4 w-4 text-muted-foreground" />}
-              href="/products"
+              href="/inventory"
             />
             <StatCard 
               title="Out of Stock" 
-              value={metrics.outOfStockProducts} 
+              value={metrics.outOfStockItems} 
               icon={<TrendingDown className="h-4 w-4 text-destructive" />}
-              className={metrics.outOfStockProducts > 0 ? "border-destructive/50 bg-destructive/5" : ""}
+              className={metrics.outOfStockItems > 0 ? "border-destructive/50 bg-destructive/5" : ""}
               href="/inventory"
             />
             <StatCard 

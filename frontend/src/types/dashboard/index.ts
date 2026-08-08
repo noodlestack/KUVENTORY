@@ -1,21 +1,25 @@
 export interface DashboardMetrics {
   todaySales: number;
   todayTransactions: number;
-  currentProducts: number;
+  currentSupplies: number;
   currentInventoryItems: number;
-  lowStockProducts: number;
-  outOfStockProducts: number;
+  lowStockItems: number;
+  outOfStockItems: number;
   monthlyExpenses: number;
   activeSuppliers: number;
+  
+  totalDiscountsToday: number;
+  discountedTransactions: number;
   
   salesTrend: number;
   transactionsTrend: number;
   expensesTrend: number;
+  discountsTrend: number;
 }
 
 export interface Activity {
   id: string;
-  type: "Inventory" | "Supplier" | "Purchase" | "Sale" | "Expense";
+  type: "Inventory" | "Supplier" | "Purchase" | "Sale" | "Expense" | "Discount";
   description: string;
   timestamp: string;
 }

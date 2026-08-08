@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Notification } from "@/types/notifications";
-import { mockNotificationService } from "@/services/notifications/mockNotificationService";
+import { notificationService } from "@/services/notifications/notificationService";
 
 export function useNotifications() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -8,7 +8,7 @@ export function useNotifications() {
 
   const loadNotifications = useCallback(async () => {
     try {
-      const data = await mockNotificationService.getNotifications();
+      const data = await notificationService.getNotifications();
       setNotifications(data);
     } catch (error) {
       console.error("Failed to load notifications", error);
@@ -27,7 +27,7 @@ export function useNotifications() {
     // Optimistic update
     setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
     try {
-      await mockNotificationService.markAsRead(id);
+      await notificationService.markAsRead(id);
     } catch (error) {
       console.error("Failed to mark as read", error);
       loadNotifications(); // rollback on failure
@@ -37,7 +37,7 @@ export function useNotifications() {
   const markAllAsRead = async () => {
     setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
     try {
-      await mockNotificationService.markAllAsRead();
+      await notificationService.markAllAsRead();
     } catch (error) {
       console.error("Failed to mark all as read", error);
       loadNotifications();
@@ -47,7 +47,7 @@ export function useNotifications() {
   const deleteNotification = async (id: string) => {
     setNotifications(prev => prev.filter(n => n.id !== id));
     try {
-      await mockNotificationService.deleteNotification(id);
+      await notificationService.deleteNotification(id);
     } catch (error) {
       console.error("Failed to delete notification", error);
       loadNotifications();
@@ -57,7 +57,7 @@ export function useNotifications() {
   const clearAll = async () => {
     setNotifications([]);
     try {
-      await mockNotificationService.clearAll();
+      await notificationService.clearAll();
     } catch (error) {
       console.error("Failed to clear notifications", error);
       loadNotifications();

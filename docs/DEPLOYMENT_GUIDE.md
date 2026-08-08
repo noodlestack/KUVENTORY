@@ -1,6 +1,6 @@
 # Deployment Guide
 
-**Kuventory v2.0.0**
+**Kuventory v2.0.1**
 
 Kuventory is currently deployed as a static React Single Page Application (SPA) to GitHub Pages. The deployment is fully automated using GitHub Actions.
 

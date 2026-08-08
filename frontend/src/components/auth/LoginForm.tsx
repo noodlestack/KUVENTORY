@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
+import { authService } from "@/services/authService";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -20,7 +20,7 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 const loginSchema = z.object({
-  emailOrUsername: z.string().min(1, { message: "Email or username is required" }),
+  email: z.string().email({ message: "Invalid email address" }),
   password: z.string().min(1, { message: "Password is required" }),
   rememberMe: z.boolean(),
 });
@@ -30,14 +30,12 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 export function LoginForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { login } = useAuth();
   const navigate = useNavigate();
 
   const form = useForm<LoginFormValues>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(loginSchema) as any,
+    resolver: zodResolver(loginSchema),
     defaultValues: {
-      emailOrUsername: "",
+      email: "",
       password: "",
       rememberMe: false,
     },
@@ -48,25 +46,19 @@ export function LoginForm() {
     setError(null);
     
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await authService.signIn({
+        email: data.email,
+        password: data.password,
+      });
       
-      // Stub check (For UI demonstration purposes)
-      if (data.emailOrUsername === "admin" && data.password === "password") {
-        login(
-          { id: "1", username: "admin", email: "admin@kapeuno.com", role: "Admin" },
-          "stub_access_token",
-          data.rememberMe ? "stub_refresh_token" : undefined
-        );
-        toast.success("Welcome back, Admin!");
-        navigate("/");
-      } else {
-        setError("Invalid credentials. Try admin / password.");
-        toast.error("Invalid credentials.");
-      }
-    } catch {
-      setError("An unexpected error occurred.");
-      toast.error("An unexpected error occurred.");
+      toast.success("Signed in successfully");
+      navigate("/");
+    } catch (err: unknown) {
+      console.error("Login error:", err);
+      // Don't expose raw Supabase internals, provide a generic or message based error
+      const message = err instanceof Error ? err.message : "Invalid login credentials.";
+      setError(message);
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -84,12 +76,12 @@ export function LoginForm() {
 
         <FormField
           control={form.control}
-          name="emailOrUsername"
+          name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email or Username</FormLabel>
+              <FormLabel>Email Address</FormLabel>
               <FormControl>
-                <Input placeholder="Enter your email or username" disabled={isSubmitting} {...field} />
+                <Input placeholder="Enter your email" disabled={isSubmitting} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

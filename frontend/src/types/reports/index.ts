@@ -9,6 +9,7 @@ export interface AnalyticsSummary {
     totalPurchases: number;
     totalExpenses: number;
     netIncome: number;
+    totalDiscounts: number;
     activeInventoryItems: number;
     lowStockItems: number;
     outOfStockItems: number;
@@ -25,10 +26,20 @@ export interface SalesReport {
   weeklySales: number;
   monthlySales: number;
   yearlySales: number;
-  topSellingProducts: ChartDataPoint[];
+  topSellingItems: ChartDataPoint[];
   salesTrend: ChartDataPoint[];
   averageSale: number;
   transactionCount: number;
+  totalDiscounts: number;
+}
+
+export interface DiscountReport {
+  totalTransactions: number;
+  originalAmount: number;
+  totalDiscount: number;
+  netAmount: number;
+  discountByType: ChartDataPoint[];
+  discountTrend: ChartDataPoint[];
 }
 
 export interface InventoryReport {

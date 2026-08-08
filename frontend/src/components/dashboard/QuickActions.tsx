@@ -5,7 +5,7 @@ import { Package, ShoppingCart, Users, Truck, PhilippinePeso, BarChart3, Setting
 
 const actions = [
   { label: "Inventory", icon: Package, href: "/inventory" },
-  { label: "Products", icon: ShoppingCart, href: "/products" },
+  { label: "Inventory", icon: ShoppingCart, href: "/inventory" },
   { label: "Sales", icon: PhilippinePeso, href: "/sales" },
   { label: "Purchases", icon: Truck, href: "/purchases" },
   { label: "Suppliers", icon: Users, href: "/suppliers" },

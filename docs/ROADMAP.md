@@ -1,6 +1,10 @@
-# Project Roadmap
+﻿# Project Roadmap
 
 **Kuventory**
+
+## ✅ Completed: Frontend v2.0.1 (Terminology & Discounts)
+- Replaced outdated "Product" terminology with context-appropriate supply and stock terminology.
+- Centralized discount management across the system (Senior Citizen, PWD, Drivers, Promos).
 
 ## ✅ Completed: Frontend v2.0.0
 - Comprehensive React SPA structure built with Vite and Tailwind.
@@ -15,12 +19,12 @@
 ## 🚀 Next Phase: Backend Integration
 
 ### Backend Developer 1: Authentication & Core Infrastructure
-- Setup Django project and PostgreSQL database schema.
+- Setup Django (Previous backend architecture discarded. New backend architecture pending.) project and PostgreSQL (Previous backend architecture discarded. New backend architecture pending.) database schema.
 - Implement DRF token authentication (JWT).
 - Establish base API routing and permission classes.
 
 ### Backend Developer 2: Inventory & Supply Chain
-- Create Django models for Inventory Items, Categories, and Suppliers.
+- Create Django (Previous backend architecture discarded. New backend architecture pending.) models for Inventory Items, Categories, and Suppliers.
 - Implement CRUD endpoints for Inventory and Purchases.
 - Enforce business logic constraints (e.g., Total Stock = Beginning + Added) at the database/ORM level.
 
@@ -48,3 +52,4 @@
 - Provision production server environment (e.g., AWS, GCP, or DigitalOcean).
 - Setup Dockerized deployment with Nginx and Gunicorn.
 - Final data migration and go-live.
+

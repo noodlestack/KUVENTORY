@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { StockAdjustment, StockAdjustmentFormData } from "@/types/inventory";
-import { mockInventoryService } from "@/services/inventory/mockInventoryService";
+import { inventoryService } from "@/services/inventory/inventoryService";
 
 export function useStockAdjustments() {
   const [adjustments, setAdjustments] = useState<StockAdjustment[]>([]);
@@ -8,7 +8,7 @@ export function useStockAdjustments() {
 
   const fetchAdjustments = useCallback(async () => {
     setIsLoading(true);
-    const data = await mockInventoryService.getAdjustments();
+    const data = await inventoryService.getAdjustments();
     setAdjustments(data);
     setIsLoading(false);
   }, []);
@@ -18,7 +18,7 @@ export function useStockAdjustments() {
   }, [fetchAdjustments]);
 
   const adjustStock = async (data: StockAdjustmentFormData) => {
-    const newAdj = await mockInventoryService.adjustStock(data);
+    const newAdj = await inventoryService.adjustStock(data);
     setAdjustments(prev => [newAdj, ...prev]);
     return newAdj;
   };

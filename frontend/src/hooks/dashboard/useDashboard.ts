@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { mockDashboardService } from "@/services/dashboard/mockService";
+import { dashboardService } from "@/services/dashboard/dashboardService";
 import { DashboardMetrics, Activity, Notification, ChartDataPoint } from "@/types/dashboard";
 
 export function useDashboard() {
@@ -17,24 +17,24 @@ export function useDashboard() {
   useEffect(() => {
     const fetchAll = async () => {
       // Fetch in parallel for realism, but set states independently
-      mockDashboardService.getMetrics().then(data => {
+      dashboardService.getMetrics().then(data => {
         setMetrics(data);
         setIsLoadingMetrics(false);
       });
 
-      mockDashboardService.getRecentActivities().then(data => {
+      dashboardService.getRecentActivities().then(data => {
         setActivities(data);
         setIsLoadingActivities(false);
       });
 
-      mockDashboardService.getNotifications().then(data => {
+      dashboardService.getNotifications().then(data => {
         setNotifications(data);
         setIsLoadingNotifications(false);
       });
 
       Promise.all([
-        mockDashboardService.getSalesChartData(),
-        mockDashboardService.getCategoryChartData()
+        dashboardService.getSalesChartData(),
+        dashboardService.getCategoryChartData()
       ]).then(([sales, categories]) => {
         setSalesData(sales);
         setCategoryData(categories);

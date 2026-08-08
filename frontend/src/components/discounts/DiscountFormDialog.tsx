@@ -13,8 +13,9 @@ import { Switch } from "@/components/ui/switch";
 
 const discountSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
-  type: z.enum(["Senior Citizen", "PWD", "Employee", "Promo", "Other"]),
-  percentage: z.coerce.number().min(0, "Cannot be negative").max(100, "Cannot exceed 100%"),
+  type: z.enum(["Senior Citizen", "PWD", "Delivery Driver", "Employee", "Promotional", "Manual", "Custom", "None"]),
+  percentage: z.coerce.number().min(0, "Cannot be negative").max(100, "Cannot exceed 100%").optional(),
+  amount: z.coerce.number().min(0, "Cannot be negative").optional(),
   isActive: z.boolean(),
   description: z.string().optional(),
   requirements: z.string().optional(),
@@ -33,8 +34,9 @@ export function DiscountFormDialog({ open, onOpenChange, discount, onSubmit }: D
     resolver: zodResolver(discountSchema) as any,
     defaultValues: {
       name: "",
-      type: "Promo",
+      type: "Promotional",
       percentage: 0,
+      amount: 0,
       isActive: true,
       description: "",
       requirements: "",
@@ -47,7 +49,8 @@ export function DiscountFormDialog({ open, onOpenChange, discount, onSubmit }: D
         form.reset({
           name: discount.name,
           type: discount.type,
-          percentage: discount.percentage,
+          percentage: discount.percentage || 0,
+          amount: discount.amount || 0,
           isActive: discount.isActive,
           description: discount.description || "",
           requirements: discount.requirements || "",
@@ -55,8 +58,9 @@ export function DiscountFormDialog({ open, onOpenChange, discount, onSubmit }: D
       } else {
         form.reset({
           name: "",
-          type: "Promo",
+          type: "Promotional",
           percentage: 0,
+          amount: 0,
           isActive: true,
           description: "",
           requirements: "",
@@ -72,15 +76,17 @@ export function DiscountFormDialog({ open, onOpenChange, discount, onSubmit }: D
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>{discount ? "Edit Discount" : "Add Discount"}</DialogTitle>
-          <DialogDescription>
-            {discount ? "Update the details of this discount rule." : "Create a new discount rule for sales transactions."}
-          </DialogDescription>
-        </DialogHeader>
+      <DialogContent className="sm:max-w-[425px] max-h-[90vh] flex flex-col p-0 overflow-hidden">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col h-full max-h-[90vh]">
+            <DialogHeader className="px-6 py-4 border-b shrink-0">
+              <DialogTitle>{discount ? "Edit Discount" : "Add Discount"}</DialogTitle>
+              <DialogDescription>
+                {discount ? "Update the details of this discount rule." : "Create a new discount rule for sales transactions."}
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="flex-1 overflow-y-auto p-6 space-y-4">
             
             <FormField
               control={form.control}
@@ -112,9 +118,12 @@ export function DiscountFormDialog({ open, onOpenChange, discount, onSubmit }: D
                       <SelectContent>
                         <SelectItem value="Senior Citizen">Senior Citizen</SelectItem>
                         <SelectItem value="PWD">PWD</SelectItem>
+                        <SelectItem value="Delivery Driver">Delivery Driver</SelectItem>
                         <SelectItem value="Employee">Employee</SelectItem>
-                        <SelectItem value="Promo">Promo</SelectItem>
-                        <SelectItem value="Other">Other</SelectItem>
+                        <SelectItem value="Promotional">Promotional</SelectItem>
+                        <SelectItem value="Manual">Manual</SelectItem>
+                        <SelectItem value="Custom">Custom</SelectItem>
+                        <SelectItem value="None">None</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -129,6 +138,19 @@ export function DiscountFormDialog({ open, onOpenChange, discount, onSubmit }: D
                     <FormLabel>Percentage (%)</FormLabel>
                     <FormControl>
                       <Input type="number" step="0.1" min="0" max="100" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="amount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Fixed Amount (₱)</FormLabel>
+                    <FormControl>
+                      <Input type="number" step="0.01" min="0" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -185,7 +207,9 @@ export function DiscountFormDialog({ open, onOpenChange, discount, onSubmit }: D
               )}
             />
 
-            <DialogFooter className="pt-4">
+            </div>
+
+            <DialogFooter className="px-6 py-4 border-t shrink-0">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
               <Button type="submit" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting ? "Saving..." : discount ? "Update Discount" : "Create Discount"}

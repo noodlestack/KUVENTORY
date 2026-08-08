@@ -1,4 +1,4 @@
-# Technology Stack
+﻿# Technology Stack
 
 **Kuventory v2.0.0**
 
@@ -30,8 +30,9 @@
 - **XLSX**: Parses and generates Excel spreadsheets for data export.
 
 ## Future Backend Stack
-- **Django**: High-level Python web framework.
-- **Django REST Framework (DRF)**: A powerful toolkit for building Web APIs on top of Django.
-- **PostgreSQL**: Robust, open-source relational database system.
+- **Django (Previous backend architecture discarded. New backend architecture pending.)**: High-level Python web framework.
+- **Django REST Framework (Previous backend architecture discarded. New backend architecture pending.) (DRF)**: A powerful toolkit for building Web APIs on top of Django (Previous backend architecture discarded. New backend architecture pending.).
+- **PostgreSQL (Previous backend architecture discarded. New backend architecture pending.)**: Robust, open-source relational database system.
 - **Redis**: In-memory data structure store, used as a database, cache, and message broker.
 - **Docker**: Containerization platform for consistent development and deployment environments.
+

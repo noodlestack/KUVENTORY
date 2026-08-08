@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Expense, ExpenseCategory, ExpenseFormData, ExpenseCategoryFormData, ExpenseSummaryData } from "@/types/expenses";
-import { mockExpenseService } from "@/services/expenses/mockExpenseService";
+import { expenseService } from "@/services/expenses/expenseService";
 
 export function useExpenses() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -8,23 +8,25 @@ export function useExpenses() {
 
   const fetchExpenses = useCallback(async () => {
     setIsLoading(true);
-    const data = await mockExpenseService.getExpenses();
+    const data = await expenseService.getExpenses();
     setExpenses(data);
     setIsLoading(false);
   }, []);
 
   useEffect(() => {
-    queueMicrotask(fetchExpenses);
+    queueMicrotask(() => {
+      fetchExpenses();
+    });
   }, [fetchExpenses]);
 
   const recordExpense = async (data: ExpenseFormData) => {
-    const newExpense = await mockExpenseService.createExpense(data);
+    const newExpense = await expenseService.createExpense(data);
     setExpenses(prev => [newExpense, ...prev]);
     return newExpense;
   };
 
   const updateExpense = async (id: string, data: ExpenseFormData) => {
-    const updated = await mockExpenseService.updateExpense(id, data);
+    const updated = await expenseService.updateExpense(id, data);
     setExpenses(prev => prev.map(e => e.id === id ? updated : e));
     return updated;
   };
@@ -38,23 +40,25 @@ export function useExpenseCategories() {
 
   const fetchCategories = useCallback(async () => {
     setIsLoading(true);
-    const data = await mockExpenseService.getCategories();
+    const data = await expenseService.getCategories();
     setCategories(data);
     setIsLoading(false);
   }, []);
 
   useEffect(() => {
-    queueMicrotask(fetchCategories);
+    queueMicrotask(() => {
+      fetchCategories();
+    });
   }, [fetchCategories]);
 
   const addCategory = async (data: ExpenseCategoryFormData) => {
-    const newCategory = await mockExpenseService.createCategory(data);
+    const newCategory = await expenseService.createCategory(data);
     setCategories(prev => [...prev, newCategory]);
     return newCategory;
   };
 
   const editCategory = async (id: string, data: ExpenseCategoryFormData) => {
-    const updated = await mockExpenseService.updateCategory(id, data);
+    const updated = await expenseService.updateCategory(id, data);
     setCategories(prev => prev.map(c => c.id === id ? updated : c));
     return updated;
   };
@@ -68,13 +72,15 @@ export function useExpenseSummary() {
 
   const fetchSummary = useCallback(async () => {
     setIsLoading(true);
-    const data = await mockExpenseService.getSummary();
+    const data = await expenseService.getSummary();
     setSummary(data);
     setIsLoading(false);
   }, []);
 
   useEffect(() => {
-    queueMicrotask(fetchSummary);
+    queueMicrotask(() => {
+      fetchSummary();
+    });
   }, [fetchSummary]);
 
   return { summary, isLoading, refresh: fetchSummary };

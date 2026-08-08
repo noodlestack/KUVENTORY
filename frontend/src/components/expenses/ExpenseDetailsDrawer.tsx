@@ -32,9 +32,16 @@ export function ExpenseDetailsDrawer({ open, onOpenChange, expense, onEdit }: Ex
 
         <div className="space-y-6">
           <div className="flex justify-between items-center bg-muted/30 p-4 rounded-lg">
-            <span className="text-sm font-medium text-muted-foreground">Amount</span>
-            <span className="font-bold text-2xl text-primary">{formatCurrency(expense.amount)}</span>
+            <span className="text-sm font-medium text-muted-foreground">Final Amount</span>
+            <span className="font-bold text-2xl text-primary">{formatCurrency(expense.finalAmount || expense.amount)}</span>
           </div>
+
+          {(expense.discountAmount || 0) > 0 && (
+            <div className="flex justify-between items-center bg-destructive/10 p-4 rounded-lg mt-2">
+              <span className="text-sm font-medium text-destructive">Discount Applied</span>
+              <span className="font-bold text-lg text-destructive">-{formatCurrency(expense.discountAmount!)}</span>
+            </div>
+          )}
 
           <div className="flex justify-between items-center">
             <span className="text-sm font-medium text-muted-foreground">Status</span>

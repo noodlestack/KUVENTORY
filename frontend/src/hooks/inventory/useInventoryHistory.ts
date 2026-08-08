@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { InventoryHistoryEntry } from "@/types/inventory";
-import { mockInventoryService } from "@/services/inventory/mockInventoryService";
+import { inventoryService } from "@/services/inventory/inventoryService";
 
 export function useInventoryHistory() {
   const [history, setHistory] = useState<InventoryHistoryEntry[]>([]);
@@ -8,7 +8,7 @@ export function useInventoryHistory() {
 
   const fetchHistory = useCallback(async () => {
     setIsLoading(true);
-    const data = await mockInventoryService.getHistory();
+    const data = await inventoryService.getHistory();
     setHistory(data);
     setIsLoading(false);
   }, []);

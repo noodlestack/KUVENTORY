@@ -1,6 +1,41 @@
-# Changelog
+﻿# Changelog
 
 All notable changes to the Kuventory project will be documented in this file.
+
+## [v2.0.2] - 2026-08-05
+
+### Added
+- Created actual REST API services using Axios to replace mock data services.
+- Added dynamic Category Management UI and linked it to Inventory Form for inline creation.
+
+### Changed
+- Removed all hardcoded mock business data for Dashboard, Inventory, Sales, Expenses, Purchases, Suppliers, and Discounts.
+- Changed the frontend app to fetch data from the newly implemented Django (Previous backend architecture discarded. New backend architecture pending.) backend endpoints instead of using simulated delays.
+
+
+## [v2.0.1] - 2026-08-05
+
+### Changed
+- Replaced outdated user-facing "Product" terminology with context-appropriate "Supplies", "Stock", "Stock Item", and "Item" terminology.
+- Removed the standalone Products module from the user-facing workflow.
+
+### Added
+- Centralized discount management.
+- Senior Citizen Discounts.
+- PWD Discounts.
+- Delivery Driver Discounts.
+- Employee Discounts.
+- Promotional Discounts.
+- Manual and Custom Discounts.
+- Discount reporting and analytics.
+
+### Improved
+- Discount calculations.
+- Sales transaction handling.
+- Delivery discount workflows.
+- Reports and exports.
+- Responsive discount interfaces.
+- Overall terminology consistency.
 
 ## [v2.0.0] - 2026-08-03
 
@@ -39,3 +74,4 @@ All notable changes to the Kuventory project will be documented in this file.
 
 ## [v1.9.5] - 2026-07-28
 - Initial stable release of the frontend UI featuring dashboard, inventory, supply chain, and settings modules with mock data.
+

@@ -15,7 +15,11 @@ export interface Expense {
   categoryId: string;
   categoryName: string;
   description: string;
-  amount: number;
+  originalAmount: number;
+  discountId?: string;
+  discountAmount?: number;
+  finalAmount: number;
+  amount: number; // Keep for backward compatibility/reporting mapping if needed, or define as finalAmount
   paymentMethod: PaymentMethod;
   referenceNo?: string;
   supplier?: string;
@@ -30,7 +34,9 @@ export interface ExpenseFormData {
   expenseDate: string;
   categoryId: string;
   description: string;
-  amount: number;
+  originalAmount: number;
+  hasDiscount?: boolean;
+  discountId?: string;
   paymentMethod: PaymentMethod;
   referenceNo?: string;
   supplier?: string;

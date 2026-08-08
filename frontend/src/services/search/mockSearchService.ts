@@ -8,8 +8,8 @@ const mockDatabase: SearchResult[] = [
   // Inventory
   { id: "inv-1", title: "Inventory List", description: "View all current stock levels", module: "Inventory", category: "Inventory", href: "/inventory", shortcut: "I" },
   { id: "inv-2", title: "Low Stock Items", description: "View items requiring reorder", module: "Inventory", category: "Inventory", href: "/inventory/low-stock" },
-  { id: "inv-3", title: "Products Directory", description: "Manage all product variants", module: "Products", category: "Inventory", href: "/products", shortcut: "P" },
-  { id: "inv-4", title: "Categories", description: "Manage product groupings", module: "Products", category: "Inventory", href: "/products/categories" },
+  { id: "inv-3", title: "Supplies Directory", description: "Manage all supply variants", module: "Supplies", category: "Inventory", href: "/supplies", shortcut: "S" },
+  { id: "inv-4", title: "Categories", description: "Manage item groupings", module: "Supplies", category: "Inventory", href: "/supplies/categories" },
   
   // Supply Chain
   { id: "sup-1", title: "Suppliers Directory", description: "Manage vendor information", module: "Suppliers", category: "Supply Chain", href: "/suppliers" },

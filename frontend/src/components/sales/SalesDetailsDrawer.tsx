@@ -76,9 +76,21 @@ export function SalesDetailsDrawer({ open, onOpenChange, sale }: SalesDetailsDra
               </Table>
             </div>
             
-            <div className="flex justify-between items-center mt-4 pt-4 border-t">
-              <span className="font-semibold">Grand Total</span>
-              <span className="font-bold text-2xl text-primary">{formatCurrency(sale.totalAmount)}</span>
+            <div className="flex justify-between items-center mt-4 pt-4 border-t text-muted-foreground">
+              <span>Subtotal</span>
+              <span>{formatCurrency(sale.totalAmount)}</span>
+            </div>
+
+            {(sale.discountAmount || 0) > 0 && (
+              <div className="flex justify-between items-center mt-2 text-destructive">
+                <span>Discount</span>
+                <span>-{formatCurrency(sale.discountAmount!)}</span>
+              </div>
+            )}
+
+            <div className="flex justify-between items-center mt-2 pt-2 border-t">
+              <span className="font-semibold">Net Sales</span>
+              <span className="font-bold text-2xl text-primary">{formatCurrency(sale.netAmount)}</span>
             </div>
           </div>
 

@@ -1,4 +1,4 @@
-# Project Overview
+﻿# Project Overview
 
 **Kuventory v2.0.0**
 
@@ -36,10 +36,11 @@ The current scope encompasses a fully functional Frontend Application (v2.0.0) c
 - [x] **Phase 2**: Dashboard and Data Visualizations.
 - [x] **Phase 3**: Form validations and Mock Data services.
 - [x] **Phase 4**: Workflow refinement and optimization (v2.0.0).
-- [ ] **Phase 5**: Backend API integration (Django + PostgreSQL).
+- [ ] **Phase 5**: Backend API integration (Django (Previous backend architecture discarded. New backend architecture pending.) + PostgreSQL (Previous backend architecture discarded. New backend architecture pending.)).
 
 ## Future Backend Integration
-While the frontend currently relies on mock services, the architecture is explicitly designed to support seamless integration with a planned **Django REST Framework** backend. 
+While the frontend currently relies on mock services, the architecture is explicitly designed to support seamless integration with a planned **Django REST Framework (Previous backend architecture discarded. New backend architecture pending.)** backend. 
 - API calls are abstracted into a `services/` layer.
 - TanStack Query is used to manage asynchronous state, caching, and background fetching, preparing the app for real network requests.
 - Form payloads (`react-hook-form` + `zod`) are standardized to match standard REST API JSON body constraints.
+

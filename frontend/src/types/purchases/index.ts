@@ -15,7 +15,11 @@ export interface Purchase {
   supplierId: string;
   supplierName: string;
   items: PurchaseItem[];
-  totalCost: number;
+  subtotal: number;
+  discountId?: string;
+  discountAmount?: number;
+  netAmount: number;
+  totalCost: number; // Keep for backward compatibility/reporting mapping if needed, or define as netAmount
   status: PurchaseStatus;
   remarks?: string;
   recordedBy: string;
@@ -30,6 +34,8 @@ export interface PurchaseFormData {
     quantity: number;
     unitCost: number;
   }[];
+  hasDiscount?: boolean;
+  discountId?: string;
   remarks?: string;
   status: PurchaseStatus;
 }

@@ -22,6 +22,7 @@ export function AnalyticsDashboard() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <KPICard title="Total Sales" value={formatCurrency(data.kpis.totalSales)} icon={Banknote} trend="up" subtitle="+12% from last month" />
         <KPICard title="Total Expenses" value={formatCurrency(data.kpis.totalExpenses)} icon={TrendingDown} trend="down" subtitle="-5% from last month" />
+        <KPICard title="Total Discounts" value={formatCurrency(data.kpis.totalDiscounts)} icon={TrendingDown} trend="down" />
         <KPICard title="Net Income" value={formatCurrency(data.kpis.netIncome)} icon={TrendingUp} trend="up" subtitle="Highly profitable" />
         <KPICard title="Transactions" value={data.kpis.transactionCount} icon={ShoppingCart} />
         

@@ -15,6 +15,7 @@ import { RoleProtectedRoute } from "@/routes/RoleProtectedRoute";
 import React, { Suspense } from "react";
 import { PageLoader } from "@/components/common/LoadingStates";
 import { Dashboard } from "@/pages/dashboard/Dashboard";
+import { CategoryManagement } from "@/pages/categories/CategoryManagement";
 const InventoryLayout = React.lazy(() => import("@/pages/inventory/InventoryLayout").then(m => ({ default: m.InventoryLayout })));
 const Suppliers = React.lazy(() => import("@/pages/suppliers/Suppliers").then(m => ({ default: m.Suppliers })));
 const PurchasesLayout = React.lazy(() => import("@/pages/purchases/PurchasesLayout").then(m => ({ default: m.PurchasesLayout })));
@@ -58,18 +59,36 @@ function App() {
               {/* Protected Routes (Main Application) */}
               <Route element={<ProtectedRoute />}>
                 <Route element={<DashboardLayout />}>
+                  {/* Dashboard is accessible to everyone who is authenticated */}
                   <Route path="/" element={<Dashboard />} />
-                  <Route path="/inventory" element={<InventoryLayout />} />
-                  <Route path="/suppliers" element={<Suppliers />} />
-                  <Route path="/purchases" element={<PurchasesLayout />} />
-                  <Route path="/sales" element={<SalesLayout />} />
-                  <Route path="/discounts" element={<DiscountsLayout />} />
-                  <Route path="/expenses" element={<ExpensesLayout />} />
-                  <Route path="/reports" element={<ReportsLayout />} />
                   <Route path="/profile" element={<ProfileLayout />} />
 
-                  {/* Role Protected Routes */}
-                  <Route element={<RoleProtectedRoute allowedRoles={["Admin", "Manager"]} />}>
+                  {/* Inventory & Purchasing - Admin, Manager, Inventory Staff */}
+                  <Route element={<RoleProtectedRoute allowedRoles={["Administrator", "Manager", "Inventory Staff", "Kitchen Staff"]} />}>
+                    <Route path="/inventory" element={<InventoryLayout />} />
+                    <Route path="/categories" element={<CategoryManagement />} />
+                    <Route path="/suppliers" element={<Suppliers />} />
+                    <Route path="/purchases" element={<PurchasesLayout />} />
+                  </Route>
+
+                  {/* Sales - Admin, Manager, Cashier */}
+                  <Route element={<RoleProtectedRoute allowedRoles={["Administrator", "Manager", "Cashier"]} />}>
+                    <Route path="/sales" element={<SalesLayout />} />
+                    <Route path="/discounts" element={<DiscountsLayout />} />
+                  </Route>
+
+                  {/* Expenses - Admin, Manager */}
+                  <Route element={<RoleProtectedRoute allowedRoles={["Administrator", "Manager"]} />}>
+                    <Route path="/expenses" element={<ExpensesLayout />} />
+                  </Route>
+
+                  {/* Reports - Admin, Manager, Viewer */}
+                  <Route element={<RoleProtectedRoute allowedRoles={["Administrator", "Manager", "Viewer"]} />}>
+                    <Route path="/reports" element={<ReportsLayout />} />
+                  </Route>
+
+                  {/* Settings / System - Admin, Manager */}
+                  <Route element={<RoleProtectedRoute allowedRoles={["Administrator", "Manager"]} />}>
                     <Route path="/settings" element={<SettingsLayout />} />
                   </Route>
                 </Route>

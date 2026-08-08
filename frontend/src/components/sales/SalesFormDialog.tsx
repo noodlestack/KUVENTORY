@@ -10,6 +10,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { SaleFormData } from "@/types/sales";
 import { InventoryItem } from "@/types/inventory";
 import { Plus, Trash2 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { calculateDiscount } from "@/utils/discountUtils";
+import { useDiscounts } from "@/hooks/discounts/useDiscounts";
+import { DiscountSummaryRibbon } from "@/components/discounts/DiscountSummaryRibbon";
 
 const saleSchema = z.object({
   saleDate: z.string().min(1, "Date is required"),
@@ -22,6 +26,8 @@ const saleSchema = z.object({
   })).min(1, "At least one item is required"),
   remarks: z.string().max(300, "Remarks cannot exceed 300 characters").optional(),
   status: z.enum(["Completed", "Refunded", "Voided"]),
+  hasDiscount: z.boolean().optional(),
+  discountId: z.string().optional(),
 });
 
 interface SalesFormDialogProps {
@@ -33,6 +39,8 @@ interface SalesFormDialogProps {
 }
 
 export function SalesFormDialog({ open, onOpenChange, inventoryItems, onSubmit }: SalesFormDialogProps) {
+  const { discounts } = useDiscounts();
+  
   const form = useForm<SaleFormData>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(saleSchema) as any,
@@ -42,8 +50,20 @@ export function SalesFormDialog({ open, onOpenChange, inventoryItems, onSubmit }
       items: [{ itemId: "", itemName: "", quantity: 1, unitPrice: 0 }],
       remarks: "",
       status: "Completed",
+      hasDiscount: false,
+      discountId: "",
     },
   });
+
+  const formValues = form.watch();
+  
+  const subtotal = formValues.items?.reduce((sum, item) => sum + (item.quantity * item.unitPrice), 0) || 0;
+  const selectedDiscount = formValues.hasDiscount ? discounts.find(d => d.id === formValues.discountId) : undefined;
+  
+  const { calculatedDiscount, finalAmount } = calculateDiscount(
+    subtotal,
+    selectedDiscount
+  );
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -58,6 +78,8 @@ export function SalesFormDialog({ open, onOpenChange, inventoryItems, onSubmit }
         items: [{ itemId: "", itemName: "", quantity: 1, unitPrice: 0 }],
         remarks: "",
         status: "Completed",
+        hasDiscount: false,
+        discountId: "",
       });
     }
   }, [open, form]);
@@ -78,93 +100,179 @@ export function SalesFormDialog({ open, onOpenChange, inventoryItems, onSubmit }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Record Sales Transaction</DialogTitle>
-          <DialogDescription>
-            Log a completed transaction for record-keeping and inventory deduction.
-          </DialogDescription>
-        </DialogHeader>
+      <DialogContent className="sm:max-w-[800px] max-h-[90vh] flex flex-col p-0 overflow-hidden">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col h-full max-h-[90vh]">
+            <DialogHeader className="px-6 py-4 border-b shrink-0">
+              <DialogTitle>Record Sales Transaction</DialogTitle>
+              <DialogDescription>
+                Log a completed transaction for record-keeping and inventory deduction.
+              </DialogDescription>
+            </DialogHeader>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <FormField
-                control={form.control}
-                name="saleDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Transaction Date</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="customerName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Customer Name (Optional)</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Walk-in Customer" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Status</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="saleDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Transaction Date</FormLabel>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select status..." />
-                        </SelectTrigger>
+                        <Input type="date" {...field} />
                       </FormControl>
-                      <SelectContent>
-                        <SelectItem value="Completed">Completed</SelectItem>
-                        <SelectItem value="Refunded">Refunded</SelectItem>
-                        <SelectItem value="Voided">Voided</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="border rounded-md p-4 space-y-4">
-              <div className="flex justify-between items-center">
-                <h3 className="font-semibold">Items Sold</h3>
-                <Button type="button" variant="outline" size="sm" onClick={() => append({ itemId: "", itemName: "", quantity: 1, unitPrice: 0 })}>
-                  <Plus className="h-4 w-4 mr-2" /> Add Item
-                </Button>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="customerName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Customer Name (Optional)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Walk-in Customer" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Status</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select status..." />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Completed">Completed</SelectItem>
+                          <SelectItem value="Refunded">Refunded</SelectItem>
+                          <SelectItem value="Voided">Voided</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
 
-              {fields.map((field, index) => (
-                <div key={field.id} className="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
-                  <div className="flex-1 w-full">
+              <div className="border rounded-md p-4 space-y-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="font-semibold">Items Sold</h3>
+                  <Button type="button" variant="outline" size="sm" onClick={() => append({ itemId: "", itemName: "", quantity: 1, unitPrice: 0 })}>
+                    <Plus className="h-4 w-4 mr-2" /> Add Item
+                  </Button>
+                </div>
+
+                {fields.map((field, index) => (
+                  <div key={field.id} className="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
+                    <div className="flex-1 w-full">
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.itemId`}
+                        render={({ field }) => (
+                          <FormItem>
+                            {index === 0 && <FormLabel>Item</FormLabel>}
+                            <Select onValueChange={field.onChange} value={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select item..." />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {inventoryItems.map((i) => (
+                                  <SelectItem key={i.id} value={i.id}>{i.name}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="w-full sm:w-24">
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.quantity`}
+                        render={({ field }) => (
+                          <FormItem>
+                            {index === 0 && <FormLabel>Qty</FormLabel>}
+                            <FormControl>
+                              <Input type="number" step="0.01" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="w-full sm:w-32">
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.unitPrice`}
+                        render={({ field }) => (
+                          <FormItem>
+                            {index === 0 && <FormLabel>Selling Price</FormLabel>}
+                            <FormControl>
+                              <Input type="number" step="0.01" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <Button type="button" variant="ghost" size="icon" className="mb-0.5 text-destructive hover:text-destructive" onClick={() => remove(index)} disabled={fields.length === 1}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+                {form.formState.errors.items?.root && (
+                  <p className="text-sm font-medium text-destructive">{form.formState.errors.items.root.message}</p>
+                )}
+              </div>
+
+              {/* Discount Section */}
+              <div className="border rounded-md p-4 space-y-4">
+                <FormField
+                  control={form.control}
+                  name="hasDiscount"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm bg-accent/20">
+                      <div className="space-y-0.5">
+                        <FormLabel className="text-base">Apply Discount</FormLabel>
+                        <div className="text-sm text-muted-foreground">
+                          Enable to apply a discount to this sale.
+                        </div>
+                      </div>
+                      <FormControl>
+                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                {form.watch("hasDiscount") && (
+                  <div className="space-y-4 pt-2">
                     <FormField
                       control={form.control}
-                      name={`items.${index}.itemId`}
+                      name="discountId"
                       render={({ field }) => (
                         <FormItem>
-                          {index === 0 && <FormLabel>Product/Item</FormLabel>}
+                          <FormLabel>Select Discount</FormLabel>
                           <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder="Select product..." />
+                                <SelectValue placeholder="Select discount..." />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              {inventoryItems.map((i) => (
-                                <SelectItem key={i.id} value={i.id}>{i.name}</SelectItem>
+                              {discounts.filter(d => d.isActive).map(d => (
+                                <SelectItem key={d.id} value={d.id}>{d.name} ({d.percentage ? `${d.percentage}%` : `₱${d.amount}`})</SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
@@ -173,61 +281,44 @@ export function SalesFormDialog({ open, onOpenChange, inventoryItems, onSubmit }
                       )}
                     />
                   </div>
-                  <div className="w-full sm:w-24">
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.quantity`}
-                      render={({ field }) => (
-                        <FormItem>
-                          {index === 0 && <FormLabel>Qty</FormLabel>}
-                          <FormControl>
-                            <Input type="number" step="0.01" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                )}
+              </div>
+
+              {/* Totals Summary */}
+              {formValues.hasDiscount && selectedDiscount ? (
+                <DiscountSummaryRibbon
+                  discountName={selectedDiscount.name}
+                  percentage={selectedDiscount.percentage}
+                  amount={selectedDiscount.amount}
+                  originalAmount={subtotal}
+                  discountAmount={calculatedDiscount}
+                  finalAmount={finalAmount}
+                />
+              ) : (
+                <div className="bg-muted p-4 rounded-lg flex flex-col items-end space-y-2">
+                  <div className="flex justify-between w-full sm:w-64 font-bold text-lg pt-2 border-t">
+                    <span>Net Sales:</span>
+                    <span>₱{finalAmount.toFixed(2)}</span>
                   </div>
-                  <div className="w-full sm:w-32">
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.unitPrice`}
-                      render={({ field }) => (
-                        <FormItem>
-                          {index === 0 && <FormLabel>Selling Price</FormLabel>}
-                          <FormControl>
-                            <Input type="number" step="0.01" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <Button type="button" variant="ghost" size="icon" className="mb-0.5 text-destructive hover:text-destructive" onClick={() => remove(index)} disabled={fields.length === 1}>
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
                 </div>
-              ))}
-              {form.formState.errors.items?.root && (
-                <p className="text-sm font-medium text-destructive">{form.formState.errors.items.root.message}</p>
               )}
+
+              <FormField
+                control={form.control}
+                name="remarks"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Remarks (Optional)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Additional notes about the transaction..." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
-            <FormField
-              control={form.control}
-              name="remarks"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Remarks (Optional)</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Additional notes about the transaction..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <DialogFooter className="pt-4">
+            <DialogFooter className="px-6 py-4 border-t shrink-0">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
               <Button type="submit" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting ? "Saving..." : "Record Transaction"}

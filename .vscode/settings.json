@@ -1,0 +1,7 @@
+{
+  "files.associations": {
+    "*.sql": "sql"
+  },
+  "sqltools.defaultDialect": "PostgreSQL",
+  "sql.defaultDatabaseEngine": "PostgreSQL"
+}

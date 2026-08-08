@@ -5,6 +5,7 @@ import { InventoryReports } from "./InventoryReports";
 import { PurchaseReports } from "./PurchaseReports";
 import { ExpenseReports } from "./ExpenseReports";
 import { SupplierReports } from "./SupplierReports";
+import { DiscountReports } from "./DiscountReports";
 
 export function ReportsLayout() {
   return (
@@ -22,6 +23,7 @@ export function ReportsLayout() {
           <TabsTrigger value="purchases" className="text-xs md:text-sm whitespace-nowrap">Purchases</TabsTrigger>
           <TabsTrigger value="expenses" className="text-xs md:text-sm whitespace-nowrap">Expenses</TabsTrigger>
           <TabsTrigger value="suppliers" className="text-xs md:text-sm whitespace-nowrap">Suppliers</TabsTrigger>
+          <TabsTrigger value="discounts" className="text-xs md:text-sm whitespace-nowrap">Discounts</TabsTrigger>
         </TabsList>
         
         <div className="mt-6">
@@ -31,6 +33,7 @@ export function ReportsLayout() {
           <TabsContent value="purchases" className="mt-0"><PurchaseReports /></TabsContent>
           <TabsContent value="expenses" className="mt-0"><ExpenseReports /></TabsContent>
           <TabsContent value="suppliers" className="mt-0"><SupplierReports /></TabsContent>
+          <TabsContent value="discounts" className="mt-0"><DiscountReports /></TabsContent>
         </div>
       </Tabs>
     </div>

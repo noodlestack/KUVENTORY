@@ -35,7 +35,7 @@ interface GlobalSearchProps {
 const getIconForCategory = (moduleName: string) => {
   switch (moduleName) {
     case "Dashboard": return <LayoutDashboard className="mr-2 h-4 w-4 text-muted-foreground" />;
-    case "Products": return <Package className="mr-2 h-4 w-4 text-muted-foreground" />;
+    case "Supplies": return <Package className="mr-2 h-4 w-4 text-muted-foreground" />;
     case "Inventory": return <Boxes className="mr-2 h-4 w-4 text-muted-foreground" />;
     case "Suppliers": return <Truck className="mr-2 h-4 w-4 text-muted-foreground" />;
     case "Purchases": return <ShoppingCart className="mr-2 h-4 w-4 text-muted-foreground" />;

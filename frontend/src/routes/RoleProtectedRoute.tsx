@@ -1,13 +1,14 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuth, Role } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { PageLoader } from "@/components/common/LoadingStates";
+import { RoleName, hasAnyRole } from "@/utils/rbac";
 
 interface RoleProtectedRouteProps {
-  allowedRoles: Role[];
+  allowedRoles: RoleName[];
 }
 
 export function RoleProtectedRoute({ allowedRoles }: RoleProtectedRouteProps) {
-  const { isAuthenticated, isLoading, user } = useAuth();
+  const { isAuthenticated, isLoading, roles } = useAuth();
 
   if (isLoading) {
     return <PageLoader />;
@@ -17,7 +18,7 @@ export function RoleProtectedRoute({ allowedRoles }: RoleProtectedRouteProps) {
     return <Navigate to="/login" replace />;
   }
 
-  if (user && !allowedRoles.includes(user.role)) {
+  if (roles.length > 0 && !hasAnyRole(roles, allowedRoles)) {
     return <Navigate to="/unauthorized" replace />;
   }
 

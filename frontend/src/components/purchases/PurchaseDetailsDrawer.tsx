@@ -76,9 +76,21 @@ export function PurchaseDetailsDrawer({ open, onOpenChange, purchase }: Purchase
               </Table>
             </div>
             
-            <div className="flex justify-between items-center mt-4 pt-4 border-t">
-              <span className="font-semibold">Total Cost</span>
-              <span className="font-bold text-xl">{formatCurrency(purchase.totalCost)}</span>
+            <div className="flex justify-between items-center mt-4 pt-4 border-t text-muted-foreground">
+              <span>Subtotal</span>
+              <span>{formatCurrency(purchase.subtotal)}</span>
+            </div>
+            
+            {(purchase.discountAmount || 0) > 0 && (
+              <div className="flex justify-between items-center mt-2 text-destructive">
+                <span>Discount</span>
+                <span>-{formatCurrency(purchase.discountAmount!)}</span>
+              </div>
+            )}
+
+            <div className="flex justify-between items-center mt-2 pt-2 border-t">
+              <span className="font-semibold">Net Amount (Total Cost)</span>
+              <span className="font-bold text-xl">{formatCurrency(purchase.netAmount || purchase.totalCost)}</span>
             </div>
           </div>
 

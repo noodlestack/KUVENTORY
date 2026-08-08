@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { StockMovement } from "@/types/inventory";
-import { mockInventoryService } from "@/services/inventory/mockInventoryService";
+import { inventoryService } from "@/services/inventory/inventoryService";
 
 export function useStockMovements() {
   const [movements, setMovements] = useState<StockMovement[]>([]);
@@ -8,7 +8,7 @@ export function useStockMovements() {
 
   const fetchMovements = useCallback(async () => {
     setIsLoading(true);
-    const data = await mockInventoryService.getMovements();
+    const data = await inventoryService.getMovements();
     setMovements(data);
     setIsLoading(false);
   }, []);

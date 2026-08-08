@@ -11,6 +11,10 @@ import { PurchaseFormData } from "@/types/purchases";
 import { Supplier } from "@/types/suppliers";
 import { InventoryItem } from "@/types/inventory";
 import { Plus, Trash2 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { calculateDiscount } from "@/utils/discountUtils";
+import { useDiscounts } from "@/hooks/discounts/useDiscounts";
+import { DiscountSummaryRibbon } from "@/components/discounts/DiscountSummaryRibbon";
 
 const purchaseSchema = z.object({
   purchaseDate: z.string().min(1, "Date is required"),
@@ -23,6 +27,8 @@ const purchaseSchema = z.object({
   })).min(1, "At least one item is required"),
   remarks: z.string().max(300, "Remarks cannot exceed 300 characters").optional(),
   status: z.enum(["Pending", "Delivered", "Cancelled"]),
+  hasDiscount: z.boolean().optional(),
+  discountId: z.string().optional(),
 });
 
 interface PurchaseFormDialogProps {
@@ -35,6 +41,8 @@ interface PurchaseFormDialogProps {
 }
 
 export function PurchaseFormDialog({ open, onOpenChange, suppliers, inventoryItems, onSubmit }: PurchaseFormDialogProps) {
+  const { discounts } = useDiscounts();
+
   const form = useForm<PurchaseFormData>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(purchaseSchema) as any,
@@ -44,6 +52,8 @@ export function PurchaseFormDialog({ open, onOpenChange, suppliers, inventoryIte
       items: [{ itemId: "", itemName: "", quantity: 1, unitCost: 0 }],
       remarks: "",
       status: "Delivered",
+      hasDiscount: false,
+      discountId: "",
     },
   });
 
@@ -51,6 +61,16 @@ export function PurchaseFormDialog({ open, onOpenChange, suppliers, inventoryIte
     control: form.control,
     name: "items",
   });
+
+  const formValues = form.watch();
+  
+  const subtotal = formValues.items?.reduce((sum, item) => sum + (item.quantity * item.unitCost), 0) || 0;
+  const selectedDiscount = formValues.hasDiscount ? discounts.find(d => d.id === formValues.discountId) : undefined;
+  
+  const { calculatedDiscount, finalAmount } = calculateDiscount(
+    subtotal,
+    selectedDiscount
+  );
 
   useEffect(() => {
     if (open) {
@@ -60,6 +80,8 @@ export function PurchaseFormDialog({ open, onOpenChange, suppliers, inventoryIte
         items: [{ itemId: "", itemName: "", quantity: 1, unitCost: 0 }],
         remarks: "",
         status: "Delivered",
+        hasDiscount: false,
+        discountId: "",
       });
     }
   }, [open, form]);
@@ -82,102 +104,188 @@ export function PurchaseFormDialog({ open, onOpenChange, suppliers, inventoryIte
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Record Purchase</DialogTitle>
-          <DialogDescription>
-            Log a new inbound purchase from a supplier.
-          </DialogDescription>
-        </DialogHeader>
+      <DialogContent className="sm:max-w-[800px] max-h-[90vh] flex flex-col p-0 overflow-hidden">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col h-full max-h-[90vh]">
+            <DialogHeader className="px-6 py-4 border-b shrink-0">
+              <DialogTitle>Record Purchase</DialogTitle>
+              <DialogDescription>
+                Log a new inbound purchase from a supplier.
+              </DialogDescription>
+            </DialogHeader>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <FormField
-                control={form.control}
-                name="purchaseDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Purchase Date</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="supplierId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Supplier</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="purchaseDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Purchase Date</FormLabel>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select supplier..." />
-                        </SelectTrigger>
+                        <Input type="date" {...field} />
                       </FormControl>
-                      <SelectContent>
-                        {suppliers.map((s) => (
-                          <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Status</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select status..." />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="Pending">Pending</SelectItem>
-                        <SelectItem value="Delivered">Delivered</SelectItem>
-                        <SelectItem value="Cancelled">Cancelled</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="border rounded-md p-4 space-y-4">
-              <div className="flex justify-between items-center">
-                <h3 className="font-semibold">Items Purchased</h3>
-                <Button type="button" variant="outline" size="sm" onClick={() => append({ itemId: "", itemName: "", quantity: 1, unitCost: 0 })}>
-                  <Plus className="h-4 w-4 mr-2" /> Add Item
-                </Button>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="supplierId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Supplier</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select supplier..." />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {suppliers.map((s) => (
+                            <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Status</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select status..." />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Pending">Pending</SelectItem>
+                          <SelectItem value="Delivered">Delivered</SelectItem>
+                          <SelectItem value="Cancelled">Cancelled</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
 
-              {fields.map((field, index) => (
-                <div key={field.id} className="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
-                  <div className="flex-1 w-full">
+              <div className="border rounded-md p-4 space-y-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="font-semibold">Items Purchased</h3>
+                  <Button type="button" variant="outline" size="sm" onClick={() => append({ itemId: "", itemName: "", quantity: 1, unitCost: 0 })}>
+                    <Plus className="h-4 w-4 mr-2" /> Add Item
+                  </Button>
+                </div>
+
+                {fields.map((field, index) => (
+                  <div key={field.id} className="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
+                    <div className="flex-1 w-full">
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.itemId`}
+                        render={({ field }) => (
+                          <FormItem>
+                            {index === 0 && <FormLabel>Inventory Item</FormLabel>}
+                            <Select onValueChange={field.onChange} value={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select item..." />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {inventoryItems.map((i) => (
+                                  <SelectItem key={i.id} value={i.id}>{i.name} ({i.unit})</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="w-full sm:w-24">
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.quantity`}
+                        render={({ field }) => (
+                          <FormItem>
+                            {index === 0 && <FormLabel>Qty</FormLabel>}
+                            <FormControl>
+                              <Input type="number" step="0.01" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="w-full sm:w-32">
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.unitCost`}
+                        render={({ field }) => (
+                          <FormItem>
+                            {index === 0 && <FormLabel>Unit Cost</FormLabel>}
+                            <FormControl>
+                              <Input type="number" step="0.01" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <Button type="button" variant="ghost" size="icon" className="mb-0.5 text-destructive hover:text-destructive" onClick={() => remove(index)} disabled={fields.length === 1}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+                {form.formState.errors.items?.root && (
+                  <p className="text-sm font-medium text-destructive">{form.formState.errors.items.root.message}</p>
+                )}
+              </div>
+
+              {/* Discount Section */}
+              <div className="border rounded-md p-4 space-y-4">
+                <FormField
+                  control={form.control}
+                  name="hasDiscount"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm bg-accent/20">
+                      <div className="space-y-0.5">
+                        <FormLabel className="text-base">Apply Discount</FormLabel>
+                        <div className="text-sm text-muted-foreground">
+                          Enable to apply a discount to this purchase.
+                        </div>
+                      </div>
+                      <FormControl>
+                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                {form.watch("hasDiscount") && (
+                  <div className="space-y-4 pt-2">
                     <FormField
                       control={form.control}
-                      name={`items.${index}.itemId`}
+                      name="discountId"
                       render={({ field }) => (
                         <FormItem>
-                          {index === 0 && <FormLabel>Inventory Item</FormLabel>}
+                          <FormLabel>Select Discount</FormLabel>
                           <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder="Select item..." />
+                                <SelectValue placeholder="Select discount..." />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              {inventoryItems.map((i) => (
-                                <SelectItem key={i.id} value={i.id}>{i.name} ({i.unit})</SelectItem>
+                              {discounts.filter(d => d.isActive).map(d => (
+                                <SelectItem key={d.id} value={d.id}>{d.name} ({d.percentage ? `${d.percentage}%` : `₱${d.amount}`})</SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
@@ -186,61 +294,44 @@ export function PurchaseFormDialog({ open, onOpenChange, suppliers, inventoryIte
                       )}
                     />
                   </div>
-                  <div className="w-full sm:w-24">
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.quantity`}
-                      render={({ field }) => (
-                        <FormItem>
-                          {index === 0 && <FormLabel>Qty</FormLabel>}
-                          <FormControl>
-                            <Input type="number" step="0.01" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                )}
+              </div>
+
+              {/* Totals Summary */}
+              {formValues.hasDiscount && selectedDiscount ? (
+                <DiscountSummaryRibbon
+                  discountName={selectedDiscount.name}
+                  percentage={selectedDiscount.percentage}
+                  amount={selectedDiscount.amount}
+                  originalAmount={subtotal}
+                  discountAmount={calculatedDiscount}
+                  finalAmount={finalAmount}
+                />
+              ) : (
+                <div className="bg-muted p-4 rounded-lg flex flex-col items-end space-y-2">
+                  <div className="flex justify-between w-full sm:w-64 font-bold text-lg pt-2 border-t">
+                    <span>Total Final Cost:</span>
+                    <span>₱{finalAmount.toFixed(2)}</span>
                   </div>
-                  <div className="w-full sm:w-32">
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.unitCost`}
-                      render={({ field }) => (
-                        <FormItem>
-                          {index === 0 && <FormLabel>Unit Cost</FormLabel>}
-                          <FormControl>
-                            <Input type="number" step="0.01" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <Button type="button" variant="ghost" size="icon" className="mb-0.5 text-destructive hover:text-destructive" onClick={() => remove(index)} disabled={fields.length === 1}>
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
                 </div>
-              ))}
-              {form.formState.errors.items?.root && (
-                <p className="text-sm font-medium text-destructive">{form.formState.errors.items.root.message}</p>
               )}
+
+              <FormField
+                control={form.control}
+                name="remarks"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Remarks (Optional)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Additional notes, invoice number, etc." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
-
-            <FormField
-              control={form.control}
-              name="remarks"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Remarks (Optional)</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Additional notes, invoice number, etc." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <DialogFooter className="pt-4">
+            
+            <DialogFooter className="px-6 py-4 border-t shrink-0">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
               <Button type="submit" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting ? "Saving..." : "Record Purchase"}

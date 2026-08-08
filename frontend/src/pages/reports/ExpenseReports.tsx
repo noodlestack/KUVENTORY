@@ -1,17 +1,20 @@
+import { useState } from "react";
 import { useExpenseReport } from "@/hooks/reports/useReports";
 import { KPICard } from "@/components/reports/KPICard";
 import { ChartCard } from "@/components/reports/ChartCard";
 import { ReportHeader } from "@/components/reports/ReportHeader";
+import { ReportFilterBar, ReportFilterState } from "@/components/reports/ReportFilterBar";
 import { BarChart, Bar, CartesianGrid, XAxis, Tooltip, YAxis, LineChart, Line } from "recharts";
 import { Receipt, Calendar, ArrowUpCircle, ArrowDownCircle } from "lucide-react";
 import { formatCurrency } from "@/utils/currency";
 import { ChartTooltip } from "@/components/charts/ChartTooltip";
+
 export function ExpenseReports() {
-  const { data, isLoading } = useExpenseReport();
+  const [filters, setFilters] = useState<ReportFilterState>({ dateRangePreset: "this_month" });
+  const { data, isLoading } = useExpenseReport(filters);
 
-  if (isLoading) return <div className="p-8 text-center text-muted-foreground">Loading expense data...</div>;
+  if (isLoading && !data) return <div className="p-8 text-center text-muted-foreground">Loading expense data...</div>;
   if (!data) return null;
-
 
   return (
     <div className="space-y-6">
@@ -25,15 +28,17 @@ export function ExpenseReports() {
         ]}
       />
       
+      <ReportFilterBar onFilterChange={setFilters} isLoading={isLoading} />
+
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <KPICard title="Today's Expenses" value={formatCurrency(data.dailyExpenses)} icon={Receipt} />
-        <KPICard title="This Month" value={formatCurrency(data.monthlyExpenses)} icon={Calendar} />
+        <KPICard title="Total Expenses" value={formatCurrency(data.monthlyExpenses)} icon={Calendar} />
         <KPICard title="Highest Expense" value={formatCurrency(data.highestExpense)} icon={ArrowUpCircle} />
         <KPICard title="Lowest Expense" value={formatCurrency(data.lowestExpense)} icon={ArrowDownCircle} />
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <ChartCard title="Expense Trend (4 Weeks)" className="col-span-1 lg:col-span-4">
+        <ChartCard title="Expense Trend" className="col-span-1 lg:col-span-4">
           <LineChart data={data.expenseTrend}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />

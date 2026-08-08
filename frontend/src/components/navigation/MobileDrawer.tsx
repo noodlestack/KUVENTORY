@@ -12,18 +12,22 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { hasAnyRole } from "@/utils/rbac";
 
 export function MobileDrawer() {
-  const { user, logout } = useAuth();
+  const { user, profile, roles, primaryRole, logout } = useAuth();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setIsOpen(false);
-    logout();
+    await logout();
     toast.success("Successfully logged out.");
     navigate("/login");
   };
+
+  const displayName = profile?.full_name || user?.email?.split('@')[0] || "User";
+  const displayRole = primaryRole || "Staff";
   
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -44,7 +48,7 @@ export function MobileDrawer() {
           {navigationConfig
             .map(section => ({
               ...section,
-              items: section.items.filter(item => !item.allowedRoles || (user && item.allowedRoles.includes(user.role)))
+              items: section.items.filter(item => !item.allowedRoles || hasAnyRole(roles, item.allowedRoles))
             }))
             .filter(section => section.items.length > 0)
             .map((section, index) => (
@@ -80,11 +84,11 @@ export function MobileDrawer() {
         <div className="border-t p-4 bg-muted/20 shrink-0 pb-6 sm:pb-4">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold uppercase shrink-0 ring-1 ring-primary/30">
-              {user?.username ? user.username.charAt(0).toUpperCase() : "U"}
+              {displayName.charAt(0).toUpperCase()}
             </div>
             <div className="flex flex-col overflow-hidden">
-              <span className="truncate text-sm font-semibold text-foreground">{user?.username || "User"}</span>
-              <span className="truncate text-xs text-muted-foreground">{user?.role || "Role"}</span>
+              <span className="truncate text-sm font-semibold text-foreground">{displayName}</span>
+              <span className="truncate text-xs text-muted-foreground">{displayRole}</span>
             </div>
           </div>
           <Button 

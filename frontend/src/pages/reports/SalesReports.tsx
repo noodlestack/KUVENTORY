@@ -1,17 +1,20 @@
+import { useState } from "react";
 import { useSalesReport } from "@/hooks/reports/useReports";
 import { KPICard } from "@/components/reports/KPICard";
 import { ChartCard } from "@/components/reports/ChartCard";
 import { ReportHeader } from "@/components/reports/ReportHeader";
+import { ReportFilterBar, ReportFilterState } from "@/components/reports/ReportFilterBar";
 import { BarChart, Bar, CartesianGrid, XAxis, Tooltip, YAxis } from "recharts";
 import { Banknote, Calendar, BarChart3, ShoppingCart } from "lucide-react";
 import { formatCurrency } from "@/utils/currency";
 import { ChartTooltip } from "@/components/charts/ChartTooltip";
+
 export function SalesReports() {
-  const { data, isLoading } = useSalesReport();
+  const [filters, setFilters] = useState<ReportFilterState>({ dateRangePreset: "this_month" });
+  const { data, isLoading } = useSalesReport(filters);
 
-  if (isLoading) return <div className="p-8 text-center text-muted-foreground">Loading sales data...</div>;
+  if (isLoading && !data) return <div className="p-8 text-center text-muted-foreground">Loading sales data...</div>;
   if (!data) return null;
-
 
   return (
     <div className="space-y-6">
@@ -25,6 +28,8 @@ export function SalesReports() {
         ]}
       />
       
+      <ReportFilterBar onFilterChange={setFilters} isLoading={isLoading} />
+
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <KPICard title="Today's Sales" value={formatCurrency(data.dailySales)} icon={Banknote} />
         <KPICard title="This Week" value={formatCurrency(data.weeklySales)} icon={Calendar} />
@@ -33,7 +38,7 @@ export function SalesReports() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <ChartCard title="Weekly Sales Trend" className="col-span-1 lg:col-span-4">
+        <ChartCard title="Sales Trend" className="col-span-1 lg:col-span-4">
           <BarChart data={data.salesTrend}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
@@ -46,8 +51,8 @@ export function SalesReports() {
           </BarChart>
         </ChartCard>
 
-        <ChartCard title="Top Selling Products" className="col-span-1 lg:col-span-3">
-          <BarChart data={data.topSellingProducts} layout="vertical" margin={{ left: 40 }}>
+        <ChartCard title="Top Selling Items" className="col-span-1 lg:col-span-3">
+          <BarChart data={data.topSellingItems} layout="vertical" margin={{ left: 40 }}>
             <CartesianGrid strokeDasharray="3 3" horizontal={false} />
             <XAxis type="number" hide />
             <YAxis dataKey="name" type="category" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />

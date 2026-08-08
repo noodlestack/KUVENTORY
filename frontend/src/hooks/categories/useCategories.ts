@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Category, CategoryFormData } from "@/types/categories";
-import { mockCategoryService } from "@/services/categories/mockCategoryService";
+import { categoryService } from "@/services/categories/categoryService";
 
 export function useCategories() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -9,7 +9,7 @@ export function useCategories() {
 
   const fetchCategories = useCallback(async () => {
     try {
-      const data = await mockCategoryService.getCategories();
+      const data = await categoryService.getCategories();
       setCategories(data);
       setError(null);
     } catch (err: unknown) {
@@ -24,32 +24,29 @@ export function useCategories() {
   }, [fetchCategories]);
 
   const createCategory = async (data: CategoryFormData) => {
-    const newCategory = await mockCategoryService.createCategory(data);
+    const newCategory = await categoryService.createCategory(data);
     setCategories(prev => [...prev, newCategory]);
     return newCategory;
   };
 
   const updateCategory = async (id: string, data: CategoryFormData) => {
-    const updatedCategory = await mockCategoryService.updateCategory(id, data);
+    const updatedCategory = await categoryService.updateCategory(id, data);
     setCategories(prev => prev.map(c => c.id === id ? updatedCategory : c));
     return updatedCategory;
   };
 
-  const deleteCategory = async (id: string) => {
-    await mockCategoryService.deleteCategory(id);
-    setCategories(prev => prev.filter(c => c.id !== id));
+  const archiveCategory = async (id: string) => {
+    await categoryService.archiveCategory(id);
+    setCategories(prev => prev.map(c => c.id === id ? { ...c, status: "Archived" } : c));
   };
 
   return {
     categories,
     isLoading,
     error,
-    refresh: async () => {
-      setIsLoading(true);
-      await fetchCategories();
-    },
+    refreshCategories: fetchCategories,
     createCategory,
     updateCategory,
-    deleteCategory
+    archiveCategory
   };
 }

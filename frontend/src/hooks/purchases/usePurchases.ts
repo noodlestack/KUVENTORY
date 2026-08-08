@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Purchase, PurchaseFormData } from "@/types/purchases";
-import { mockPurchaseService } from "@/services/purchases/mockPurchaseService";
+import { purchaseService } from "@/services/purchases/purchaseService";
 
 export function usePurchases() {
   const [purchases, setPurchases] = useState<Purchase[]>([]);
@@ -8,7 +8,7 @@ export function usePurchases() {
 
   const fetchPurchases = useCallback(async () => {
     setIsLoading(true);
-    const data = await mockPurchaseService.getPurchases();
+    const data = await purchaseService.getPurchases();
     setPurchases(data);
     setIsLoading(false);
   }, []);
@@ -18,7 +18,7 @@ export function usePurchases() {
   }, [fetchPurchases]);
 
   const createPurchase = async (data: PurchaseFormData, supplierName: string) => {
-    const newPurchase = await mockPurchaseService.createPurchase(data, supplierName);
+    const newPurchase = await purchaseService.createPurchase(data, supplierName);
     setPurchases(prev => [newPurchase, ...prev]);
     return newPurchase;
   };

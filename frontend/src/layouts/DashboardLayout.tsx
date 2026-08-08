@@ -10,7 +10,7 @@ export function DashboardLayout() {
   const toggleSidebar = () => setIsSidebarCollapsed(!isSidebarCollapsed);
 
   return (
-    <div className="flex h-screen h-dvh flex-col w-full bg-secondary/30 overflow-hidden">
+    <div className="flex h-dvh flex-col w-full bg-secondary/30 overflow-hidden">
       <Navbar toggleSidebar={toggleSidebar} />
       
       <div className="flex flex-1 overflow-hidden min-h-0 transition-all duration-300">

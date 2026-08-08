@@ -96,11 +96,11 @@ export function SalesSummaryDashboard({ summary }: SalesSummaryDashboardProps) {
             <div className="space-y-8">
               <div className="flex items-center">
                 <div className="ml-4 space-y-1">
-                  <p className="text-sm font-medium leading-none">Best Selling Product</p>
+                  <p className="text-sm font-medium leading-none">Top Selling Item</p>
                   <p className="text-sm text-muted-foreground">Top contributor to revenue</p>
                 </div>
                 <div className="ml-auto font-medium text-primary">
-                  {summary.bestSellingProduct}
+                  {summary.topSellingItem}
                 </div>
               </div>
             </div>

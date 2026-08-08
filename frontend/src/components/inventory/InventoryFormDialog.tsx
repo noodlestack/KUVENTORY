@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -9,6 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { InventoryItem, InventoryFormData } from "@/types/inventory";
 import { Category } from "@/types/categories";
+import { CategoryFormDialog } from "@/components/categories/CategoryFormDialog";
+import { Plus } from "lucide-react";
 
 const inventorySchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters").max(100, "Name cannot exceed 100 characters"),
@@ -42,6 +44,7 @@ interface InventoryFormDialogProps {
 
 export function InventoryFormDialog({ open, onOpenChange, item, categories, onSubmit }: InventoryFormDialogProps) {
   const isEditing = !!item;
+  const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
 
   const form = useForm<InventoryFormData>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -118,15 +121,17 @@ export function InventoryFormDialog({ open, onOpenChange, item, categories, onSu
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{isEditing ? "Edit Inventory Item" : "Add Inventory Item"}</DialogTitle>
-          <DialogDescription>
-            {isEditing ? "Modify the details of an existing inventory item." : "Register a new raw material or packaging item."}
-          </DialogDescription>
-        </DialogHeader>
+      <DialogContent className="sm:max-w-[700px] max-h-[90vh] flex flex-col p-0 overflow-hidden">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col h-full max-h-[90vh]">
+            <DialogHeader className="px-6 py-4 border-b shrink-0">
+              <DialogTitle>{isEditing ? "Edit Inventory Item" : "Add Inventory Item"}</DialogTitle>
+              <DialogDescription>
+                {isEditing ? "Modify the details of an existing inventory item." : "Register a new raw material or packaging item."}
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="flex-1 overflow-y-auto p-6 space-y-4">
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
@@ -164,18 +169,30 @@ export function InventoryFormDialog({ open, onOpenChange, item, categories, onSu
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Category</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select..." />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {categories.map((c) => (
-                          <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <div className="flex gap-2">
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {categories.filter(c => c.status !== "Archived" || c.id === field.value).map((c) => (
+                            <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        size="icon" 
+                        className="shrink-0"
+                        onClick={() => setIsCategoryDialogOpen(true)}
+                        title="Add New Category"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -304,7 +321,9 @@ export function InventoryFormDialog({ open, onOpenChange, item, categories, onSu
               )}
             />
 
-            <DialogFooter className="pt-4">
+            </div>
+
+            <DialogFooter className="px-6 py-4 border-t shrink-0">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
               <Button type="submit" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting ? "Saving..." : isEditing ? "Save Changes" : "Create Item"}
@@ -313,6 +332,14 @@ export function InventoryFormDialog({ open, onOpenChange, item, categories, onSu
           </form>
         </Form>
       </DialogContent>
+      <CategoryFormDialog 
+        isOpen={isCategoryDialogOpen}
+        onClose={() => setIsCategoryDialogOpen(false)}
+        onSuccess={(newCat) => {
+          // Setting a small timeout to let the parent re-render with new categories
+          setTimeout(() => form.setValue("categoryId", newCat.id), 100);
+        }}
+      />
     </Dialog>
   );
 }

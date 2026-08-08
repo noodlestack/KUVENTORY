@@ -10,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { User, Settings, HelpCircle, Info } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { hasAnyRole } from "@/utils/rbac";
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -18,13 +19,16 @@ interface SidebarProps {
 export function Sidebar({ isCollapsed }: SidebarProps) {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, profile, roles, primaryRole, logout } = useAuth();
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     toast.success("Successfully logged out.");
     navigate("/login");
   };
+
+  const displayName = profile?.full_name || user?.email?.split('@')[0] || "User";
+  const displayRole = primaryRole || "Staff";
 
   return (
     <aside
@@ -39,7 +43,7 @@ export function Sidebar({ isCollapsed }: SidebarProps) {
           {navigationConfig
             .map(section => ({
               ...section,
-              items: section.items.filter(item => !item.allowedRoles || (user && item.allowedRoles.includes(user.role)))
+              items: section.items.filter(item => !item.allowedRoles || hasAnyRole(roles, item.allowedRoles))
             }))
             .filter(section => section.items.length > 0)
             .map((section, index) => (
@@ -86,12 +90,12 @@ export function Sidebar({ isCollapsed }: SidebarProps) {
           <DropdownMenuTrigger asChild>
             <div className={cn("flex items-center cursor-pointer hover:bg-muted p-2 rounded-md transition-colors", isCollapsed ? "justify-center" : "gap-3")}>
               <div className="h-9 w-9 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold uppercase shrink-0 ring-1 ring-primary/30">
-                {user?.username ? user.username.charAt(0) : "U"}
+                {displayName.charAt(0)}
               </div>
               {!isCollapsed && (
                 <div className="flex flex-col overflow-hidden text-left">
-                  <span className="truncate text-sm font-semibold text-foreground">{user?.username || "User"}</span>
-                  <span className="truncate text-xs text-muted-foreground">{user?.role || "Staff"}</span>
+                  <span className="truncate text-sm font-semibold text-foreground">{displayName}</span>
+                  <span className="truncate text-xs text-muted-foreground">{displayRole}</span>
                 </div>
               )}
             </div>

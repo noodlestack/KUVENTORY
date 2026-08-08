@@ -1,10 +1,10 @@
-export type CategoryStatus = "Active" | "Inactive";
+export type CategoryStatus = "Active" | "Inactive" | "Archived";
 
 export interface Category {
   id: string;
   name: string;
   description: string;
-  productCount: number;
+  itemCount: number;
   status: CategoryStatus;
   createdAt: string;
   updatedAt: string;

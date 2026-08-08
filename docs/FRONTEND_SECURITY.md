@@ -1,6 +1,6 @@
-# Frontend Security Measures
+﻿# Frontend Security Measures
 
-**Kuventory v2.0.0**
+**Kuventory v2.0.1**
 
 This document outlines the security strategies currently implemented in the frontend application, and details the future responsibilities of the backend.
 
@@ -27,7 +27,7 @@ Error messages caught by TanStack Query are sanitized using `sonner` toasts. Det
 ---
 
 ## Future Backend Security Responsibilities
-Since Kuventory v2.0.0 is running against mock services, true security will be implemented during the Django integration phase.
+Since Kuventory v2.0.1 is running against mock services, true security will be implemented during the Django (Previous backend architecture discarded. New backend architecture pending.) integration phase.
 
 ### 1. Token Storage Strategy (Planned)
 - Authentication will transition to stateless JSON Web Tokens (JWT).
@@ -35,8 +35,9 @@ Since Kuventory v2.0.0 is running against mock services, true security will be i
 - **Refresh Tokens**: Should be stored in `HttpOnly`, `Secure`, `SameSite=Strict` cookies, preventing XSS attacks from reading the token via JavaScript.
 
 ### 2. Backend Validation (Planned)
-- The Django REST Framework (DRF) layer must re-validate all payloads. Frontend validation is for UX; backend validation is for security.
+- The Django REST Framework (Previous backend architecture discarded. New backend architecture pending.) (DRF) layer must re-validate all payloads. Frontend validation is for UX; backend validation is for security.
 
 ### 3. Idle Logout & Session Cleanup (Planned)
 - The frontend will implement an inactivity timer (e.g., 15 minutes of no mouse/keyboard events).
 - Upon triggering, the frontend will clear in-memory tokens, invoke a backend logout endpoint (to invalidate the refresh cookie), and redirect the user.
+

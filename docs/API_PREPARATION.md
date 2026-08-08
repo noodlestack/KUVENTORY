@@ -1,8 +1,8 @@
-# API Preparation Guide
+﻿# API Preparation Guide
 
 **Kuventory v2.0.0**
 
-This document serves as a contract and preparation guide for the upcoming backend integration phase. It outlines the current mock service layer and the expected REST API endpoints that the Django backend must implement.
+This document serves as a contract and preparation guide for the upcoming backend integration phase. It outlines the current mock service layer and the expected REST API endpoints that the Django (Previous backend architecture discarded. New backend architecture pending.) backend must implement.
 
 ## The Mock Service Layer
 Currently, the frontend retrieves data via mock services located in `frontend/src/services/`. These services return Promises simulating network latency and resolve with hardcoded JSON data arrays.
@@ -46,6 +46,7 @@ Currently, the frontend retrieves data via mock services located in `frontend/sr
 - `GET /api/purchases/`
 
 ## Data Models
-The frontend expects strict JSON responses that match the TypeScript interfaces defined in `frontend/src/types/`. The backend models (Django ORM) must serialize data to match these interfaces exactly. Pay special attention to:
+The frontend expects strict JSON responses that match the TypeScript interfaces defined in `frontend/src/types/`. The backend models (Django (Previous backend architecture discarded. New backend architecture pending.) ORM) must serialize data to match these interfaces exactly. Pay special attention to:
 - Standardized date formatting (ISO 8601).
 - Nested relationships (e.g., a `Sale` payload must include its `SaleItems`).
+

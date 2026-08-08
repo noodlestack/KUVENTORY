@@ -1,9 +1,9 @@
 # QA Test Report
 
-**Kuventory v2.0.0**
+**Kuventory v2.0.1**
 
 ## Overview
-This report details the testing coverage and status for the v2.0.0 Frontend Release of Kuventory. Testing focused primarily on workflow alignment, form validation, state management, and cross-browser stability.
+This report details the testing coverage and status for the v2.0.1 Frontend Release of Kuventory. Testing focused primarily on workflow alignment, form validation, state management, and cross-browser stability.
 
 ## Features Tested
 

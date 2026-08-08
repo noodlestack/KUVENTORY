@@ -12,6 +12,8 @@ export interface Supplier {
   lastPurchaseDate?: string;
   totalPurchases: number;
   dateAdded: string;
+  hasDefaultDiscount?: boolean;
+  defaultDiscountId?: string;
 }
 
 export interface SupplierFormData {
@@ -22,4 +24,6 @@ export interface SupplierFormData {
   address: string;
   status: SupplierStatus;
   notes?: string;
+  hasDefaultDiscount?: boolean;
+  defaultDiscountId?: string;
 }

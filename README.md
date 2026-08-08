@@ -1,7 +1,7 @@
 # Kuventory
 
-![Version](https://img.shields.io/badge/version-v2.0.0-blue.svg)
-![Status](https://img.shields.io/badge/status-Frontend_Stable-success.svg)
+![Version](https://img.shields.io/badge/version-v2.0.2-blue.svg)
+![Status](https://img.shields.io/badge/status-Phase_3_Complete-success.svg)
 
 **Kuventory** is a robust, enterprise-grade, web-based Inventory Management System designed specifically for the operational needs of Kape Uno Bistro.
 
@@ -23,86 +23,75 @@ The primary purpose of Kuventory is to provide a unified platform to track stock
 - **Framework:** React 19 + TypeScript + Vite
 - **Styling:** Tailwind CSS + shadcn/ui
 - **Routing:** React Router DOM
-- **Data Fetching:** TanStack Query + Axios
+- **Data Fetching:** TanStack Query + Supabase SDK
 - **Forms:** React Hook Form + Zod
 - **Visuals:** Framer Motion + Recharts + Lucide React
-- **Hosting:** GitHub Pages
+- **Backend:** Supabase (PostgreSQL, Auth)
 
 ## Documentation
 Please refer to the `/docs` directory for detailed information regarding the project.
 - [Project Overview](docs/PROJECT_OVERVIEW.md)
 - [System Architecture](docs/SYSTEM_ARCHITECTURE.md)
-- [Installation Guide](docs/INSTALLATION_GUIDE.md)
-- [Deployment Guide](docs/DEPLOYMENT_GUIDE.md)
-- [Frontend Security](docs/FRONTEND_SECURITY.md)
-- [Tech Stack](docs/TECH_STACK.md)
-- [Roadmap](docs/ROADMAP.md)
+- [Supabase Integration](docs/supabase/README.md)
+- [Supabase Data Model](docs/supabase/data-model.md)
+- [Supabase Database Schema](docs/supabase/database-schema.md)
+- [Supabase Authentication](docs/supabase/authentication.md)
+- [Supabase RBAC Matrix](docs/supabase/rbac-matrix.md)
+- [Supabase RBAC Architecture](docs/supabase/rbac.md)
+- [Supabase User Profiles](docs/supabase/user-profiles.md)
 
 ## Development Setup
 
 1. **Prerequisites**
-   Ensure you have Node.js (v18 or higher) installed on your system.
+   Ensure you have Node.js (v18 or higher) installed on your system. Docker is required for Supabase local development.
 
-2. **Installation**
+2. **Supabase Local Setup**
+   ```bash
+   npx supabase start
+   ```
+
+3. **Installation**
    ```bash
    cd frontend
    npm install
    ```
 
-3. **Environment Variables**
+4. **Environment Variables**
    Create a `.env.local` file inside the `frontend/` directory containing:
    ```env
-   VITE_API_URL=http://localhost:8000/api
-   VITE_APP_NAME="Kuventory"
-   VITE_APP_VERSION="v2.0.0"
-   VITE_ENABLE_DEVTOOLS=true
+   VITE_SUPABASE_URL=http://127.0.0.1:54321
+   VITE_SUPABASE_PUBLISHABLE_KEY=your-anon-key-here
    ```
 
-4. **Running Locally**
+5. **Running Locally**
    ```bash
    npm run dev
    ```
-
-## Production Build
-```bash
-cd frontend
-npm run build
-```
-This command compiles TypeScript and generates the optimized production bundle inside the `dist/` directory.
-
-## GitHub Pages Deployment
-Kuventory uses GitHub Actions to automate deployments. Any changes pushed to the `main` branch will automatically trigger the deployment workflow and publish the site to GitHub Pages.
-Refer to [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) for detailed configuration.
 
 ## Folder Structure
 ```
 .
 ├── .github/          # GitHub Actions workflows
 ├── docs/             # Project Documentation
+├── supabase/         # Supabase Config and Migrations
 └── frontend/         # React Application Source
     ├── src/
     │   ├── assets/       # Branding and global styles
     │   ├── components/   # Reusable UI components
     │   ├── contexts/     # React Context providers (Auth, Theme)
     │   ├── hooks/        # Custom React Hooks
+    │   ├── integrations/ # Supabase and third-party integrations
     │   ├── layouts/      # Layout components (Dashboard, Settings, etc.)
     │   ├── pages/        # Application Pages (Views)
-    │   ├── services/     # API/Mock Services for data fetching
+    │   ├── routes/       # React Router configurations and guards
+    │   ├── services/     # API/Auth Services for data fetching
     │   ├── types/        # TypeScript Interfaces and Types
-    │   └── utils/        # Helper functions
+    │   └── utils/        # Helper functions (RBAC, formatting)
     └── package.json
 ```
 
-## Current Version
-**Kuventory v2.0.0** - Frontend Only (Mock Backend)
+## Phase 3 Complete (Auth & RBAC)
+Kuventory now uses **Supabase Auth** with email/password authentication. The `auth.users` table syncs seamlessly to `public.profiles`. The frontend utilizes robust role-resolution (e.g. Administrator, Cashier, Inventory Staff) to dynamically filter the sidebar and protect routes. True data-level Row Level Security (RLS) is scheduled for Phase 4.
 
 ## License
 This software is proprietary to Kape Uno Bistro. All rights reserved. Unauthorized copying, modification, or distribution is strictly prohibited.
-
-## Contributors
-- Frontend UI Developer Team
-
-## Future Plans
-- **Django Backend Integration:** Migrate off mock services to a fully functional Django REST Framework + PostgreSQL backend. (See [Roadmap](docs/ROADMAP.md))
-- **Live Database:** Implement real-time database transactions for inventory and sales.
-- **Enhanced Security:** Implement JWT token-based authentication and secure endpoints.

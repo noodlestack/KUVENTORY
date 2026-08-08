@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+﻿import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 export function AboutKuventory() {
@@ -26,7 +26,7 @@ export function AboutKuventory() {
           </div>
           <div>
             <h4 className="text-sm font-medium text-muted-foreground">Backend & Database</h4>
-            <p className="text-sm">Django REST Framework / PostgreSQL<br/><span className="text-xs text-muted-foreground">(Integration Pending)</span></p>
+            <p className="text-sm">Django REST Framework (Previous backend architecture discarded. New backend architecture pending.) / PostgreSQL (Previous backend architecture discarded. New backend architecture pending.)<br/><span className="text-xs text-muted-foreground">(Integration Pending)</span></p>
           </div>
           
           <div>
@@ -51,3 +51,4 @@ export function AboutKuventory() {
     </Card>
   );
 }
+

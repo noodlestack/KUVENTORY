@@ -1,6 +1,6 @@
-/**
+﻿/**
  * Utility for managing JWT tokens in Local Storage.
- * Prepares the frontend for Backend Developer 1's Django REST Framework JWT APIs.
+ * Prepares the frontend for Backend Developer 1's Django REST Framework (Previous backend architecture discarded. New backend architecture pending.) JWT APIs.
  */
 
 const ACCESS_TOKEN_KEY = "kuventory_access_token";
@@ -29,3 +29,4 @@ export const tokenStorage = {
     return !!localStorage.getItem(ACCESS_TOKEN_KEY);
   }
 };
+

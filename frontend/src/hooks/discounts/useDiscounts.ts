@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Discount, DiscountFormData } from "@/types/discounts";
-import { mockDiscountService } from "@/services/discounts/mockDiscountService";
+import { discountService } from "@/services/discounts/discountService";
 import { toast } from "sonner";
 
 export function useDiscounts() {
@@ -10,7 +10,7 @@ export function useDiscounts() {
   const fetchDiscounts = useCallback(async () => {
     setIsLoading(true);
     try {
-      const data = await mockDiscountService.getDiscounts();
+      const data = await discountService.getDiscounts();
       setDiscounts(data);
     } catch (error) {
       toast.error("Failed to fetch discounts");
@@ -26,7 +26,7 @@ export function useDiscounts() {
 
   const createDiscount = async (data: DiscountFormData) => {
     try {
-      const newDiscount = await mockDiscountService.createDiscount(data);
+      const newDiscount = await discountService.createDiscount(data);
       setDiscounts(prev => [...prev, newDiscount]);
       toast.success("Discount created successfully");
       return newDiscount;
@@ -39,7 +39,7 @@ export function useDiscounts() {
 
   const updateDiscount = async (id: string, data: DiscountFormData) => {
     try {
-      const updated = await mockDiscountService.updateDiscount(id, data);
+      const updated = await discountService.updateDiscount(id, data);
       setDiscounts(prev => prev.map(d => d.id === id ? updated : d));
       toast.success("Discount updated successfully");
       return updated;
@@ -52,7 +52,7 @@ export function useDiscounts() {
 
   const deleteDiscount = async (id: string) => {
     try {
-      await mockDiscountService.deleteDiscount(id);
+      await discountService.deleteDiscount(id);
       setDiscounts(prev => prev.filter(d => d.id !== id));
       toast.success("Discount deleted successfully");
     } catch (error) {

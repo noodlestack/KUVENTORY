@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Sale, SaleFormData, SalesSummaryData } from "@/types/sales";
-import { mockSalesService } from "@/services/sales/mockSalesService";
+import { salesService } from "@/services/sales/salesService";
 
 export function useSales() {
   const [sales, setSales] = useState<Sale[]>([]);
@@ -8,7 +8,7 @@ export function useSales() {
 
   const fetchSales = useCallback(async () => {
     setIsLoading(true);
-    const data = await mockSalesService.getSales();
+    const data = await salesService.getSales();
     setSales(data);
     setIsLoading(false);
   }, []);
@@ -18,7 +18,7 @@ export function useSales() {
   }, [fetchSales]);
 
   const recordSale = async (data: SaleFormData) => {
-    const newSale = await mockSalesService.createSale(data);
+    const newSale = await salesService.createSale(data);
     setSales(prev => [newSale, ...prev]);
     return newSale;
   };
@@ -32,7 +32,7 @@ export function useSalesSummary() {
 
   const fetchSummary = useCallback(async () => {
     setIsLoading(true);
-    const data = await mockSalesService.getSalesSummary();
+    const data = await salesService.getSalesSummary();
     setSummary(data);
     setIsLoading(false);
   }, []);
