@@ -1,0 +1,1 @@
+import{c as e,g as t}from"./index-BE_s0apq.js";function n(n){return t(e,n)}export{n as t};
