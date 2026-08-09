@@ -1,1 +1,0 @@
-import{c as e,g as t}from"./index-B2qWRyb2.js";function n(n){return t(e,n)}export{n as t};
