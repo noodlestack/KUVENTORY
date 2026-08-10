@@ -1,1 +1,1 @@
-SELECT column_name, column_default, is_nullable, data_type FROM information_schema.columns WHERE table_schema = 'auth' AND table_name = 'users' AND column_name IN ('confirmation_token', 'recovery_token', 'email_change_token_new', 'email_change_token_current', 'email_change', 'email_change_sent_at');
+SELECT * FROM public.cash_sessions;

@@ -1,5 +1,39 @@
 import { supabase } from '@/integrations/supabase/client';
-import { Discount, DiscountFormData } from "@/types/discounts";
+import { Discount, DiscountFormData, DiscountType } from "@/types/discounts";
+
+const mapToDBDiscountType = (uiType: string): string => {
+  const mapping: Record<string, string> = {
+    "Senior Citizen": "SENIOR_CITIZEN",
+    "PWD": "PWD",
+    "Delivery Driver": "DELIVERY_DRIVER",
+    "Employee": "EMPLOYEE",
+    "Promotional": "PROMOTIONAL",
+    "Supplier": "SUPPLIER",
+    "Vendor": "VENDOR",
+    "Manual": "MANUAL",
+    "Custom": "CUSTOM",
+    "None": "NONE"
+  };
+  return mapping[uiType] || "PROMOTIONAL";
+};
+
+const mapToUIDiscountType = (dbType: string): DiscountType => {
+  const mapping: Record<string, DiscountType> = {
+    "SENIOR_CITIZEN": "Senior Citizen",
+    "PWD": "PWD",
+    "DELIVERY_DRIVER": "Delivery Driver",
+    "EMPLOYEE": "Employee",
+    "PROMOTIONAL": "Promotional",
+    "SUPPLIER": "Supplier",
+    "VENDOR": "Vendor",
+    "MANUAL": "Manual",
+    "CUSTOM": "Custom",
+    "NONE": "None",
+    "PERCENTAGE": "Promotional",
+    "FIXED_AMOUNT": "Manual"
+  };
+  return mapping[dbType] || "Promotional";
+};
 
 export const discountService = {
   getDiscounts: async (): Promise<Discount[]> => {
@@ -13,7 +47,7 @@ export const discountService = {
     return (data || []).map(d => ({
       id: d.id,
       name: d.name,
-      type: d.discount_type as any,
+      type: mapToUIDiscountType(d.discount_type),
       percentage: d.discount_percentage || undefined,
       amount: d.fixed_discount_amount || undefined,
       isActive: d.is_active,
@@ -27,7 +61,7 @@ export const discountService = {
       .from('discount_configs')
       .insert({
         name: data.name,
-        discount_type: data.type,
+        discount_type: mapToDBDiscountType(data.type),
         discount_percentage: data.percentage || null,
         fixed_discount_amount: data.amount || null,
         is_active: data.isActive,
@@ -42,7 +76,7 @@ export const discountService = {
     return {
       id: newDiscount.id,
       name: newDiscount.name,
-      type: newDiscount.discount_type as any,
+      type: mapToUIDiscountType(newDiscount.discount_type),
       percentage: newDiscount.discount_percentage || undefined,
       amount: newDiscount.fixed_discount_amount || undefined,
       isActive: newDiscount.is_active,
@@ -56,7 +90,7 @@ export const discountService = {
       .from('discount_configs')
       .update({
         name: data.name,
-        discount_type: data.type,
+        discount_type: mapToDBDiscountType(data.type),
         discount_percentage: data.percentage || null,
         fixed_discount_amount: data.amount || null,
         is_active: data.isActive,
@@ -72,7 +106,7 @@ export const discountService = {
     return {
       id: updated.id,
       name: updated.name,
-      type: updated.discount_type as any,
+      type: mapToUIDiscountType(updated.discount_type),
       percentage: updated.discount_percentage || undefined,
       amount: updated.fixed_discount_amount || undefined,
       isActive: updated.is_active,

@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { exportToCSV } from "@/utils/exportUtils";
 
 export function InventoryList() {
-  const { items, isLoading, createItem, updateItem, archiveItem } = useInventory();
+  const { items, isLoading, createItem, updateItem, archiveItem, deleteItem } = useInventory();
   const { categories, isLoading: isLoadingCategories } = useCategories();
 
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -35,11 +35,30 @@ export function InventoryList() {
 
   const handleArchive = async (item: InventoryItem) => {
     if (!confirm(`Archive "${item.name}"? It will be hidden from inventory but transaction history is preserved.`)) return;
+    
     try {
       await archiveItem(item.id);
       toast.success(`"${item.name}" has been archived.`);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to archive item.");
+    }
+  };
+
+  const handleDelete = async (item: InventoryItem) => {
+    if (!confirm(`Delete "${item.name}" permanently? This cannot be undone.`)) return;
+    
+    try {
+      await deleteItem(item.id);
+      toast.success(`"${item.name}" has been deleted.`);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to delete item.";
+      if (msg.toLowerCase().includes("archive it instead")) {
+        if (confirm(`Cannot delete "${item.name}" because it has existing transactions.\n\nWould you like to archive it instead?`)) {
+          handleArchive(item);
+        }
+      } else {
+        toast.error(msg);
+      }
     }
   };
 
@@ -81,6 +100,7 @@ export function InventoryList() {
         onView={handleView}
         onEdit={handleEdit}
         onArchive={handleArchive}
+        onDelete={handleDelete}
       />
 
       <InventoryFormDialog

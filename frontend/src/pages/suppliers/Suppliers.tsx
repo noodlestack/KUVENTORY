@@ -75,15 +75,15 @@ export function Suppliers() {
   if (isLoading) return <div className="p-8 text-center text-muted-foreground">Loading suppliers...</div>;
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto py-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div className="space-y-6 w-full max-w-7xl mx-auto py-6 px-4 sm:px-6 overflow-x-hidden">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Suppliers</h1>
           <p className="text-muted-foreground">Manage vendors and their contact information.</p>
         </div>
         
-        <div className="flex gap-2 w-full sm:w-auto">
-          <div className="relative flex-1 sm:w-64">
+        <div className="flex flex-wrap gap-2 w-full md:w-auto">
+          <div className="relative flex-1 min-w-[200px]">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input placeholder="Search suppliers..." className="pl-8" />
           </div>
@@ -96,12 +96,14 @@ export function Suppliers() {
         </div>
       </div>
       
-      <SupplierTable 
-        suppliers={suppliers} 
-        onView={handleView}
-        onEdit={handleEdit}
-        onDelete={handleDeleteRequest}
-      />
+      <div className="w-full overflow-hidden">
+        <SupplierTable 
+          suppliers={suppliers} 
+          onView={handleView}
+          onEdit={handleEdit}
+          onDelete={handleDeleteRequest}
+        />
+      </div>
 
       <SupplierFormDialog
         open={isFormOpen}

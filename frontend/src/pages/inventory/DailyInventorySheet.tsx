@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Save, Search } from "lucide-react";
 import { InventoryItem } from "@/types/inventory";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 export function DailyInventorySheet() {
   const { items, updateItem, isLoading } = useInventory();
@@ -55,7 +56,7 @@ export function DailyInventorySheet() {
   const handleSaveAll = async () => {
     setIsSaving(true);
     try {
-      // Find items that have changed (comparing localItems with original items)
+      // Find items that have changed
       const changedItems = Object.values(localItems).filter(local => {
         const original = items.find(i => i.id === local.id);
         if (!original) return false;
@@ -73,10 +74,18 @@ export function DailyInventorySheet() {
         return;
       }
 
-      // Update all changed items
+      // Get the default inventory location for balance updates
+      const { data: locData } = await supabase
+        .from('inventory_locations')
+        .select('id')
+        .limit(1)
+        .maybeSingle();
+
       for (const item of changedItems) {
-        // Find category name
+        const original = items.find(i => i.id === item.id);
         const categoryName = categories.find(c => c.id === item.categoryId)?.name || item.categoryName;
+
+        // Update daily inventory line record
         await updateItem(
           item.id,
           {
@@ -99,8 +108,39 @@ export function DailyInventorySheet() {
           },
           categoryName
         );
+
+        // If addedStock increased, update the actual inventory balance
+        if (locData && original) {
+          const addedDiff = item.addedStock - (original.addedStock || 0);
+          if (addedDiff > 0) {
+            const { error: adjError } = await supabase.rpc('inventory_adjust', {
+              p_stock_item_id: item.id,
+              p_location_id: locData.id,
+              p_adjustment_type: 'IN',
+              p_quantity: addedDiff,
+              p_reason: 'Daily Sheet stock addition',
+              p_notes: `Added ${addedDiff} via Daily Sheet`,
+            });
+            if (adjError) {
+              console.warn(`Balance update failed for ${item.name}:`, adjError.message);
+            }
+          } else if (addedDiff < 0) {
+            // Stock was reduced on the sheet — adjust out
+            const { error: adjError } = await supabase.rpc('inventory_adjust', {
+              p_stock_item_id: item.id,
+              p_location_id: locData.id,
+              p_adjustment_type: 'OUT',
+              p_quantity: Math.abs(addedDiff),
+              p_reason: 'Daily Sheet stock correction',
+              p_notes: `Reduced ${Math.abs(addedDiff)} via Daily Sheet`,
+            });
+            if (adjError) {
+              console.warn(`Balance update failed for ${item.name}:`, adjError.message);
+            }
+          }
+        }
       }
-      toast.success(`Successfully updated ${changedItems.length} items.`);
+      toast.success(`Successfully updated ${changedItems.length} item${changedItems.length !== 1 ? 's' : ''}.`);
     } catch (error) {
       toast.error("Failed to save changes.");
       console.error(error);

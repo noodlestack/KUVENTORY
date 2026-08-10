@@ -66,10 +66,11 @@ export function SalesSummaryDashboard({ summary }: SalesSummaryDashboardProps) {
           <CardHeader>
             <CardTitle>Sales Over Last 7 Days</CardTitle>
           </CardHeader>
-          <CardContent className="pl-2">
-            <div className="h-[300px] w-full mt-4">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={summary.chartData}>
+          <CardContent className="pl-2 pr-2">
+            <div className="w-full mt-4 overflow-x-auto overflow-y-hidden">
+              <div className="h-[300px] min-w-[500px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={summary.chartData}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis 
                     dataKey="date" 
@@ -82,8 +83,9 @@ export function SalesSummaryDashboard({ summary }: SalesSummaryDashboardProps) {
                     content={<ChartTooltip formatter={(value) => [formatCurrency(value as number), 'Sales']} />}
                   />
                   <Bar dataKey="sales" fill="currentColor" radius={[4, 4, 0, 0]} className="fill-primary" />
-                </BarChart>
-              </ResponsiveContainer>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
             </div>
           </CardContent>
         </Card>

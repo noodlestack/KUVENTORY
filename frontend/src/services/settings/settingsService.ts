@@ -33,7 +33,7 @@ export const settingsService = {
       status: profile.is_active ? 'Active' : 'Inactive',
       lastLogin: user.last_sign_in_at || new Date().toISOString(),
       createdAt: profile.created_at,
-      preferences: {
+      preferences: (profile.preferences as UserPreferences) || {
         theme: "system",
         tableDensity: "comfortable",
         animations: true
@@ -60,17 +60,41 @@ export const settingsService = {
   },
 
   updatePreferences: async (data: Partial<UserPreferences>): Promise<UserPreferences> => {
-    // Store in localStorage since no table exists yet
-    const current = JSON.parse(localStorage.getItem('user_preferences') || '{}');
-    const updated = { ...current, ...data };
-    localStorage.setItem('user_preferences', JSON.stringify(updated));
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
+
+    const profile = await settingsService.getProfile();
+    const updated = { ...profile.preferences, ...data };
+
+    const { error } = await supabase
+      .from('profiles')
+      .update({ preferences: updated })
+      .eq('auth_user_id', user.id);
+
+    if (error) throw error;
     return updated;
   },
 
   getRestaurantSettings: async (): Promise<RestaurantSettings> => {
-    // Mocked as there's no DB table yet
-    const stored = localStorage.getItem('restaurant_settings');
-    if (stored) return JSON.parse(stored);
+    const { data, error } = await supabase
+      .from('system_settings')
+      .select('*')
+      .limit(1)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    if (data) {
+      return {
+        name: data.name,
+        address: data.address || '',
+        contactNumber: data.contact_number || '',
+        email: data.email || '',
+        businessHours: data.business_hours || '',
+        description: data.description || '',
+        logoUrl: data.logo_url || ''
+      };
+    }
     
     return {
       name: "Kape Uno Bistro",
@@ -83,15 +107,55 @@ export const settingsService = {
   },
 
   updateRestaurantSettings: async (data: Partial<RestaurantSettings>): Promise<RestaurantSettings> => {
-    const current = await settingsService.getRestaurantSettings();
-    const updated = { ...current, ...data };
-    localStorage.setItem('restaurant_settings', JSON.stringify(updated));
-    return updated;
+    const { data: existing, error: checkError } = await supabase
+      .from('system_settings')
+      .select('id')
+      .limit(1)
+      .maybeSingle();
+
+    if (checkError) throw checkError;
+
+    const payload = {
+      name: data.name,
+      address: data.address,
+      contact_number: data.contactNumber,
+      email: data.email,
+      business_hours: data.businessHours,
+      description: data.description,
+      logo_url: data.logoUrl,
+    };
+
+    if (existing?.id) {
+      const { error } = await supabase
+        .from('system_settings')
+        .update(payload)
+        .eq('id', existing.id);
+      if (error) throw error;
+    } else {
+      const { error } = await supabase
+        .from('system_settings')
+        .insert(payload);
+      if (error) throw error;
+    }
+
+    return await settingsService.getRestaurantSettings();
   },
 
   getNotificationSettings: async (): Promise<NotificationSettings> => {
-    const stored = localStorage.getItem('notification_settings');
-    if (stored) return JSON.parse(stored);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
+
+    const { data: profile, error } = await supabase
+      .from('profiles')
+      .select('notification_settings')
+      .eq('auth_user_id', user.id)
+      .single();
+
+    if (error) throw error;
+
+    if (profile?.notification_settings) {
+      return profile.notification_settings as unknown as NotificationSettings;
+    }
     
     return {
       lowStockAlerts: true,
@@ -104,9 +168,18 @@ export const settingsService = {
   },
 
   updateNotificationSettings: async (data: Partial<NotificationSettings>): Promise<NotificationSettings> => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
+
     const current = await settingsService.getNotificationSettings();
     const updated = { ...current, ...data };
-    localStorage.setItem('notification_settings', JSON.stringify(updated));
+
+    const { error } = await supabase
+      .from('profiles')
+      .update({ notification_settings: updated })
+      .eq('auth_user_id', user.id);
+
+    if (error) throw error;
     return updated;
   },
 

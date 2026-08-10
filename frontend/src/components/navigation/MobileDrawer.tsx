@@ -36,7 +36,7 @@ export function MobileDrawer() {
           <span className="sr-only">Open Menu</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="w-72 p-0 flex flex-col bg-card text-card-foreground border-r h-[100dvh]">
+      <SheetContent side="left" className="w-72 p-0 flex flex-col bg-card text-card-foreground border-r transform-gpu will-change-transform">
         
         {/* Logo / Header */}
         <div className="flex h-16 shrink-0 items-center px-6 border-b border-border/50">

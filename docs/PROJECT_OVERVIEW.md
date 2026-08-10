@@ -1,6 +1,6 @@
-﻿# Project Overview
+# Project Overview
 
-**Kuventory v2.0.0**
+**KAPE-UNO v4.0.0**
 
 ## Business Problem
 Kape Uno Bistro relies heavily on accurate inventory monitoring, stock movement tracking, and expense recording to maintain its daily operations. Previously, these processes were handled using paper-based logs or disparate spreadsheets. This manual approach often led to:
@@ -10,7 +10,7 @@ Kape Uno Bistro relies heavily on accurate inventory monitoring, stock movement 
 - Inefficiencies in consolidating end-of-day reports.
 
 ## Solution
-Kuventory is a bespoke, enterprise-grade web application developed to digitalize and streamline Kape Uno Bistro's operational workflow. It consolidates inventory management, sales tracking, supplier coordination, and expense monitoring into a single, intuitive platform.
+KAPE-UNO is a bespoke, enterprise-grade web application developed to digitalize and streamline Kape Uno Bistro's operational workflow. It consolidates inventory management, sales tracking, supplier coordination, and expense monitoring into a single, intuitive platform.
 
 ## Objectives
 - **Digital Transformation**: Transition from paper-based tracking to a secure, centralized digital system.
@@ -18,29 +18,30 @@ Kuventory is a bespoke, enterprise-grade web application developed to digitalize
 - **Error Reduction**: Auto-calculate critical stock and financial metrics to prevent human data-entry errors.
 - **Real-Time Analytics**: Provide management with an interactive dashboard for quick insights into business health.
 
-## Scope
-The current scope encompasses a fully functional Frontend Application (v2.0.0) complete with:
-- Mocked backend services for data persistence during the frontend evaluation phase.
-- Comprehensive UI/UX tailored for desktop, tablet, and mobile environments.
-- Robust role-based view layouts.
+## Architecture & Technology Stack
+The application has transitioned from mock data to a fully robust cloud-native architecture:
+- **Frontend**: React (Vite), TypeScript, Tailwind CSS, shadcn/ui.
+- **Backend / Database**: Supabase (PostgreSQL).
+- **State Management**: Zustand, React Query.
+- **Authentication**: Supabase Auth (Session-based).
+- **Deployment**: GitHub Pages (Frontend).
 
 ## Modules
 1. **Dashboard**: Real-time business analytics and summary charts.
-2. **Inventory Management**: Shift-based stock tracking enforcing strict mathematical constraints.
+2. **Inventory Management**: Shift-based stock tracking enforcing strict mathematical constraints on the backend.
 3. **Supply Chain**: Management of supplier records and incoming purchase orders.
 4. **Finance & Reports**: Tracking of sales, discounts, operational expenses, and detailed exportable reporting.
-5. **System Settings**: User profile and application-wide configurations.
+5. **System Settings**: User profile, roles, activity logs, and application-wide configurations.
 
-## Current Progress
-- [x] **Phase 1**: Core Layouts and Navigation structure.
-- [x] **Phase 2**: Dashboard and Data Visualizations.
-- [x] **Phase 3**: Form validations and Mock Data services.
-- [x] **Phase 4**: Workflow refinement and optimization (v2.0.0).
-- [ ] **Phase 5**: Backend API integration (Django (Previous backend architecture discarded. New backend architecture pending.) + PostgreSQL (Previous backend architecture discarded. New backend architecture pending.)).
+## Development & Deployment Guidelines
 
-## Future Backend Integration
-While the frontend currently relies on mock services, the architecture is explicitly designed to support seamless integration with a planned **Django REST Framework (Previous backend architecture discarded. New backend architecture pending.)** backend. 
-- API calls are abstracted into a `services/` layer.
-- TanStack Query is used to manage asynchronous state, caching, and background fetching, preparing the app for real network requests.
-- Form payloads (`react-hook-form` + `zod`) are standardized to match standard REST API JSON body constraints.
+### GitHub Pages Deployment
+The frontend is hosted on GitHub Pages. To ensure proper routing and asset loading:
+1. Ensure `vite.config.ts` has the correct `base` path (if deploying to a subdirectory).
+2. The `.env` variables `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` must be configured in your GitHub Actions Secrets.
+3. Push to `main` to trigger the deployment workflow.
 
+### Test Data Management
+If you accumulate test data during development or training:
+- **DO NOT** manually delete rows in the Supabase Table Editor if you are unsure of cascading constraints.
+- A safe SQL script is provided at `docs/supabase/cleanup_test_data.sql` to truncate transactional tables (Sales, Purchases, Movements) while preserving master data (Items, Categories, Suppliers, Users). Run this script via the Supabase SQL Editor.

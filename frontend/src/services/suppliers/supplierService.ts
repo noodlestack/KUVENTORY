@@ -24,21 +24,26 @@ export const supplierService = {
   },
 
   createSupplier: async (formData: SupplierFormData): Promise<Supplier> => {
+    // Generate a unique supplier_code — required by the DB NOT NULL constraint
+    const supplierCode = `SUP-${Date.now().toString(36).toUpperCase()}`;
+
     const { data, error } = await supabase
       .from('suppliers')
       .insert({
         name: formData.name,
-        contact_person: formData.contactPerson,
-        email: formData.email,
-        phone: formData.phoneNumber,
-        address: formData.address,
-        is_active: formData.status === 'Active'
+        supplier_code: supplierCode,       // ← Required: NOT NULL UNIQUE
+        contact_person: formData.contactPerson || null,
+        email: formData.email || null,
+        phone: formData.phoneNumber || null,
+        address: formData.address || null,
+        notes: formData.notes || null,
+        is_active: formData.status !== 'Inactive',
       })
       .select()
       .single();
-      
+
     if (error) throw error;
-    
+
     return {
       id: data.id,
       name: data.name,
@@ -50,7 +55,7 @@ export const supplierService = {
       dateAdded: data.created_at,
       totalPurchases: 0,
       hasDefaultDiscount: false,
-      defaultDiscountId: undefined
+      defaultDiscountId: undefined,
     };
   },
 

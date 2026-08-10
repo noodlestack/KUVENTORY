@@ -2,7 +2,7 @@ import React from "react";
 import { InventoryItem } from "@/types/inventory";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { Button } from "@/components/ui/button";
-import { Edit, MoreHorizontal, Eye, ArrowUpDown, Archive } from "lucide-react";
+import { Edit, MoreHorizontal, Eye, ArrowUpDown, Archive, Trash2 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
@@ -12,9 +12,10 @@ interface InventoryTableProps {
   onView: (item: InventoryItem) => void;
   onEdit: (item: InventoryItem) => void;
   onArchive?: (item: InventoryItem) => void;
+  onDelete?: (item: InventoryItem) => void;
 }
 
-export const InventoryTable = React.memo(function InventoryTable({ items, onView, onEdit, onArchive }: InventoryTableProps) {
+export const InventoryTable = React.memo(function InventoryTable({ items, onView, onEdit, onArchive, onDelete }: InventoryTableProps) {
   
   const formatDate = (dateStr: string) => new Intl.DateTimeFormat('en-US', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(dateStr));
 
@@ -88,8 +89,13 @@ export const InventoryTable = React.memo(function InventoryTable({ items, onView
                   <Edit className="mr-2 h-4 w-4" /> Edit
                 </DropdownMenuItem>
                 {onArchive && (
-                  <DropdownMenuItem onClick={() => onArchive(item)} className="text-destructive">
+                  <DropdownMenuItem onClick={() => onArchive(item)} className="text-orange-500 hover:text-orange-600 focus:text-orange-600">
                     <Archive className="mr-2 h-4 w-4" /> Archive Item
+                  </DropdownMenuItem>
+                )}
+                {onDelete && (
+                  <DropdownMenuItem onClick={() => onDelete(item)} className="text-destructive">
+                    <Trash2 className="mr-2 h-4 w-4" /> Delete Item
                   </DropdownMenuItem>
                 )}
               </DropdownMenuContent>

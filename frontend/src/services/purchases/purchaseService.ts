@@ -1,6 +1,15 @@
 import { supabase } from '@/integrations/supabase/client';
 import { Purchase, PurchaseFormData, PurchaseStatus } from "@/types/purchases";
 
+const mapPurchaseStatus = (dbStatus: string): PurchaseStatus => {
+  switch (dbStatus?.toUpperCase()) {
+    case 'ORDERED': return 'Pending';
+    case 'RECEIVED': return 'Delivered';
+    case 'CANCELLED': return 'Cancelled';
+    default: return 'Pending';
+  }
+};
+
 export const purchaseService = {
   getPurchases: async (): Promise<Purchase[]> => {
     const { data, error } = await supabase
@@ -25,7 +34,7 @@ export const purchaseService = {
       discountAmount: p.discount_amount,
       netAmount: p.total_amount,
       totalCost: p.total_amount,
-      status: p.status as PurchaseStatus,
+      status: mapPurchaseStatus(p.status),
       remarks: p.notes,
       recordedBy: 'User'
     }));
@@ -39,7 +48,7 @@ export const purchaseService = {
     const linesJson = formData.items.map(item => ({
       stock_item_id: item.itemId,
       quantity: item.quantity,
-      unit_price: item.unitCost
+      unit_cost: item.unitCost
     }));
 
     let discountAmount = 0;

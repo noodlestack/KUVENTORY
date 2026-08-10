@@ -1,4 +1,4 @@
-﻿export type Json =
+export type Json =
   | string
   | number
   | boolean
@@ -11,31 +11,6 @@ export type Database = {
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "14.15"
-  }
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json
-          operationName?: string
-          query?: string
-          variables?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
   }
   public: {
     Tables: {
@@ -983,11 +958,14 @@ export type Database = {
           description: string | null
           id: string
           is_active: boolean
+          location_id: string | null
           minimum_stock_level: number
           name: string
+          notes: string | null
           reorder_level: number
           selling_price: number
           stock_code: string
+          supplier_id: string | null
           tracking_type: string
           unit_of_measure_id: string | null
           updated_at: string
@@ -1000,11 +978,14 @@ export type Database = {
           description?: string | null
           id?: string
           is_active?: boolean
+          location_id?: string | null
           minimum_stock_level?: number
           name: string
+          notes?: string | null
           reorder_level?: number
           selling_price?: number
           stock_code: string
+          supplier_id?: string | null
           tracking_type: string
           unit_of_measure_id?: string | null
           updated_at?: string
@@ -1017,11 +998,14 @@ export type Database = {
           description?: string | null
           id?: string
           is_active?: boolean
+          location_id?: string | null
           minimum_stock_level?: number
           name?: string
+          notes?: string | null
           reorder_level?: number
           selling_price?: number
           stock_code?: string
+          supplier_id?: string | null
           tracking_type?: string
           unit_of_measure_id?: string | null
           updated_at?: string
@@ -1032,6 +1016,20 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_items_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_items_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
             referencedColumns: ["id"]
           },
           {
@@ -1781,9 +1779,6 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {},
   },

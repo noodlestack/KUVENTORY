@@ -62,8 +62,10 @@ export function ExpenseFormDialog({ open, onOpenChange, categories, expense, onS
   
   const selectedDiscount = formValues.hasDiscount ? discounts.find(d => d.id === formValues.discountId) : undefined;
   
+  const safeAmount = Number(formValues.originalAmount) || 0;
+  
   const { calculatedDiscount, finalAmount } = calculateDiscount(
-    formValues.originalAmount || 0,
+    safeAmount,
     selectedDiscount
   );
 
@@ -279,7 +281,7 @@ export function ExpenseFormDialog({ open, onOpenChange, categories, expense, onS
                   discountName={selectedDiscount.name}
                   percentage={selectedDiscount.percentage}
                   amount={selectedDiscount.amount}
-                  originalAmount={formValues.originalAmount || 0}
+                  originalAmount={safeAmount}
                   discountAmount={calculatedDiscount}
                   finalAmount={finalAmount}
                 />
@@ -287,7 +289,7 @@ export function ExpenseFormDialog({ open, onOpenChange, categories, expense, onS
                 <div className="bg-muted p-4 rounded-lg flex flex-col items-end space-y-2">
                   <div className="flex justify-between w-full sm:w-64 font-bold text-lg pt-2 border-t">
                     <span>Final Expense:</span>
-                    <span>₱{finalAmount.toFixed(2)}</span>
+                    <span>₱{(Number(finalAmount) || 0).toFixed(2)}</span>
                   </div>
                 </div>
               )}

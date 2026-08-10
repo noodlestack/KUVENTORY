@@ -6,8 +6,7 @@ export function Footer() {
           &copy; 2026 <span className="font-semibold text-foreground">Kuventory</span>. Built for Kape Uno Bistro.
         </div>
         <div className="mt-2 md:mt-0 flex gap-4">
-          <span>Version 4.0.0</span>
-          <span>Kuventory</span>
+          <span>KAPE-UNO &mdash; Version 4.0.0</span>
         </div>
       </div>
     </footer>
