@@ -1,1 +1,0 @@
-import{t as e}from"./xlsx-CWc7jGiH.js";var t=(t,n)=>{let r=e.json_to_sheet(t),i=e.sheet_to_csv(r),a=new Blob([i],{type:`text/csv;charset=utf-8;`}),o=document.createElement(`a`),s=URL.createObjectURL(a);o.setAttribute(`href`,s),o.setAttribute(`download`,`${n}.csv`),o.style.visibility=`hidden`,document.body.appendChild(o),o.click(),document.body.removeChild(o)};export{t};
