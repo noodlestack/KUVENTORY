@@ -1,6 +1,24 @@
-﻿# Changelog
+# Changelog
 
 All notable changes to the Kuventory project will be documented in this file.
+
+## [v4.0.0] - 2026-08-13
+
+### Added
+- Fully integrated with live Supabase PostgreSQL backend.
+- Sales receipt generation via browser print dialog.
+- "Remember Me" authentication tab-persistence.
+
+### Changed
+- Refactored Inventory components to strictly reconcile with live Database schema and RPCs.
+- Cleaned the entire source tree of mock JSON, loose test scripts, and deprecated service stubs.
+
+### Fixed
+- Fixed purchase `subtotal` saving constraints.
+- Fixed sales net total calculations (NaN issue).
+- Fixed severe visual glitches on mobile WebKit/Android Chrome by removing `transform-gpu` from navigation drawers.
+- Fixed Archive/Delete parity preventing deletion due to foreign key violations.
+- Fixed `exportUtils.ts` to properly pull real database records for CSV exports.
 
 ## [v2.0.2] - 2026-08-05
 

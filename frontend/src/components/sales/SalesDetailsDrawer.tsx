@@ -3,6 +3,9 @@ import { Sale } from "@/types/sales";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { formatCurrency } from "@/utils/currency";
+import { Button } from "@/components/ui/button";
+import { Printer } from "lucide-react";
+import { printReceipt } from "@/utils/exportUtils";
 
 interface SalesDetailsDrawerProps {
   open: boolean;
@@ -18,9 +21,14 @@ export function SalesDetailsDrawer({ open, onOpenChange, sale }: SalesDetailsDra
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="overflow-y-auto w-full sm:max-w-lg">
-        <SheetHeader className="mb-6">
-          <SheetTitle className="text-2xl">Transaction Details</SheetTitle>
-          <SheetDescription className="font-mono">{sale.transactionNo}</SheetDescription>
+        <SheetHeader className="mb-6 flex flex-row justify-between items-start space-y-0">
+          <div>
+            <SheetTitle className="text-2xl">Transaction Details</SheetTitle>
+            <SheetDescription className="font-mono">{sale.transactionNo}</SheetDescription>
+          </div>
+          <Button variant="outline" size="sm" onClick={() => printReceipt(sale)}>
+            <Printer className="mr-2 h-4 w-4" /> Print Receipt
+          </Button>
         </SheetHeader>
 
         <div className="space-y-6">

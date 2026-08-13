@@ -10,10 +10,12 @@ if (!supabaseUrl || !supabaseAnonKey) {
 // Custom storage adapter to handle 'Remember Me' persistence
 const customStorage = {
   getItem: (key: string): string | null => {
+    // If 'Remember Me' is checked, use localStorage
     if (window.localStorage.getItem("kuventory-remember-me") === "true") {
       return window.localStorage.getItem(key);
     }
-    return window.sessionStorage.getItem(key) ?? window.localStorage.getItem(key);
+    // Otherwise strictly use sessionStorage for tab-level persistence
+    return window.sessionStorage.getItem(key);
   },
   setItem: (key: string, value: string): void => {
     if (window.localStorage.getItem("kuventory-remember-me") === "true") {
