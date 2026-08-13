@@ -188,7 +188,7 @@ export function SalesFormDialog({ open, onOpenChange, inventoryItems, onSubmit }
                               </FormControl>
                               <SelectContent>
                                 {inventoryItems.map((i) => (
-                                  <SelectItem key={i.id} value={i.id}>{i.name}</SelectItem>
+                                  <SelectItem key={i.id} value={i.id}>{i.name} (Stock: {i.endingStock})</SelectItem>
                                 ))}
                               </SelectContent>
                             </Select>

@@ -111,10 +111,10 @@ export const salesService = {
       id: saleId,
       transactionNo: saleNumber,
       saleDate: formData.saleDate,
-      items: formData.items.map(i => ({...i, subtotal: i.quantity * i.unitPrice})),
-      totalAmount: formData.items.reduce((sum, i) => sum + (i.quantity * i.unitPrice), 0),
+      items: formData.items.map(i => ({...i, subtotal: (Number(i.quantity) || 0) * (Number(i.unitPrice) || 0)})),
+      totalAmount: formData.items.reduce((sum, i) => sum + ((Number(i.quantity) || 0) * (Number(i.unitPrice) || 0)), 0),
       discountAmount: discountAmount,
-      netAmount: formData.items.reduce((sum, i) => sum + (i.quantity * i.unitPrice), 0) - discountAmount,
+      netAmount: formData.items.reduce((sum, i) => sum + ((Number(i.quantity) || 0) * (Number(i.unitPrice) || 0)), 0) - discountAmount,
       status: 'Completed',
       remarks: formData.remarks,
       recordedBy: 'Current User'
@@ -126,16 +126,16 @@ export const salesService = {
     
     const { data: salesToday } = await supabase
       .from('sales')
-      .select('total_amount, discount_amount, net_amount')
+      .select('subtotal, discount_amount, total_amount')
       .gte('sale_date', today);
       
-    const todaySales = (salesToday || []).reduce((sum, sale) => sum + (sale.net_amount || 0), 0);
-    const grossIncome = (salesToday || []).reduce((sum, sale) => sum + (sale.total_amount || 0), 0);
+    const todaySales = (salesToday || []).reduce((sum, sale) => sum + (sale.total_amount || 0), 0);
+    const grossIncome = (salesToday || []).reduce((sum, sale) => sum + (sale.subtotal || 0), 0);
     const totalDiscounts = (salesToday || []).reduce((sum, sale) => sum + (sale.discount_amount || 0), 0);
     const transactionsCount = salesToday?.length || 0;
     const averageSale = transactionsCount > 0 ? todaySales / transactionsCount : 0;
-    const highestSale = salesToday?.length ? Math.max(...salesToday.map(s => s.net_amount || 0)) : 0;
-    const lowestSale = salesToday?.length ? Math.min(...salesToday.map(s => s.net_amount || 0)) : 0;
+    const highestSale = salesToday?.length ? Math.max(...salesToday.map(s => s.total_amount || 0)) : 0;
+    const lowestSale = salesToday?.length ? Math.min(...salesToday.map(s => s.total_amount || 0)) : 0;
 
     return {
       grossIncome,

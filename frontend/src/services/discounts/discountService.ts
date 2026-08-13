@@ -12,7 +12,7 @@ const mapToDBDiscountType = (uiType: string): string => {
     "Vendor": "VENDOR",
     "Manual": "MANUAL",
     "Custom": "CUSTOM",
-    "None": "NONE"
+    "None": "PROMOTIONAL" // "NONE" is not allowed in DB check constraint
   };
   return mapping[uiType] || "PROMOTIONAL";
 };

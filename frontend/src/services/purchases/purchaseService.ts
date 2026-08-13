@@ -27,8 +27,8 @@ export const purchaseService = {
         itemId: l.stock_item_id,
         itemName: 'Unknown',
         quantity: l.quantity,
-        unitCost: l.unit_price,
-        subtotal: l.quantity * l.unit_price
+        unitCost: l.unit_cost,
+        subtotal: l.quantity * l.unit_cost
       })),
       subtotal: p.total_amount,
       discountAmount: p.discount_amount,
