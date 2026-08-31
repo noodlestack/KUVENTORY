@@ -37,7 +37,7 @@ export function ReportsLayout() {
         const { data, error } = await supabase
           .from('stock_movements')
           .select(`
-            id, type, quantity, reference_no, created_at, notes,
+            id, movement_type, quantity, reason, created_at,
             inventory_items ( sku, name, unit, categories (name) )
           `)
           .gte('created_at', `${selectedDate}T00:00:00Z`)
@@ -263,17 +263,17 @@ export function ReportsLayout() {
                           <TableCell>{mov.inventory_items?.categories?.name}</TableCell>
                           <TableCell>
                             <span className={`px-2 py-1 text-xs rounded-full ${
-                              mov.type === 'STOCK_IN' ? 'bg-green-100 text-green-700' :
-                              mov.type === 'STOCK_OUT' ? 'bg-red-100 text-red-700' :
+                              mov.movement_type === 'ADD' ? 'bg-green-100 text-green-700' :
+                              mov.movement_type === 'REMOVE' ? 'bg-red-100 text-red-700' :
                               'bg-gray-100 text-gray-700'
                             }`}>
-                              {mov.type.replace('_', ' ')}
+                              {mov.movement_type.replace('_', ' ')}
                             </span>
                           </TableCell>
                           <TableCell className="text-right font-medium">
-                            {mov.type === 'STOCK_OUT' ? '-' : '+'}{mov.quantity} {mov.inventory_items?.unit}
+                            {mov.movement_type === 'REMOVE' ? '-' : '+'}{mov.quantity} {mov.inventory_items?.unit}
                           </TableCell>
-                          <TableCell className="text-xs">{mov.reference_no || mov.notes || '-'}</TableCell>
+                          <TableCell className="text-xs">{mov.reason || '-'}</TableCell>
                         </TableRow>
                       ))
                     )}
