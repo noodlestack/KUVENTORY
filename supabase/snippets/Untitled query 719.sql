@@ -1,1 +1,0 @@
-SELECT column_name, dat

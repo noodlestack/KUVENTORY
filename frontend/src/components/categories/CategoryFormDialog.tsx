@@ -4,10 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useCategories } from "@/hooks/categories/useCategories";
-import { Category, CategoryStatus } from "@/types/categories";
-import { toast } from "sonner";
+import { Category } from "@/types/categories";
 
 interface CategoryFormDialogProps {
   isOpen: boolean;
@@ -21,49 +19,35 @@ export function CategoryFormDialog({ isOpen, onClose, category, onSuccess }: Cat
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [status, setStatus] = useState<CategoryStatus>("Active");
 
   useEffect(() => {
     if (isOpen) {
       if (category) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         setName(category.name);
         setDescription(category.description || "");
-        setStatus(category.status);
       } else {
         setName("");
         setDescription("");
-        setStatus("Active");
       }
     }
   }, [isOpen, category]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) {
-      toast.error("Category name is required.");
-      return;
-    }
-    if (name.length > 50) {
-      toast.error("Category name is too long.");
-      return;
-    }
-
+    if (!name.trim()) return;
+    
     setIsSubmitting(true);
     try {
-      const data = { name, description, status };
+      const data = { name, description };
       let savedCategory;
       if (category) {
         savedCategory = await updateCategory(category.id, data);
-        toast.success("Category updated successfully.");
       } else {
         savedCategory = await createCategory(data);
-        toast.success("Category created successfully.");
       }
       onSuccess?.(savedCategory);
       onClose();
     } catch (error) {
-      toast.error(category ? "Failed to update category." : "Failed to create category.");
       console.error(error);
     } finally {
       setIsSubmitting(false);
@@ -100,21 +84,6 @@ export function CategoryFormDialog({ isOpen, onClose, category, onSuccess }: Cat
                 placeholder="Optional description"
               />
             </div>
-            {category && (
-              <div className="space-y-2">
-                <Label htmlFor="status">Status</Label>
-                <Select value={status} onValueChange={(val) => setStatus(val as CategoryStatus)}>
-                  <SelectTrigger id="status">
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Active">Active</SelectItem>
-                    <SelectItem value="Inactive">Inactive</SelectItem>
-                    <SelectItem value="Archived">Archived</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>

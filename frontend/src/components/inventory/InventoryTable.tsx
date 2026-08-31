@@ -1,119 +1,108 @@
-import React from "react";
-import { InventoryItem } from "@/types/inventory";
-import { StatusBadge } from "@/components/common/StatusBadge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Edit, MoreHorizontal, Eye, ArrowUpDown, Archive, Trash2 } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { DataTable } from "@/components/ui/data-table";
-import { ColumnDef } from "@tanstack/react-table";
+import { Badge } from "@/components/ui/badge";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
+import { MoreHorizontal, Edit, History, Trash2, PackagePlus } from "lucide-react";
+import { InventoryItem } from "@/types/inventory";
 
 interface InventoryTableProps {
   items: InventoryItem[];
-  onView: (item: InventoryItem) => void;
   onEdit: (item: InventoryItem) => void;
-  onArchive?: (item: InventoryItem) => void;
-  onDelete?: (item: InventoryItem) => void;
+  onUpdateStock: (item: InventoryItem) => void;
+  onViewHistory: (item: InventoryItem) => void;
+  onDelete: (item: InventoryItem) => void;
 }
 
-export const InventoryTable = React.memo(function InventoryTable({ items, onView, onEdit, onArchive, onDelete }: InventoryTableProps) {
+export function InventoryTable({ items, onEdit, onUpdateStock, onViewHistory, onDelete }: InventoryTableProps) {
   
-  const formatDate = (dateStr: string) => new Intl.DateTimeFormat('en-US', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(dateStr));
-
-  const columns: ColumnDef<InventoryItem>[] = [
-    {
-      accessorKey: "itemCode",
-      header: "Item Code",
-      cell: ({ row }) => <div className="font-mono text-sm text-muted-foreground">{row.getValue("itemCode")}</div>,
-    },
-    {
-      accessorKey: "name",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="-ml-4 h-8 data-[state=open]:bg-accent"
-          >
-            Name
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        )
-      },
-      cell: ({ row }) => <div className="font-medium">{row.getValue("name")}</div>,
-    },
-    {
-      accessorKey: "categoryName",
-      header: "Category",
-    },
-    {
-      accessorKey: "endingStock",
-      header: () => <div className="text-right">Qty</div>,
-      cell: ({ row }) => {
-        return <div className="text-right font-medium">{row.getValue("endingStock")}</div>;
-      },
-    },
-    {
-      accessorKey: "unit",
-      header: "Unit",
-      cell: ({ row }) => <div className="text-muted-foreground">{row.getValue("unit")}</div>,
-    },
-    {
-      accessorKey: "status",
-      header: "Status",
-      cell: ({ row }) => <StatusBadge status={row.getValue("status")} />,
-    },
-    {
-      accessorKey: "lastUpdated",
-      header: "Last Updated",
-      cell: ({ row }) => <div className="text-sm text-muted-foreground">{formatDate(row.getValue("lastUpdated"))}</div>,
-    },
-    {
-      id: "actions",
-      cell: ({ row }) => {
-        const item = row.original;
-        return (
-          <div onClick={(e) => e.stopPropagation()}>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <span className="sr-only">Open menu</span>
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuItem onClick={() => onView(item)}>
-                  <Eye className="mr-2 h-4 w-4" /> View Details
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => onEdit(item)}>
-                  <Edit className="mr-2 h-4 w-4" /> Edit
-                </DropdownMenuItem>
-                {onArchive && (
-                  <DropdownMenuItem onClick={() => onArchive(item)} className="text-orange-500 hover:text-orange-600 focus:text-orange-600">
-                    <Archive className="mr-2 h-4 w-4" /> Archive Item
-                  </DropdownMenuItem>
-                )}
-                {onDelete && (
-                  <DropdownMenuItem onClick={() => onDelete(item)} className="text-destructive">
-                    <Trash2 className="mr-2 h-4 w-4" /> Delete Item
-                  </DropdownMenuItem>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        );
-      },
-    },
-  ];
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'IN_STOCK':
+        return <Badge variant="default" className="bg-green-500 hover:bg-green-600">In Stock</Badge>;
+      case 'LOW_STOCK':
+        return <Badge variant="secondary" className="bg-yellow-500 hover:bg-yellow-600 text-white">Low Stock</Badge>;
+      case 'OUT_OF_STOCK':
+        return <Badge variant="destructive">Out of Stock</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
+    }
+  };
 
   return (
-    <div className="mt-4">
-      <DataTable 
-        columns={columns} 
-        data={items} 
-        searchKey="name"
-        searchPlaceholder="Search inventory by name..."
-      />
+    <div className="rounded-md border bg-card">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>SKU</TableHead>
+            <TableHead>Item</TableHead>
+            <TableHead>Category</TableHead>
+            <TableHead>Supplier</TableHead>
+            <TableHead className="text-right">Stock</TableHead>
+            <TableHead className="text-right">Min Stock</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {items.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={8} className="text-center h-24 text-muted-foreground">
+                No inventory items found.
+              </TableCell>
+            </TableRow>
+          ) : (
+            items.map((item) => (
+              <TableRow key={item.id}>
+                <TableCell className="font-medium">{item.sku}</TableCell>
+                <TableCell>{item.name}</TableCell>
+                <TableCell>{item.category_name}</TableCell>
+                <TableCell>{item.supplier_name || '-'}</TableCell>
+                <TableCell className="text-right font-semibold">
+                  {item.current_stock} {item.unit && <span className="text-xs text-muted-foreground">{item.unit}</span>}
+                </TableCell>
+                <TableCell className="text-right text-muted-foreground">{item.minimum_stock}</TableCell>
+                <TableCell>{getStatusBadge(item.status)}</TableCell>
+                <TableCell className="text-right">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="h-8 w-8 p-0">
+                        <span className="sr-only">Open menu</span>
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => onUpdateStock(item)} className="font-medium text-primary">
+                        <PackagePlus className="mr-2 h-4 w-4" /> Update Stock
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onViewHistory(item)}>
+                        <History className="mr-2 h-4 w-4" /> Stock History
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onEdit(item)}>
+                        <Edit className="mr-2 h-4 w-4" /> Edit Info
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onDelete(item)} className="text-destructive">
+                        <Trash2 className="mr-2 h-4 w-4" /> Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))
+          )}
+        </TableBody>
+      </Table>
     </div>
   );
-});
+}

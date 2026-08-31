@@ -15,7 +15,7 @@ export const notificationService = {
         id: n.id,
         title: n.title,
         message: n.message,
-        type: (n.notification_type === 'SYSTEM' ? 'System' : 'General') as NotificationType,
+        type: (n.type === 'SYSTEM' ? 'System' : 'General') as NotificationType,
         priority: 'medium' as NotificationPriority,
         timestamp: n.created_at,
         isRead: n.is_read,

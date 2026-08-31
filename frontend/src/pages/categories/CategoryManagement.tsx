@@ -4,14 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { useCategories } from "@/hooks/categories/useCategories";
 import { CategoryFormDialog } from "@/components/categories/CategoryFormDialog";
 import { Category } from "@/types/categories";
 import { format } from "date-fns";
+import { toast } from "sonner";
 
 export function CategoryManagement() {
-  const { categories, isLoading, error, refreshCategories, archiveCategory } = useCategories();
+  const { categories, isLoading, refreshCategories, deleteCategory } = useCategories();
   const [searchQuery, setSearchQuery] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
@@ -35,23 +35,18 @@ export function CategoryManagement() {
     setIsDialogOpen(true);
   };
 
-  const handleArchive = async (id: string) => {
-    if (confirm("Are you sure you want to archive this category? It will still be visible on existing items but hidden from new selections.")) {
-      await archiveCategory(id);
+  const handleDelete = async (id: string) => {
+    if (confirm("Are you sure you want to delete this category? This cannot be undone.")) {
+      try {
+        await deleteCategory(id);
+      } catch (e: any) {
+        toast.error(e.message || "Failed to delete category");
+      }
     }
   };
 
   if (isLoading) {
     return <div className="p-8 text-center text-muted-foreground">Loading categories...</div>;
-  }
-
-  if (error) {
-    return (
-      <div className="p-8 text-center text-destructive">
-        <p>Error loading categories.</p>
-        <Button variant="outline" className="mt-4" onClick={refreshCategories}>Retry</Button>
-      </div>
-    );
   }
 
   return (
@@ -96,7 +91,6 @@ export function CategoryManagement() {
                   <TableRow>
                     <TableHead>Category Name</TableHead>
                     <TableHead className="hidden md:table-cell">Description</TableHead>
-                    <TableHead>Status</TableHead>
                     <TableHead className="hidden lg:table-cell">Created</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
@@ -108,21 +102,14 @@ export function CategoryManagement() {
                       <TableCell className="hidden md:table-cell text-muted-foreground">
                         {cat.description || "—"}
                       </TableCell>
-                      <TableCell>
-                        <Badge variant={cat.status === "Active" ? "default" : cat.status === "Archived" ? "secondary" : "outline"}>
-                          {cat.status}
-                        </Badge>
-                      </TableCell>
                       <TableCell className="hidden lg:table-cell text-muted-foreground">
-                        {cat.createdAt ? format(new Date(cat.createdAt), 'MMM d, yyyy') : "—"}
+                        {cat.created_at ? format(new Date(cat.created_at), 'MMM d, yyyy') : "—"}
                       </TableCell>
                       <TableCell className="text-right">
                         <Button variant="ghost" size="sm" onClick={() => handleEdit(cat)}>Edit</Button>
-                        {cat.status !== "Archived" && (
-                          <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={() => handleArchive(cat.id)}>
-                            Archive
-                          </Button>
-                        )}
+                        <Button variant="ghost" size="sm" className="text-destructive" onClick={() => handleDelete(cat.id)}>
+                          Delete
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}

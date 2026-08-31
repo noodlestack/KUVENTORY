@@ -1,90 +1,49 @@
-export type InventoryStatus = "In Stock" | "Low Stock" | "Out of Stock" | "Inactive";
-export type MovementType = "Stock In" | "Stock Out" | "Adjustment" | "Return" | "Transfer";
+export type InventoryStatus = "IN_STOCK" | "LOW_STOCK" | "OUT_OF_STOCK";
+export type MovementType = "ADD" | "REMOVE" | "ADJUST";
 
 export interface InventoryItem {
   id: string;
-  itemCode: string;
+  sku: string;
   name: string;
-  categoryId: string;
-  categoryName: string;
-  unit: string;
-  supplier: string;
-  beginningStock: number;
-  addedStock: number;
-  totalStock: number;
-  morningSales: number;
-  afternoonSales: number;
-  endingStock: number;
+  category_id: string;
+  category_name?: string; // Joined field
+  supplier_name?: string;
+  unit?: string;
   cost: number;
-  sellingPrice: number;
-  expirationDate?: string;
-  minStockLevel: number;
-  maxStockLevel?: number;
-  storageLocation: string;
+  current_stock: number;
+  minimum_stock: number;
   status: InventoryStatus;
   notes?: string;
-  lastUpdated: string;
-  createdAt: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface InventoryFormData {
+  sku: string;
   name: string;
-  itemCode: string;
-  categoryId: string;
-  unit: string;
-  supplier: string;
-  beginningStock: number;
-  addedStock: number;
-  morningSales: number;
-  afternoonSales: number;
+  category_id: string;
+  supplier_name?: string;
+  unit?: string;
   cost: number;
-  sellingPrice: number;
-  expirationDate?: string;
-  minStockLevel: number;
-  storageLocation: string;
-  status: InventoryStatus;
+  current_stock: number;
+  minimum_stock: number;
   notes?: string;
 }
 
 export interface StockMovement {
   id: string;
-  referenceNo: string;
-  itemId: string;
-  itemName: string;
-  itemCode: string;
-  type: MovementType;
+  inventory_item_id: string;
+  movement_type: MovementType;
   quantity: number;
-  performedBy: string;
-  remarks: string;
-  date: string;
+  previous_stock: number;
+  new_stock: number;
+  reason?: string;
+  created_by?: string;
+  created_at: string;
 }
 
-export interface StockAdjustment {
-  id: string;
-  itemId: string;
-  itemName: string;
-  currentQuantity: number;
-  actualQuantity: number;
-  difference: number;
-  reason: string;
-  adjustedBy: string;
-  remarks?: string;
-  date: string;
-}
-
-export interface StockAdjustmentFormData {
-  itemId: string;
-  actualQuantity: number;
-  reason: string;
-  remarks?: string;
-}
-
-export interface InventoryHistoryEntry {
-  id: string;
-  itemId: string;
-  itemName: string;
-  action: "Created" | "Edited" | "Adjusted" | "Restocked" | "Archived";
-  performedBy: string;
-  details: string;
-  date: string;
+export interface StockUpdateFormData {
+  movement_type: MovementType;
+  quantity: number;
+  reason?: string;
 }

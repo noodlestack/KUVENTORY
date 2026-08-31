@@ -1,345 +1,180 @@
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
 import { InventoryItem, InventoryFormData } from "@/types/inventory";
-import { Category } from "@/types/categories";
-import { CategoryFormDialog } from "@/components/categories/CategoryFormDialog";
-import { Plus } from "lucide-react";
 
-const inventorySchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters").max(100, "Name cannot exceed 100 characters"),
-  itemCode: z.string().min(2, "Item Code must be at least 2 characters"),
-  categoryId: z.string().min(1, "Please select a category"),
-  unit: z.string().min(1, "Unit is required"),
-  supplier: z.string().min(2, "Supplier is required"),
-  
-  beginningStock: z.coerce.number().min(0, "Cannot be negative"),
-  addedStock: z.coerce.number().min(0, "Cannot be negative"),
-  morningSales: z.coerce.number().min(0, "Cannot be negative"),
-  afternoonSales: z.coerce.number().min(0, "Cannot be negative"),
-  
-  cost: z.coerce.number().min(0, "Cannot be negative"),
-  sellingPrice: z.coerce.number().min(0, "Cannot be negative"),
-  expirationDate: z.string().optional(),
-
-  minStockLevel: z.coerce.number().min(0, "Min stock cannot be negative"),
-  storageLocation: z.string().min(2, "Storage location is required"),
-  notes: z.string().max(300, "Notes cannot exceed 300 characters").optional(),
-  status: z.enum(["In Stock", "Low Stock", "Out of Stock", "Inactive"]),
-});
+interface Category {
+  id: string;
+  name: string;
+}
 
 interface InventoryFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   item: InventoryItem | null;
   categories: Category[];
-  onSubmit: (data: InventoryFormData, categoryName: string) => Promise<void>;
+  onSubmit: (data: InventoryFormData) => Promise<void>;
 }
 
 export function InventoryFormDialog({ open, onOpenChange, item, categories, onSubmit }: InventoryFormDialogProps) {
-  const isEditing = !!item;
-  const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
-
-  const form = useForm<InventoryFormData>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(inventorySchema) as any,
-    defaultValues: {
-      name: "",
-      itemCode: "",
-      categoryId: "",
-      unit: "",
-      supplier: "",
-      beginningStock: 0,
-      addedStock: 0,
-      morningSales: 0,
-      afternoonSales: 0,
-      cost: 0,
-      sellingPrice: 0,
-      expirationDate: "",
-      minStockLevel: 0,
-      storageLocation: "",
-      notes: "",
-      status: "In Stock",
-    },
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState<InventoryFormData>({
+    sku: "",
+    name: "",
+    category_id: "",
+    supplier_name: "",
+    unit: "",
+    cost: 0,
+    current_stock: 0,
+    minimum_stock: 0,
+    notes: "",
   });
 
   useEffect(() => {
-    if (open) {
-      if (item) {
-        form.reset({
-          name: item.name,
-          itemCode: item.itemCode,
-          categoryId: item.categoryId,
-          unit: item.unit,
-          supplier: item.supplier,
-          beginningStock: item.beginningStock,
-          addedStock: item.addedStock,
-          morningSales: item.morningSales,
-          afternoonSales: item.afternoonSales,
-          cost: item.cost,
-          sellingPrice: item.sellingPrice,
-          expirationDate: item.expirationDate || "",
-          minStockLevel: item.minStockLevel,
-          storageLocation: item.storageLocation,
-          notes: item.notes || "",
-          status: item.status,
-        });
-      } else {
-        form.reset({
-          name: "",
-          itemCode: "",
-          categoryId: "",
-          unit: "",
-          supplier: "",
-          beginningStock: 0,
-          addedStock: 0,
-          morningSales: 0,
-          afternoonSales: 0,
-          cost: 0,
-          sellingPrice: 0,
-          expirationDate: "",
-          minStockLevel: 0,
-          storageLocation: "",
-          notes: "",
-          status: "In Stock",
-        });
-      }
+    if (item) {
+      setFormData({
+        sku: item.sku,
+        name: item.name,
+        category_id: item.category_id,
+        supplier_name: item.supplier_name || "",
+        unit: item.unit || "",
+        cost: item.cost,
+        current_stock: item.current_stock, // We disable editing this for existing items
+        minimum_stock: item.minimum_stock,
+        notes: item.notes || "",
+      });
+    } else {
+      setFormData({
+        sku: `SKU-${Date.now().toString().slice(-6)}`, // simple generator
+        name: "",
+        category_id: "",
+        supplier_name: "",
+        unit: "",
+        cost: 0,
+        current_stock: 0,
+        minimum_stock: 0,
+        notes: "",
+      });
     }
-  }, [open, item, form]);
+  }, [item, open]);
 
-  const handleSubmit = async (data: InventoryFormData) => {
-    const categoryName = categories.find(c => c.id === data.categoryId)?.name || "Unknown";
-    await onSubmit(data, categoryName);
-    onOpenChange(false);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      await onSubmit(formData);
+      onOpenChange(false);
+    } catch (error) {
+      // Error handled by hook
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value, type } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'number' ? (value ? Number(value) : 0) : value
+    }));
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[700px] max-h-[90vh] flex flex-col p-0 overflow-hidden">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col h-full max-h-[90vh]">
-            <DialogHeader className="px-6 py-4 border-b shrink-0">
-              <DialogTitle>{isEditing ? "Edit Inventory Item" : "Add Inventory Item"}</DialogTitle>
-              <DialogDescription>
-                {isEditing ? "Modify the details of an existing inventory item." : "Register a new raw material or packaging item."}
-              </DialogDescription>
-            </DialogHeader>
-            
-            <div className="flex-1 overflow-y-auto p-6 space-y-4">
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Item Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., Arabica Coffee Beans" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="itemCode"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Item Code</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., RAW-001" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+        <form onSubmit={handleSubmit}>
+          <DialogHeader>
+            <DialogTitle>{item ? 'Edit Inventory Item' : 'Add New Inventory Item'}</DialogTitle>
+            <DialogDescription>
+              {item ? 'Update the details for this item.' : 'Enter the details for the new inventory item.'}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="sku">SKU / Item Code</Label>
+                <Input id="sku" name="sku" value={formData.sku} onChange={handleChange} required />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="name">Item Name</Label>
+                <Input id="name" name="name" value={formData.name} onChange={handleChange} required />
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <FormField
-                control={form.control}
-                name="categoryId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Category</FormLabel>
-                    <div className="flex gap-2">
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select..." />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {categories.filter(c => c.status !== "Archived" || c.id === field.value).map((c) => (
-                            <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Button 
-                        type="button" 
-                        variant="outline" 
-                        size="icon" 
-                        className="shrink-0"
-                        onClick={() => setIsCategoryDialogOpen(true)}
-                        title="Add New Category"
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="unit"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Unit of Measure</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., kg, L, pcs" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Status</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value} disabled>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select..." />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="In Stock">In Stock</SelectItem>
-                        <SelectItem value="Low Stock">Low Stock</SelectItem>
-                        <SelectItem value="Out of Stock">Out of Stock</SelectItem>
-                        <SelectItem value="Inactive">Inactive</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="category_id">Category</Label>
+                <Select 
+                  value={formData.category_id} 
+                  onValueChange={(val) => setFormData(prev => ({ ...prev, category_id: val }))}
+                  required
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map(c => (
+                      <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="supplier_name">Supplier</Label>
+                <Input id="supplier_name" name="supplier_name" value={formData.supplier_name} onChange={handleChange} placeholder="e.g. ABC Trading" />
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="supplier"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Primary Supplier</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., Global Beans Inc." {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="storageLocation"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Storage Location</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., Storage Room A" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="unit">Unit of Measure</Label>
+                <Input id="unit" name="unit" value={formData.unit} onChange={handleChange} placeholder="e.g. kg, pcs, boxes" />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="cost">Cost Price</Label>
+                <Input id="cost" name="cost" type="number" step="0.01" min="0" value={formData.cost} onChange={handleChange} />
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <FormField control={form.control} name="beginningStock" render={({ field }) => (
-                <FormItem><FormLabel>Beginning Stock</FormLabel><FormControl><Input type="number" step="0.01" {...field} /></FormControl><FormMessage /></FormItem>
-              )} />
-              <FormField control={form.control} name="addedStock" render={({ field }) => (
-                <FormItem><FormLabel>Added Stock</FormLabel><FormControl><Input type="number" step="0.01" {...field} /></FormControl><FormMessage /></FormItem>
-              )} />
-              <FormField control={form.control} name="morningSales" render={({ field }) => (
-                <FormItem><FormLabel>Morning Sales</FormLabel><FormControl><Input type="number" step="0.01" {...field} /></FormControl><FormMessage /></FormItem>
-              )} />
-              <FormField control={form.control} name="afternoonSales" render={({ field }) => (
-                <FormItem><FormLabel>Afternoon Sales</FormLabel><FormControl><Input type="number" step="0.01" {...field} /></FormControl><FormMessage /></FormItem>
-              )} />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <FormField control={form.control} name="cost" render={({ field }) => (
-                <FormItem><FormLabel>Cost (₱)</FormLabel><FormControl><Input type="number" step="0.01" {...field} /></FormControl><FormMessage /></FormItem>
-              )} />
-              <FormField control={form.control} name="sellingPrice" render={({ field }) => (
-                <FormItem><FormLabel>Selling Price (₱)</FormLabel><FormControl><Input type="number" step="0.01" {...field} /></FormControl><FormMessage /></FormItem>
-              )} />
-              <FormField control={form.control} name="expirationDate" render={({ field }) => (
-                <FormItem><FormLabel>Expiration Date</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>
-              )} />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="minStockLevel"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Min Stock Level</FormLabel>
-                    <FormControl>
-                      <Input type="number" step="0.01" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <FormField
-              control={form.control}
-              name="notes"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Notes & Remarks</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Optional remarks..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="minimum_stock">Minimum Stock Level</Label>
+                <Input id="minimum_stock" name="minimum_stock" type="number" min="0" value={formData.minimum_stock} onChange={handleChange} required />
+              </div>
+              {!item && (
+                <div className="grid gap-2">
+                  <Label htmlFor="current_stock">Initial Stock</Label>
+                  <Input id="current_stock" name="current_stock" type="number" min="0" value={formData.current_stock} onChange={handleChange} required />
+                </div>
               )}
-            />
-
             </div>
 
-            <DialogFooter className="px-6 py-4 border-t shrink-0">
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-              <Button type="submit" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? "Saving..." : isEditing ? "Save Changes" : "Create Item"}
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
+            <div className="grid gap-2">
+              <Label htmlFor="notes">Notes</Label>
+              <Textarea id="notes" name="notes" value={formData.notes} onChange={handleChange} rows={3} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Saving...' : 'Save Item'}
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
-      <CategoryFormDialog 
-        isOpen={isCategoryDialogOpen}
-        onClose={() => setIsCategoryDialogOpen(false)}
-        onSuccess={(newCat) => {
-          // Setting a small timeout to let the parent re-render with new categories
-          setTimeout(() => form.setValue("categoryId", newCat.id), 100);
-        }}
-      />
     </Dialog>
   );
 }

@@ -1,13 +1,8 @@
 import { 
-  LayoutDashboard, 
   Boxes, 
-  Truck, 
-  ShoppingCart, 
-  CreditCard, 
   PieChart, 
   Settings, 
   UserCircle,
-  Tag,
   Tags
 } from "lucide-react";
 import React from "react";
@@ -25,12 +20,6 @@ export interface NavSection {
 
 export const navigationConfig: NavSection[] = [
   {
-    title: "Main",
-    items: [
-      { title: "Dashboard", href: "/", icon: LayoutDashboard },
-    ]
-  },
-  {
     title: "Inventory Management",
     items: [
       { title: "Inventory", href: "/inventory", icon: Boxes },
@@ -38,18 +27,8 @@ export const navigationConfig: NavSection[] = [
     ],
   },
   {
-    title: "Purchasing",
+    title: "Analytics",
     items: [
-      { title: "Suppliers", href: "/suppliers", icon: Truck },
-      { title: "Purchases", href: "/purchases", icon: ShoppingCart },
-    ],
-  },
-  {
-    title: "Sales & Cashiering",
-    items: [
-      { title: "Sales", href: "/sales", icon: CreditCard },
-      { title: "Discounts", href: "/discounts", icon: Tag },
-      { title: "Expenses", href: "/expenses", icon: CreditCard },
       { title: "Reports", href: "/reports", icon: PieChart },
     ],
   },

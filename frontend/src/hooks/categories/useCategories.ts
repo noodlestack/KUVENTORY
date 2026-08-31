@@ -6,55 +6,54 @@ import { categoryService } from "@/services/categories/categoryService";
 export function useCategories() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   const fetchCategories = useCallback(async () => {
     try {
+      setIsLoading(true);
       const data = await categoryService.getCategories();
       setCategories(data);
-      setError(null);
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Failed to fetch categories");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to fetch categories");
     } finally {
       setIsLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    queueMicrotask(() => { fetchCategories(); });
+    fetchCategories();
   }, [fetchCategories]);
 
   const createCategory = async (data: CategoryFormData) => {
     try {
-    const newCategory = await categoryService.createCategory(data);
-    setCategories(prev => [...prev, newCategory]);
-    return newCategory;
+      const newCategory = await categoryService.createCategory(data);
+      setCategories(prev => [...prev, newCategory]);
+      toast.success("Category created successfully");
+      return newCategory;
     } catch (error: any) {
-      console.error(error);
-      toast.error(error.message || 'Action failed');
+      toast.error(error.message || 'Failed to create category');
       throw error;
     }
   };
 
   const updateCategory = async (id: string, data: CategoryFormData) => {
     try {
-    const updatedCategory = await categoryService.updateCategory(id, data);
-    setCategories(prev => prev.map(c => c.id === id ? updatedCategory : c));
-    return updatedCategory;
+      const updatedCategory = await categoryService.updateCategory(id, data);
+      setCategories(prev => prev.map(c => c.id === id ? updatedCategory : c));
+      toast.success("Category updated successfully");
+      return updatedCategory;
     } catch (error: any) {
-      console.error(error);
-      toast.error(error.message || 'Action failed');
+      toast.error(error.message || 'Failed to update category');
       throw error;
     }
   };
 
-  const archiveCategory = async (id: string) => {
+  const deleteCategory = async (id: string) => {
     try {
-    await categoryService.archiveCategory(id);
-    setCategories(prev => prev.map(c => c.id === id ? { ...c, status: "Archived" } : c));
+      await categoryService.deleteCategory(id);
+      setCategories(prev => prev.filter(c => c.id !== id));
+      toast.success("Category deleted successfully");
     } catch (error: any) {
-      console.error(error);
-      toast.error(error.message || 'Action failed');
+      toast.error(error.message || 'Failed to delete category');
       throw error;
     }
   };
@@ -62,10 +61,9 @@ export function useCategories() {
   return {
     categories,
     isLoading,
-    error,
     refreshCategories: fetchCategories,
     createCategory,
     updateCategory,
-    archiveCategory
+    deleteCategory
   };
 }

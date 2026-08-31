@@ -1,4 +1,4 @@
-import { HashRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/contexts/AuthContext";
@@ -24,14 +24,9 @@ import { PublicRoute } from "@/routes/PublicRoute";
 
 import React, { Suspense } from "react";
 import { PageLoader } from "@/components/common/LoadingStates";
-import { Dashboard } from "@/pages/dashboard/Dashboard";
-import { CategoryManagement } from "@/pages/categories/CategoryManagement";
+
 const InventoryLayout = React.lazy(() => import("@/pages/inventory/InventoryLayout").then(m => ({ default: m.InventoryLayout })));
-const Suppliers = React.lazy(() => import("@/pages/suppliers/Suppliers").then(m => ({ default: m.Suppliers })));
-const PurchasesLayout = React.lazy(() => import("@/pages/purchases/PurchasesLayout").then(m => ({ default: m.PurchasesLayout })));
-const SalesLayout = React.lazy(() => import("@/pages/sales/SalesLayout").then(m => ({ default: m.SalesLayout })));
-const DiscountsLayout = React.lazy(() => import("@/pages/discounts/DiscountsLayout").then(m => ({ default: m.DiscountsLayout })));
-const ExpensesLayout = React.lazy(() => import("@/pages/expenses/ExpensesLayout").then(m => ({ default: m.ExpensesLayout })));
+import { CategoryManagement } from "@/pages/categories/CategoryManagement";
 const ReportsLayout = React.lazy(() => import("@/pages/reports/ReportsLayout").then(m => ({ default: m.ReportsLayout })));
 const ProfileLayout = React.lazy(() => import("@/pages/profile/ProfileLayout").then(m => ({ default: m.ProfileLayout })));
 const SettingsLayout = React.lazy(() => import("@/pages/settings/SettingsLayout").then(m => ({ default: m.SettingsLayout })));
@@ -51,57 +46,48 @@ function App() {
           <AuthProvider>
             <HashRouter>
               <Suspense fallback={<PageLoader />}>
-            <Routes>
-              
-              {/* Public Routes (Login, Reset Password) */}
-              <Route element={<PublicRoute />}>
-                <Route element={<AuthLayout />}>
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/forgot-password" element={<ForgotPassword />} />
-                  <Route path="/reset-password" element={<ResetPassword />} />
-                </Route>
-              </Route>
+                <Routes>
+                  
+                  {/* Public Routes (Login, Reset Password) */}
+                  <Route element={<PublicRoute />}>
+                    <Route element={<AuthLayout />}>
+                      <Route path="/login" element={<Login />} />
+                      <Route path="/forgot-password" element={<ForgotPassword />} />
+                      <Route path="/reset-password" element={<ResetPassword />} />
+                    </Route>
+                  </Route>
 
-              {/* Session Expired can be accessed without auth but clears token */}
-              <Route element={<AuthLayout />}>
-                <Route path="/session-expired" element={<SessionExpired />} />
-              </Route>
+                  {/* Session Expired can be accessed without auth but clears token */}
+                  <Route element={<AuthLayout />}>
+                    <Route path="/session-expired" element={<SessionExpired />} />
+                  </Route>
 
-              {/* Protected Routes (Main Application) */}
-              <Route element={<ProtectedRoute />}>
-                <Route element={<DashboardLayout />}>
-                  {/* Dashboard is accessible to everyone who is authenticated */}
-                  <Route path="/" element={<Dashboard />} />
-                  <Route path="/profile" element={<ProfileLayout />} />
+                  {/* Protected Routes (Main Application) */}
+                  <Route element={<ProtectedRoute />}>
+                    <Route element={<DashboardLayout />}>
+                      {/* Redirect root to inventory */}
+                      <Route path="/" element={<Navigate to="/inventory" replace />} />
+                      <Route path="/profile" element={<ProfileLayout />} />
 
-                  {/* Inventory & Purchasing */}
-                  <Route path="/inventory" element={<InventoryLayout />} />
-                  <Route path="/categories" element={<CategoryManagement />} />
-                  <Route path="/suppliers" element={<Suppliers />} />
-                  <Route path="/purchases" element={<PurchasesLayout />} />
+                      {/* Inventory Core */}
+                      <Route path="/inventory" element={<InventoryLayout />} />
+                      <Route path="/categories" element={<CategoryManagement />} />
+                      
+                      {/* Reports */}
+                      <Route path="/reports" element={<ReportsLayout />} />
 
-                  {/* Sales */}
-                  <Route path="/sales" element={<SalesLayout />} />
-                  <Route path="/discounts" element={<DiscountsLayout />} />
+                      {/* Settings / System */}
+                      <Route path="/settings" element={<SettingsLayout />} />
+                    </Route>
+                  </Route>
 
-                  {/* Expenses */}
-                  <Route path="/expenses" element={<ExpensesLayout />} />
+                  {/* Blank Routes (404, Unauthorized) */}
+                  <Route element={<BlankLayout />}>
+                    <Route path="/unauthorized" element={<Unauthorized />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Route>
 
-                  {/* Reports */}
-                  <Route path="/reports" element={<ReportsLayout />} />
-
-                  {/* Settings / System */}
-                  <Route path="/settings" element={<SettingsLayout />} />
-                </Route>
-              </Route>
-
-              {/* Blank Routes (404, Unauthorized) */}
-              <Route element={<BlankLayout />}>
-                <Route path="/unauthorized" element={<Unauthorized />} />
-                <Route path="*" element={<NotFound />} />
-              </Route>
-
-            </Routes>
+                </Routes>
               </Suspense>
             </HashRouter>
           </AuthProvider>

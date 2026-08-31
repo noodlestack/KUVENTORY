@@ -1,79 +1,51 @@
 import { toast } from "sonner";
 import { useState, useEffect, useCallback } from "react";
-import { InventoryItem, InventoryFormData } from "@/types/inventory";
+import { InventoryItem, InventoryFormData, StockMovement, StockUpdateFormData } from "@/types/inventory";
 import { inventoryService } from "@/services/inventory/inventoryService";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function useInventory() {
   const [items, setItems] = useState<InventoryItem[]>([]);
-  const [archivedItems, setArchivedItems] = useState<InventoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingArchived, setIsLoadingArchived] = useState(false);
+  const { user } = useAuth();
 
   const fetchItems = useCallback(async () => {
     setIsLoading(true);
     try {
       const data = await inventoryService.getInventory();
       setItems(data);
-    } catch (error: unknown) {
-      const msg = error instanceof Error ? error.message : 'Failed to load inventory';
+    } catch (error: any) {
+      const msg = error.message || 'Failed to load inventory';
       toast.error(msg);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  const fetchArchivedItems = useCallback(async () => {
-    setIsLoadingArchived(true);
-    try {
-      const data = await inventoryService.getArchivedItems();
-      setArchivedItems(data);
-    } catch (error: unknown) {
-      const msg = error instanceof Error ? error.message : 'Failed to load archived items';
-      toast.error(msg);
-    } finally {
-      setIsLoadingArchived(false);
-    }
-  }, []);
-
   useEffect(() => {
-    queueMicrotask(fetchItems);
+    fetchItems();
   }, [fetchItems]);
 
-  const createItem = async (data: InventoryFormData, categoryName: string) => {
+  const createItem = async (data: InventoryFormData) => {
     try {
-      const newItem = await inventoryService.createItem(data, categoryName);
-      // Refetch from DB to get accurate state (balances may take a moment)
+      await inventoryService.createItem(data);
       await fetchItems();
-      return newItem;
-    } catch (error: unknown) {
-      const msg = error instanceof Error ? error.message : 'Failed to create item';
+      toast.success("Item created successfully");
+    } catch (error: any) {
+      const msg = error.message || 'Failed to create item';
       console.error(error);
       toast.error(msg);
       throw error;
     }
   };
 
-  const updateItem = async (id: string, data: InventoryFormData, categoryName: string) => {
+  const updateItem = async (id: string, data: InventoryFormData) => {
     try {
-      const updated = await inventoryService.updateItem(id, data, categoryName);
-      // Update local state immediately for responsiveness
-      setItems(prev => prev.map(i => i.id === id ? updated : i));
-      return updated;
-    } catch (error: unknown) {
-      const msg = error instanceof Error ? error.message : 'Failed to update item';
-      console.error(error);
-      toast.error(msg);
-      throw error;
-    }
-  };
-
-  const archiveItem = async (id: string) => {
-    try {
-      await inventoryService.archiveItem(id);
-      // Remove from active list immediately
-      setItems(prev => prev.filter(i => i.id !== id));
-    } catch (error: unknown) {
-      const msg = error instanceof Error ? error.message : 'Failed to archive item';
+      await inventoryService.updateItem(id, data);
+      await fetchItems();
+      toast.success("Item updated successfully");
+    } catch (error: any) {
+      const msg = error.message || 'Failed to update item';
       console.error(error);
       toast.error(msg);
       throw error;
@@ -83,41 +55,46 @@ export function useInventory() {
   const deleteItem = async (id: string) => {
     try {
       await inventoryService.deleteItem(id);
-      // Remove from active list immediately
       setItems(prev => prev.filter(i => i.id !== id));
-    } catch (error: unknown) {
-      const msg = error instanceof Error ? error.message : 'Failed to delete item';
+      toast.success("Item deleted successfully");
+    } catch (error: any) {
+      const msg = error.message || 'Failed to delete item';
       console.error(error);
       toast.error(msg);
       throw error;
     }
   };
 
-  const restoreItem = async (id: string) => {
+  const updateStock = async (id: string, data: StockUpdateFormData) => {
     try {
-      await inventoryService.restoreItem(id);
-      // Remove from archived list immediately, then refresh active list
-      setArchivedItems(prev => prev.filter(i => i.id !== id));
+      await inventoryService.updateStock(id, data, user?.id);
       await fetchItems();
-    } catch (error: unknown) {
-      const msg = error instanceof Error ? error.message : 'Failed to restore item';
+      toast.success("Stock updated successfully");
+    } catch (error: any) {
+      const msg = error.message || 'Failed to update stock';
       console.error(error);
       toast.error(msg);
       throw error;
+    }
+  };
+
+  const getItemMovements = async (id: string): Promise<StockMovement[]> => {
+    try {
+      return await inventoryService.getItemMovements(id);
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to load history');
+      return [];
     }
   };
 
   return {
     items,
-    archivedItems,
     isLoading,
-    isLoadingArchived,
     refresh: fetchItems,
-    refreshArchived: fetchArchivedItems,
     createItem,
     updateItem,
-    archiveItem,
     deleteItem,
-    restoreItem,
+    updateStock,
+    getItemMovements
   };
 }

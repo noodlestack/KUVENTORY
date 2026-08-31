@@ -6,15 +6,16 @@ import { useCategories } from "@/hooks/categories/useCategories";
 import { InventoryItem } from "@/types/inventory";
 import { InventoryTable } from "@/components/inventory/InventoryTable";
 import { InventoryFormDialog } from "@/components/inventory/InventoryFormDialog";
+import { UpdateStockDialog } from "@/components/inventory/UpdateStockDialog";
 import { InventoryDetailsDrawer } from "@/components/inventory/InventoryDetailsDrawer";
 import { toast } from "sonner";
-import { exportToCSV } from "@/utils/exportUtils";
 
 export function InventoryList() {
-  const { items, isLoading, createItem, updateItem, archiveItem, deleteItem } = useInventory();
+  const { items, isLoading, createItem, updateItem, deleteItem, updateStock, getItemMovements } = useInventory();
   const { categories, isLoading: isLoadingCategories } = useCategories();
 
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isStockOpen, setIsStockOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
 
@@ -28,20 +29,14 @@ export function InventoryList() {
     setIsFormOpen(true);
   };
 
-  const handleView = (item: InventoryItem) => {
+  const handleUpdateStock = (item: InventoryItem) => {
     setSelectedItem(item);
-    setIsDrawerOpen(true);
+    setIsStockOpen(true);
   };
 
-  const handleArchive = async (item: InventoryItem) => {
-    if (!confirm(`Archive "${item.name}"? It will be hidden from inventory but transaction history is preserved.`)) return;
-    
-    try {
-      await archiveItem(item.id);
-      toast.success(`"${item.name}" has been archived.`);
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to archive item.");
-    }
+  const handleViewHistory = (item: InventoryItem) => {
+    setSelectedItem(item);
+    setIsDrawerOpen(true);
   };
 
   const handleDelete = async (item: InventoryItem) => {
@@ -49,34 +44,13 @@ export function InventoryList() {
     
     try {
       await deleteItem(item.id);
-      toast.success(`"${item.name}" has been deleted.`);
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Failed to delete item.";
-      if (msg.toLowerCase().includes("archive it instead")) {
-        if (confirm(`Cannot delete "${item.name}" because it has existing transactions.\n\nWould you like to archive it instead?`)) {
-          handleArchive(item);
-        }
-      } else {
-        toast.error(msg);
-      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to delete item.");
     }
   };
 
   const handleExport = () => {
-    const exportData = items.map(item => ({
-      Code: item.itemCode || '',
-      Name: item.name,
-      Category: item.categoryName || '',
-      TotalStock: item.totalStock,
-      Unit: item.unit || '',
-      Cost: item.cost,
-      SellingPrice: item.sellingPrice,
-      MinStockLevel: item.minStockLevel,
-      Status: item.status,
-      LastUpdated: item.lastUpdated ? new Date(item.lastUpdated).toLocaleString() : ''
-    }));
-    exportToCSV(exportData, `Kuventory_Inventory_${new Date().toISOString().split('T')[0]}`);
-    toast.success("Inventory exported successfully");
+    toast.info("Use the Reports section for full CSV/PDF exports.");
   };
 
   if (isLoading || isLoadingCategories) return <div className="p-8 text-center text-muted-foreground">Loading inventory...</div>;
@@ -87,7 +61,7 @@ export function InventoryList() {
         <h2 className="text-xl font-semibold">Inventory Items</h2>
         <div className="flex space-x-2">
           <Button variant="outline" onClick={handleExport} disabled={items.length === 0}>
-            <Download className="mr-2 h-4 w-4" /> Export
+            <Download className="mr-2 h-4 w-4" /> Export Note
           </Button>
           <Button onClick={handleCreate}>
             <Plus className="mr-2 h-4 w-4" /> Add Item
@@ -97,9 +71,9 @@ export function InventoryList() {
       
       <InventoryTable 
         items={items} 
-        onView={handleView}
         onEdit={handleEdit}
-        onArchive={handleArchive}
+        onUpdateStock={handleUpdateStock}
+        onViewHistory={handleViewHistory}
         onDelete={handleDelete}
       />
 
@@ -108,24 +82,34 @@ export function InventoryList() {
         onOpenChange={setIsFormOpen}
         item={selectedItem}
         categories={categories}
-        onSubmit={async (data, categoryName) => {
+        onSubmit={async (data) => {
           if (selectedItem) {
-            await updateItem(selectedItem.id, data, categoryName);
+            await updateItem(selectedItem.id, data);
           } else {
-            await createItem(data, categoryName);
+            await createItem(data);
           }
         }}
       />
 
-      <InventoryDetailsDrawer
-        open={isDrawerOpen}
-        onOpenChange={setIsDrawerOpen}
-        item={selectedItem}
-        onEdit={() => {
-          setIsDrawerOpen(false);
-          setIsFormOpen(true);
-        }}
-      />
+      {selectedItem && (
+        <UpdateStockDialog
+          open={isStockOpen}
+          onOpenChange={setIsStockOpen}
+          item={selectedItem}
+          onSubmit={async (data) => {
+            await updateStock(selectedItem.id, data);
+          }}
+        />
+      )}
+
+      {selectedItem && (
+        <InventoryDetailsDrawer
+          open={isDrawerOpen}
+          onOpenChange={setIsDrawerOpen}
+          item={selectedItem}
+          fetchMovements={() => getItemMovements(selectedItem.id)}
+        />
+      )}
     </div>
   );
 }

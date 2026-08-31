@@ -1,1 +1,0 @@
-SELECT * FROM public.cash_sessions;
