@@ -1,47 +1,15 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import path from "path";
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+import path from 'path'
 
+// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      '@': path.resolve(import.meta.dirname, './src'),
     },
   },
-  base: "/KUVENTORY/",
-  build: {
-    sourcemap: false,
-    chunkSizeWarningLimit: 1000,
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('react/') || id.includes('react-dom/') || id.includes('react-router')) {
-              return 'react-vendor';
-            }
-            if (id.includes('@radix-ui') || id.includes('lucide-react') || id.includes('framer-motion') || id.includes('clsx') || id.includes('tailwind')) {
-              return 'ui-vendor';
-            }
-            if (id.includes('recharts') || id.includes('d3')) {
-              return 'chart-vendor';
-            }
-            if (id.includes('@tanstack')) {
-              return 'data-vendor';
-            }
-            return 'vendor';
-          }
-        }
-      }
-    },
-    rolldownOptions: {
-      output: {
-        minify: {
-          compress: {
-            dropConsole: true,
-          }
-        }
-      }
-    }
-  }
-});
+  base: process.env.VITE_BASE_PATH || '/KUVENTORY/',
+})

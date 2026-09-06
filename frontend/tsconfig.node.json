@@ -1,16 +1,24 @@
 {
   "compilerOptions": {
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
+    "incremental": true,
     "target": "ES2022",
     "lib": ["ES2022"],
-    "module": "ESNext",
+    "types": ["node"],
     "skipLibCheck": true,
+
+    /* Bundler mode */
     "moduleResolution": "bundler",
+    "module": "ESNext",
     "allowImportingTsExtensions": true,
-    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
     "moduleDetection": "force",
+    "allowSyntheticDefaultImports": true,
     "noEmit": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
+
+    /* Linting */
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true

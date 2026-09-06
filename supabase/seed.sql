@@ -1,78 +1,32 @@
--- seed.sql
+-- Seed data for KUVENTORY development
 
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
+-- 1. Create Users
+-- The `on_auth_user_created` trigger will automatically populate `public.profiles`.
+INSERT INTO auth.users (id, instance_id, aud, email, encrypted_password, email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at, role, confirmation_token, email_change, email_change_token_new, recovery_token)
+VALUES
+  ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000000', 'authenticated', 'admin@kuventory.local', extensions.crypt('password123', extensions.gen_salt('bf')), now(), '{"provider":"email","providers":["email"]}', '{}', now(), now(), 'authenticated', '', '', '', ''),
+  ('00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000000', 'authenticated', 'user@kuventory.local', extensions.crypt('password123', extensions.gen_salt('bf')), now(), '{"provider":"email","providers":["email"]}', '{}', now(), now(), 'authenticated', '', '', '', '');
 
--- Categories
-INSERT INTO categories (id, name, description) VALUES
-('11111111-1111-1111-1111-111111111111', 'Grilled', 'Grilled food items'),
-('22222222-2222-2222-2222-222222222222', 'Portion', 'Portioned items'),
-('33333333-3333-3333-3333-333333333333', 'Per Cases', 'Items per case')
-ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, description = EXCLUDED.description;
+-- Note: The trigger creates the first user as ADMIN and subsequent as USER.
 
--- Items from Image 1: Grilled Stock 7/25/26
-INSERT INTO inventory_items (sku, name, category_id, cost, current_stock, minimum_stock, unit, status) VALUES
-('GRILL-001', 'BETAMAX', '11111111-1111-1111-1111-111111111111', 0, 46, 10, 'pcs', 'IN_STOCK'),
-('GRILL-002', 'ADIDAS', '11111111-1111-1111-1111-111111111111', 0, 13, 10, 'pcs', 'IN_STOCK'),
-('GRILL-003', 'CHICKEN NECK', '11111111-1111-1111-1111-111111111111', 0, 14, 10, 'pcs', 'IN_STOCK'),
-('GRILL-004', 'PORK BBQ', '11111111-1111-1111-1111-111111111111', 0, 60, 20, 'pcs', 'IN_STOCK'),
-('GRILL-005', 'HOTDOG', '11111111-1111-1111-1111-111111111111', 0, 0, 10, 'pcs', 'OUT_OF_STOCK'),
-('GRILL-006', 'PORK TENGA', '11111111-1111-1111-1111-111111111111', 0, 0, 10, 'pcs', 'OUT_OF_STOCK'),
-('GRILL-007', 'ISAW', '11111111-1111-1111-1111-111111111111', 0, 32, 10, 'pcs', 'IN_STOCK'),
-('GRILL-008', 'CHICKEN-INASAL', '11111111-1111-1111-1111-111111111111', 0, 6, 10, 'LOW_STOCK'),
-('GRILL-009', 'CHICKEN-BBQ', '11111111-1111-1111-1111-111111111111', 0, 0, 10, 'pcs', 'OUT_OF_STOCK'),
-('GRILL-010', 'GRILLED LIEMPO', '11111111-1111-1111-1111-111111111111', 0, 8, 10, 'LOW_STOCK'),
-('GRILL-011', 'BANGUS', '11111111-1111-1111-1111-111111111111', 0, 3, 5, 'LOW_STOCK'),
-('GRILL-012', 'TILAPIA', '11111111-1111-1111-1111-111111111111', 0, 7, 10, 'LOW_STOCK');
+-- 2. Categories
+INSERT INTO public.categories (id, name, description) VALUES
+  ('c0000000-0000-0000-0000-000000000001', 'Beverages', 'All drinks'),
+  ('c0000000-0000-0000-0000-000000000002', 'Snacks', 'Chips and snacks');
 
--- Items from Image 2: Portion Stock 7-26-26
-INSERT INTO inventory_items (sku, name, category_id, cost, current_stock, minimum_stock, unit, status) VALUES
-('PORT-001', 'PALE PILSEN', '22222222-2222-2222-2222-222222222222', 0, 83, 20, 'pcs', 'IN_STOCK'),
-('PORT-002', 'STALLION RED HORSE', '22222222-2222-2222-2222-222222222222', 0, 71, 20, 'pcs', 'IN_STOCK'),
-('PORT-003', 'SML', '22222222-2222-2222-2222-222222222222', 0, 84, 20, 'pcs', 'IN_STOCK'),
-('PORT-004', 'SMA', '22222222-2222-2222-2222-222222222222', 0, 35, 10, 'pcs', 'IN_STOCK'),
-('PORT-005', 'CERVEZA', '22222222-2222-2222-2222-222222222222', 0, 6, 10, 'LOW_STOCK'),
-('PORT-006', 'PREMUIM', '22222222-2222-2222-2222-222222222222', 0, 6, 10, 'LOW_STOCK'),
-('PORT-007', 'COKE IN CAN', '22222222-2222-2222-2222-222222222222', 0, 22, 10, 'pcs', 'IN_STOCK'),
-('PORT-008', 'DM ACE', '22222222-2222-2222-2222-222222222222', 0, 0, 10, 'pcs', 'OUT_OF_STOCK'),
-('PORT-009', 'DM FOUR SEASON', '22222222-2222-2222-2222-222222222222', 0, 31, 10, 'pcs', 'IN_STOCK'),
-('PORT-010', 'COKE ZERO', '22222222-2222-2222-2222-222222222222', 0, 26, 10, 'pcs', 'IN_STOCK'),
-('PORT-011', 'ROYAL IN CAN', '22222222-2222-2222-2222-222222222222', 0, 18, 10, 'pcs', 'IN_STOCK'),
-('PORT-012', 'SPRITE IN CAN', '22222222-2222-2222-2222-222222222222', 0, 36, 10, 'pcs', 'IN_STOCK'),
-('PORT-013', 'COKE MISMO', '22222222-2222-2222-2222-222222222222', 0, 43, 10, 'pcs', 'IN_STOCK'),
-('PORT-014', 'SPRITE MISMO', '22222222-2222-2222-2222-222222222222', 0, 43, 10, 'pcs', 'IN_STOCK'),
-('PORT-015', 'ROYAL MISMO', '22222222-2222-2222-2222-222222222222', 0, 60, 10, 'pcs', 'IN_STOCK'),
-('PORT-016', 'BOT. WATER', '22222222-2222-2222-2222-222222222222', 0, 54, 20, 'pcs', 'IN_STOCK'),
-('PORT-017', 'ASSORTED MAGNOLIA', '22222222-2222-2222-2222-222222222222', 0, 1061, 50, 'pcs', 'IN_STOCK'),
-('PORT-018', 'DRIP COFFEE', '22222222-2222-2222-2222-222222222222', 0, 5, 10, 'pcs', 'LOW_STOCK'),
-('PORT-019', 'BREWED COFFEE', '22222222-2222-2222-2222-222222222222', 0, 6, 10, 'LOW_STOCK'),
-('PORT-020', 'LIPTON TEA', '22222222-2222-2222-2222-222222222222', 0, 12, 10, 'pcs', 'IN_STOCK'),
-('PORT-021', 'PALE IN CAN', '22222222-2222-2222-2222-222222222222', 0, 38, 10, 'pcs', 'IN_STOCK'),
-('PORT-022', 'MAGNUM ALMOND', '22222222-2222-2222-2222-222222222222', 0, 35, 10, 'pcs', 'IN_STOCK'),
-('PORT-023', 'CORNETTO C & C', '22222222-2222-2222-2222-222222222222', 0, 31, 10, 'pcs', 'IN_STOCK'),
-('PORT-024', 'CORNETTO CHOCO', '22222222-2222-2222-2222-222222222222', 0, 37, 10, 'pcs', 'IN_STOCK'),
-('PORT-025', 'MAGNUM CLASSIC', '22222222-2222-2222-2222-222222222222', 0, 36, 10, 'pcs', 'IN_STOCK'),
-('PORT-026', 'CORNETTO VANILLA', '22222222-2222-2222-2222-222222222222', 0, 36, 10, 'pcs', 'IN_STOCK'),
-('PORT-027', 'HALO HALO', '22222222-2222-2222-2222-222222222222', 0, 0, 10, 'pcs', 'OUT_OF_STOCK');
+-- 3. Inventory Items
+INSERT INTO public.inventory_items (id, category_id, name, unit, unit_cost, min_quantity) VALUES
+  ('10000000-0000-0000-0000-000000000001', 'c0000000-0000-0000-0000-000000000001', 'Pale Pilsen', 'Bottle', 50.00, 20),
+  ('10000000-0000-0000-0000-000000000002', 'c0000000-0000-0000-0000-000000000001', 'Red Horse', 'Bottle', 60.00, 10),
+  ('10000000-0000-0000-0000-000000000003', 'c0000000-0000-0000-0000-000000000002', 'Potato Chips', 'Bag', 30.00, 5);
 
--- Items PER CASES
-INSERT INTO inventory_items (sku, name, category_id, cost, current_stock, minimum_stock, unit, status) VALUES
-('CASE-001', 'PALE PILSEN (CASE)', '33333333-3333-3333-3333-333333333333', 0, 3, 5, 'case', 'LOW_STOCK'),
-('CASE-002', 'STALLION RED HORSE (CASE)', '33333333-3333-3333-3333-333333333333', 0, 2, 5, 'case', 'LOW_STOCK'),
-('CASE-003', 'SML (CASE)', '33333333-3333-3333-3333-333333333333', 0, 3, 5, 'case', 'LOW_STOCK'),
-('CASE-004', 'SMA (CASE)', '33333333-3333-3333-3333-333333333333', 0, 2, 5, 'case', 'LOW_STOCK'),
-('CASE-005', 'COKE IN CAN (CASE)', '33333333-3333-3333-3333-333333333333', 0, 1, 5, 'case', 'LOW_STOCK'),
-('CASE-006', 'ROYAL IN CAN (CASE)', '33333333-3333-3333-3333-333333333333', 0, 1, 5, 'case', 'LOW_STOCK'),
-('CASE-007', 'SPRITE IN CAN (CASE)', '33333333-3333-3333-3333-333333333333', 0, 2, 5, 'case', 'LOW_STOCK'),
-('CASE-008', 'COKE MISMO (CASE)', '33333333-3333-3333-3333-333333333333', 0, 10, 5, 'case', 'IN_STOCK'),
-('CASE-009', 'SPRITE MISMO (CASE)', '33333333-3333-3333-3333-333333333333', 0, 6, 5, 'case', 'IN_STOCK'),
-('CASE-010', 'ROYAL MISMO (CASE)', '33333333-3333-3333-3333-333333333333', 0, 6, 5, 'case', 'IN_STOCK'),
-('CASE-011', 'BOT. WATER (CASE)', '33333333-3333-3333-3333-333333333333', 0, 10, 5, 'case', 'IN_STOCK'),
-('CASE-012', 'MAGNOLIA ASSORTED (CASE)', '33333333-3333-3333-3333-333333333333', 0, 7, 5, 'case', 'IN_STOCK');
-
-INSERT INTO stock_movements (item_id, type, quantity, reference_no, notes, created_at)
-SELECT id, 'ADJUSTMENT', current_stock, 'INV-725', 'Initial stock reading from 7/25/26', '2026-07-25 23:59:00'
-FROM inventory_items WHERE category_id = '11111111-1111-1111-1111-111111111111';
-
-INSERT INTO stock_movements (item_id, type, quantity, reference_no, notes, created_at)
-SELECT id, 'ADJUSTMENT', current_stock, 'INV-726', 'Initial stock reading from 7/26/26', '2026-07-26 23:59:00'
-FROM inventory_items WHERE category_id != '11111111-1111-1111-1111-111111111111';
+-- 4. Stock Batches
+INSERT INTO public.stock_batches (id, item_id, quantity, expiry_date, received_date) VALUES
+  -- Pale Pilsen has multiple batches to test FEFO.
+  -- Older expiry should be consumed first.
+  ('b0000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', 50, CURRENT_DATE + INTERVAL '10 days', CURRENT_DATE - INTERVAL '2 days'),
+  ('b0000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000001', 100, CURRENT_DATE + INTERVAL '30 days', CURRENT_DATE),
+  
+  -- Red Horse has low stock
+  ('b0000000-0000-0000-0000-000000000003', '10000000-0000-0000-0000-000000000002', 5, CURRENT_DATE + INTERVAL '20 days', CURRENT_DATE);
+  -- Potato Chips has 0 stock (no batches)
